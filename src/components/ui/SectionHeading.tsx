@@ -29,14 +29,14 @@ export function SectionHeading({
         {eyebrow && (
           <div className={cn('mb-4 flex', align === 'center' && 'justify-center')}>
             <span className="eyebrow">
-              <span className="size-1.5 rounded-full bg-[#a78bfa] shadow-[0_0_10px_2px_rgba(167,139,250,0.6)]" />
+              <span className="size-1.5 rounded-full bg-[#ffa15c] shadow-[0_0_10px_2px_rgba(255,161,92,0.6)]" />
               {eyebrow}
             </span>
           </div>
         )}
         <h2 className="text-[clamp(1.85rem,3.6vw,2.9rem)] font-semibold leading-[1.08]">{title}</h2>
         {description && (
-          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[#8b8fa3] md:text-base">
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[#a28c80] md:text-base">
             {description}
           </p>
         )}

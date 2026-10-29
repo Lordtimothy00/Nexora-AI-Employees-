@@ -25,10 +25,10 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-[#05060a] px-6 text-center">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[#0b0402] px-6 text-center">
           <Logo />
           <h1 className="mt-8 font-display text-2xl font-semibold text-white">Something went sideways.</h1>
-          <p className="mt-2 max-w-sm text-[13.5px] leading-relaxed text-[#8b8fa3]">
+          <p className="mt-2 max-w-sm text-[13.5px] leading-relaxed text-[#a28c80]">
             Your workspace hit an unexpected error. Reloading usually fixes it — nothing you have
             hired or assigned is lost.
           </p>

@@ -5,9 +5,10 @@ sales, support, marketing, operations, finance, and people. Built as a complete 
 experience: marketing site, catalogue, employee profiles, pricing, auth, and an authenticated
 workspace with a working demo of the product.
 
-> Design direction: dark, premium, editorial. Near-black canvas, violet → mint accents, glass
-> panels, aurora lighting, Sora display type, Inter UI type, and generative editorial portraits
-> for the AI roster.
+> Design direction: cinematic neon fintech. Espresso-black canvas (`#0b0402`), a vibrant ember
+> gradient system (`#ff9a4d → #dd6816 → #c02c0a`) with an olive accent (`#b5b56f`), glass panels,
+> aurora and conic lighting, Sora display type, Inter UI type, and warm editorial portraits for the
+> AI roster. Inspired by premium dark banking interfaces.
 
 ---
 
@@ -121,13 +122,16 @@ src/
 
 Tokens live in the `@theme` block of `src/index.css`:
 
-- **Canvas** `#05060a` → **surface** `#0b0d14` → **panel** `#0f1219`
-- **Accents** violet `#7c5cff`, lilac `#a78bfa`, mint `#4fe3c1`, sky `#5aa9ff`, amber `#ffb86b`, rose `#ff7a90`
+- **Canvas** espresso `#0b0402` → **surface** `#180b07` → **panel** `#1a0c07`
+- **Ember system** `#ff9a4d` → `#dd6816` → `#c02c0a` (buttons, glow, charts)
+- **Accents** peach `#ffa15c`, olive `#b5b56f`, gold `#e9b45f`, clay `#e08a48`, coral `#e2593f`
+- **Warm neutrals** cream `#fff4ec` (all `white` utilities) and taupe text ramp from `#ead8cd` to `#8a7365`
 - **Type** Sora (display) / Inter (UI) / JetBrains Mono (labels & data)
 - **Primitives** `.panel`, `.panel-hover`, `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`,
   `.reveal`, `.text-gradient`
-- Depth comes from 1px inset highlights, layered gradients, and low-opacity borders rather than
-  heavy shadows.
+- Depth comes from 1px inset highlights, layered gradients, conic light rings, and low-opacity
+  warm borders rather than heavy shadows. Signature surfaces: `.panel-ember` (neon gradient card),
+  `.ring-glow`, and `.neon-line`.
 - Motion is restrained: scroll reveals (IntersectionObserver), marquee, float, typing dots, and a
   full `prefers-reduced-motion` fallback.
 

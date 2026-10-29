@@ -37,7 +37,7 @@ export function Accordion({
                 <span
                   className={cn(
                     'font-display text-[15px] font-medium transition-colors md:text-base',
-                    isOpen ? 'text-white' : 'text-[#d3d5e0]',
+                    isOpen ? 'text-white' : 'text-[#e9d8ce]',
                   )}
                 >
                   {item.q}
@@ -46,8 +46,8 @@ export function Accordion({
                   className={cn(
                     'grid size-8 shrink-0 place-items-center rounded-full border transition-all duration-300',
                     isOpen
-                      ? 'border-[#7c5cff]/40 bg-[#7c5cff]/15 text-[#c4b5fd] rotate-180'
-                      : 'border-white/10 bg-white/[0.03] text-[#8b8fa3]',
+                      ? 'border-[#dd6816]/40 bg-[#dd6816]/15 text-[#ffc08e] rotate-180'
+                      : 'border-white/10 bg-white/[0.03] text-[#a28c80]',
                   )}
                 >
                   {isOpen ? <Minus className="size-3.5" /> : <Plus className="size-3.5" />}
@@ -64,7 +64,7 @@ export function Accordion({
               )}
             >
               <div className="overflow-hidden">
-                <p className="max-w-2xl pb-6 pr-12 text-[14.5px] leading-relaxed text-[#8b8fa3]">{item.a}</p>
+                <p className="max-w-2xl pb-6 pr-12 text-[14.5px] leading-relaxed text-[#a28c80]">{item.a}</p>
               </div>
             </div>
           </div>

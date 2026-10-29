@@ -5,17 +5,17 @@ export function LogoMark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        'relative grid size-9 place-items-center rounded-[11px] border border-white/15 bg-[linear-gradient(150deg,#151222,#0a0b12)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]',
+        'relative grid size-9 place-items-center rounded-[11px] border border-white/15 bg-[linear-gradient(150deg,#1f0e09,#140805)] shadow-[inset_0_1px_0_rgba(255,244,236,0.14)]',
         className,
       )}
     >
-      <span className="absolute inset-0 rounded-[11px] bg-[radial-gradient(circle_at_30%_20%,rgba(124,92,255,0.35),transparent_65%)]" />
+      <span className="absolute inset-0 rounded-[11px] bg-[radial-gradient(circle_at_30%_20%,rgba(221,104,22,0.35),transparent_65%)]" />
       <svg viewBox="0 0 64 64" className="relative size-[62%]" aria-hidden="true">
         <defs>
           <linearGradient id="nexora-mark" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#c4b5fd" />
-            <stop offset="0.55" stopColor="#8b6dff" />
-            <stop offset="1" stopColor="#4fe3c1" />
+            <stop offset="0" stopColor="#ffc08e" />
+            <stop offset="0.55" stopColor="#f58b33" />
+            <stop offset="1" stopColor="#b5b56f" />
           </linearGradient>
         </defs>
         <path
@@ -50,8 +50,11 @@ export function Logo({
     >
       <LogoMark className={markClassName} />
       {showWordmark && (
-        <span className="font-display text-[17px] font-semibold tracking-[0.16em] text-white">
-          NEXORA
+        <span className="flex items-start gap-1">
+          <span className="font-display text-[17px] font-semibold tracking-[0.16em] text-white">
+            NEXORA
+          </span>
+          <span className="mt-1 size-1 rounded-full bg-[#b5b56f] shadow-[0_0_8px_1px_rgba(181,181,111,0.7)]" />
         </span>
       )}
     </Link>

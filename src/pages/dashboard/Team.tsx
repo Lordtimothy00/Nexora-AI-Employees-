@@ -73,7 +73,7 @@ export function Team() {
                 <div
                   key={hire.employeeId}
                   className={cn(
-                    'relative overflow-hidden rounded-2xl border border-white/8 bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] transition-colors hover:border-white/16',
+                    'relative overflow-hidden rounded-2xl border border-white/8 bg-[linear-gradient(160deg,rgba(255,244,236,0.04),rgba(255,244,236,0.01))] transition-colors hover:border-white/16',
                     isPaused && 'opacity-80',
                   )}
                 >
@@ -94,15 +94,15 @@ export function Team() {
                             className={cn(
                               'rounded-full px-1.5 py-0.5 text-[8.5px] uppercase tracking-wider ring-1 ring-inset',
                               isPaused
-                                ? 'bg-amber/10 text-[#ffd9a8] ring-amber/20'
-                                : 'bg-mint/10 text-[#8bf0d8] ring-mint/20',
+                                ? 'bg-amber/10 text-[#f8dfb4] ring-amber/20'
+                                : 'bg-mint/10 text-[#d9d9a0] ring-mint/20',
                             )}
                           >
                             {hire.status}
                           </span>
                         </div>
-                        <p className="mt-0.5 text-[11px] text-[#8b8fa3]">{person.role}</p>
-                        <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-[#5f6376]">
+                        <p className="mt-0.5 text-[11px] text-[#a28c80]">{person.role}</p>
+                        <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-[#8a7365]">
                           {person.department}
                         </p>
                       </div>
@@ -110,7 +110,7 @@ export function Team() {
                     <Link
                       to={`/employees/${person.slug}`}
                       aria-label={`View ${person.name}'s profile`}
-                      className="grid size-7 place-items-center rounded-lg text-[#5f6376] transition hover:bg-white/8 hover:text-white"
+                      className="grid size-7 place-items-center rounded-lg text-[#8a7365] transition hover:bg-white/8 hover:text-white"
                     >
                       <ArrowUpRight className="size-3.5" />
                     </Link>
@@ -124,13 +124,13 @@ export function Team() {
                     ].map((stat) => (
                       <div key={stat.label} className="px-3 py-2.5 text-center">
                         <p className="font-display text-[14px] font-semibold text-white">{stat.value}</p>
-                        <p className="text-[9px] uppercase tracking-[0.08em] text-[#5f6376]">{stat.label}</p>
+                        <p className="text-[9px] uppercase tracking-[0.08em] text-[#8a7365]">{stat.label}</p>
                       </div>
                     ))}
                   </div>
 
                   <div className="p-4">
-                    <div className="flex items-center justify-between text-[10px] text-[#6c7085]">
+                    <div className="flex items-center justify-between text-[10px] text-[#998173]">
                       <span>Utilisation this week</span>
                       <span>{hire.utilization}%</span>
                     </div>
@@ -140,7 +140,7 @@ export function Team() {
                           'h-full rounded-full',
                           isPaused
                             ? 'bg-amber/60'
-                            : 'bg-[linear-gradient(90deg,#a78bfa,#5d7cff)]',
+                            : 'bg-[linear-gradient(90deg,#ffa15c,#cb330d)]',
                         )}
                         style={{ width: `${hire.utilization}%` }}
                       />
@@ -149,7 +149,7 @@ export function Team() {
                     <div className="mt-3 flex items-center gap-1.5">
                       <Link
                         to="/dashboard/conversations"
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] py-1.5 text-[11px] text-[#c3c6d4] transition hover:border-white/20 hover:text-white"
+                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] py-1.5 text-[11px] text-[#dbc9be] transition hover:border-white/20 hover:text-white"
                       >
                         <MessageSquare className="size-3" /> Message
                       </Link>
@@ -163,7 +163,7 @@ export function Team() {
                               : `${person.name} is paused. Queued work will hold until resumed.`,
                           );
                         }}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-[11px] text-[#c3c6d4] transition hover:border-white/20 hover:text-white"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-[11px] text-[#dbc9be] transition hover:border-white/20 hover:text-white"
                       >
                         {isPaused ? <Play className="size-3" /> : <Pause className="size-3" />}
                         {isPaused ? 'Resume' : 'Pause'}
@@ -188,7 +188,7 @@ export function Team() {
                           <button
                             type="button"
                             onClick={() => setConfirming(null)}
-                            className="rounded-md px-2 py-0.5 text-[10px] text-[#a3a7b8] hover:text-white"
+                            className="rounded-md px-2 py-0.5 text-[10px] text-[#bea99c] hover:text-white"
                           >
                             Cancel
                           </button>
@@ -198,7 +198,7 @@ export function Team() {
                       <button
                         type="button"
                         onClick={() => setConfirming(person.id)}
-                        className="mt-2 w-full text-center text-[9.5px] text-[#4f5364] transition hover:text-rose-300"
+                        className="mt-2 w-full text-center text-[9.5px] text-[#6f5548] transition hover:text-rose-300"
                       >
                         Remove from team
                       </button>
@@ -210,13 +210,13 @@ export function Team() {
 
             <Link
               to="/employees"
-              className="group flex min-h-[220px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/12 bg-white/[0.015] p-6 text-center transition-colors hover:border-[#7c5cff]/40 hover:bg-[#7c5cff]/[0.04]"
+              className="group flex min-h-[220px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/12 bg-white/[0.015] p-6 text-center transition-colors hover:border-[#dd6816]/40 hover:bg-[#dd6816]/[0.04]"
             >
-              <span className="grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-[#a78bfa] transition group-hover:border-[#7c5cff]/40">
+              <span className="grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-[#ffa15c] transition group-hover:border-[#dd6816]/40">
                 <Plus className="size-4" />
               </span>
               <p className="mt-3 text-[12.5px] font-medium text-white">Add another employee</p>
-              <p className="mt-1 max-w-[180px] text-[10.5px] leading-relaxed text-[#6c7085]">
+              <p className="mt-1 max-w-[180px] text-[10.5px] leading-relaxed text-[#998173]">
                 {5 - hires.length} seats remaining on Growth
               </p>
             </Link>
@@ -230,9 +230,9 @@ export function Team() {
                 { label: 'Monthly saving', value: `$${(hires.length * 6151).toLocaleString()}`, hint: `${hoursSaved}h of work returned` },
               ].map((row) => (
                 <div key={row.label} className="rounded-xl border border-white/8 bg-white/[0.02] p-3.5">
-                  <p className="text-[10px] uppercase tracking-[0.08em] text-[#6c7085]">{row.label}</p>
+                  <p className="text-[10px] uppercase tracking-[0.08em] text-[#998173]">{row.label}</p>
                   <p className="mt-1 font-display text-[17px] font-semibold text-white">{row.value}</p>
-                  <p className="mt-0.5 text-[10px] text-[#5f6376]">{row.hint}</p>
+                  <p className="mt-0.5 text-[10px] text-[#8a7365]">{row.hint}</p>
                 </div>
               ))}
             </div>

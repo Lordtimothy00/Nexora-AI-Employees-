@@ -68,14 +68,14 @@ export function Signup() {
         <>
           Create a workspace, hire your first AI employee, and get 14 days of Growth — no card
           required. Already have an account?{' '}
-          <Link to="/login" className="font-medium text-[#c4b5fd] hover:text-white">
+          <Link to="/login" className="font-medium text-[#ffc08e] hover:text-white">
             Sign in
           </Link>
           .
         </>
       }
       footer={
-        <span className="text-[#6c7085]">
+        <span className="text-[#998173]">
           By signing up you agree to our{' '}
           <Link to="/how-it-works#security" className="underline decoration-white/20 hover:text-white">
             Terms
@@ -90,12 +90,12 @@ export function Signup() {
     >
       <div className="mb-5 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.12em] text-[#6c7085]">Selected plan</p>
+          <p className="text-[10px] uppercase tracking-[0.12em] text-[#998173]">Selected plan</p>
           <p className="mt-0.5 text-[13px] font-medium text-white">
             {plan.name} · 14-day free trial
           </p>
         </div>
-        <Link to="/pricing" className="text-[11.5px] text-[#c4b5fd] hover:text-white">
+        <Link to="/pricing" className="text-[11.5px] text-[#ffc08e] hover:text-white">
           Change
         </Link>
       </div>
@@ -150,23 +150,23 @@ export function Signup() {
                       index < strength
                         ? strength >= 3
                           ? 'bg-mint'
-                          : 'bg-[#ffb86b]'
+                          : 'bg-[#e9b45f]'
                         : 'bg-white/10',
                     )}
                   />
                 ))}
               </div>
-              <span className="w-20 text-right text-[10px] text-[#7c8095]">{strengthLabels[strength]}</span>
+              <span className="w-20 text-right text-[10px] text-[#a68e80]">{strengthLabels[strength]}</span>
             </div>
           )}
         </div>
 
-        <label className="flex cursor-pointer items-start gap-2.5 text-[11.5px] leading-relaxed text-[#8b8fa3]">
+        <label className="flex cursor-pointer items-start gap-2.5 text-[11.5px] leading-relaxed text-[#a28c80]">
           <input
             type="checkbox"
             checked={agreed}
             onChange={(event) => setAgreed(event.target.checked)}
-            className="mt-0.5 size-3.5 rounded border-white/20 bg-white/5 accent-[#7c5cff]"
+            className="mt-0.5 size-3.5 rounded border-white/20 bg-white/5 accent-[#dd6816]"
           />
           <span>
             I agree to the Terms of Service and Privacy Policy, and to let Nexora employees act on my
@@ -185,7 +185,7 @@ export function Signup() {
           Create workspace
         </Button>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-1 text-[10.5px] text-[#6c7085]">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-1 text-[10.5px] text-[#998173]">
           {['No credit card', 'Cancel anytime', 'Keep your deliverables'].map((item) => (
             <span key={item} className="inline-flex items-center gap-1">
               <Check className="size-3 text-mint" /> {item}
@@ -193,7 +193,7 @@ export function Signup() {
           ))}
         </div>
 
-        <p className="text-center text-[11px] leading-relaxed text-[#5f6376]">
+        <p className="text-center text-[11px] leading-relaxed text-[#8a7365]">
           This is a product preview — accounts are stored locally in your browser, never on a server.
         </p>
       </form>

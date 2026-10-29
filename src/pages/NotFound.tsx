@@ -20,7 +20,7 @@ export function NotFound() {
           <h1 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.2rem)] font-semibold">
             This page never got hired.
           </h1>
-          <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[#8b8fa3]">
+          <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[#a28c80]">
             The link may be out of date, or the page moved. Your team is still working — head back to
             the workspace or meet the roster.
           </p>
@@ -32,15 +32,15 @@ export function NotFound() {
               Meet the team
             </ButtonLink>
           </div>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] text-[#6c7085]">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] text-[#998173]">
             <Link to="/how-it-works" className="hover:text-white">
               How it works
             </Link>
-            <span className="size-1 rounded-full bg-[#33374a]" />
+            <span className="size-1 rounded-full bg-[#433026]" />
             <Link to="/pricing" className="hover:text-white">
               Pricing
             </Link>
-            <span className="size-1 rounded-full bg-[#33374a]" />
+            <span className="size-1 rounded-full bg-[#433026]" />
             <Link to="/login" className="hover:text-white">
               Sign in
             </Link>

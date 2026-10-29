@@ -8,12 +8,12 @@ type Size = 'sm' | 'md' | 'lg';
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-[linear-gradient(100deg,#8b6dff_0%,#6d4dfa_45%,#5d7cff_100%)] text-white shadow-[0_10px_34px_-12px_rgba(124,92,255,0.85)] hover:shadow-[0_16px_44px_-12px_rgba(124,92,255,1)] hover:brightness-[1.08] border border-white/15',
+    'bg-[linear-gradient(100deg,#ff9a4d_0%,#e2560f_46%,#c02c0a_100%)] text-white shadow-[0_12px_38px_-14px_rgba(221,104,22,0.95)] hover:shadow-[0_18px_50px_-14px_rgba(255,138,61,1)] hover:brightness-[1.07] border border-[#ffc08e]/25',
   secondary:
     'bg-white/[0.06] text-white border border-white/12 hover:bg-white/[0.1] hover:border-white/20 backdrop-blur',
-  ghost: 'bg-transparent text-[#c3c6d4] hover:text-white hover:bg-white/[0.06] border border-transparent',
+  ghost: 'bg-transparent text-[#dbc9be] hover:text-white hover:bg-white/[0.06] border border-transparent',
   outline: 'bg-transparent text-white border border-white/20 hover:border-white/40 hover:bg-white/[0.04]',
-  subtle: 'bg-[#7c5cff]/12 text-[#c9baff] border border-[#7c5cff]/25 hover:bg-[#7c5cff]/20',
+  subtle: 'bg-[#dd6816]/12 text-[#ffcfa3] border border-[#dd6816]/25 hover:bg-[#dd6816]/20',
 };
 
 const sizes: Record<Size, string> = {
