@@ -30,31 +30,105 @@ const Analytics = lazy(() => import('@/pages/dashboard/Analytics').then((m) => (
 const Billing = lazy(() => import('@/pages/dashboard/Billing').then((m) => ({ default: m.Billing })));
 const Settings = lazy(() => import('@/pages/dashboard/Settings').then((m) => ({ default: m.Settings })));
 
-const routeTitles: { match: RegExp; title: string }[] = [
-  { match: /^\/$/, title: 'Your AI employees, always working' },
-  { match: /^\/employees\/?$/, title: 'AI Employees' },
-  { match: /^\/employees\/[^/]+$/, title: 'AI Employee' },
-  { match: /^\/how-it-works$/, title: 'How it works' },
-  { match: /^\/pricing$/, title: 'Pricing' },
-  { match: /^\/resources$/, title: 'Resources' },
-  { match: /^\/resources\/[^/]+$/, title: 'Resources' },
-  { match: /^\/login$/, title: 'Sign in' },
-  { match: /^\/signup$/, title: 'Create your workspace' },
-  { match: /^\/dashboard\/?$/, title: 'Dashboard' },
-  { match: /^\/dashboard\/team$/, title: 'My team' },
-  { match: /^\/dashboard\/tasks$/, title: 'Tasks' },
-  { match: /^\/dashboard\/conversations$/, title: 'Conversations' },
-  { match: /^\/dashboard\/analytics$/, title: 'Analytics' },
-  { match: /^\/dashboard\/billing$/, title: 'Billing' },
-  { match: /^\/dashboard\/settings$/, title: 'Settings' },
+const DEFAULT_DESCRIPTION =
+  'Intelligent AI employees that plug into your stack, learn your playbook, and deliver finished work — 24/7.';
+
+const routes: { match: RegExp; title: string; description: string }[] = [
+  { match: /^\/$/, title: 'Your AI employees, always working', description: DEFAULT_DESCRIPTION },
+  {
+    match: /^\/employees\/?$/,
+    title: 'AI Employees',
+    description:
+      'Eight specialised AI employees across sales, support, marketing, operations, finance and people. Compare deliverables, playbooks and pricing.',
+  },
+  {
+    match: /^\/employees\/[^/]+$/,
+    title: 'AI Employee',
+    description:
+      'See what this AI employee delivers, the tools they connect to, and how they work inside your team.',
+  },
+  {
+    match: /^\/how-it-works$/,
+    title: 'How it works',
+    description:
+      'How Nexora hires, trains and supervises AI employees — integrations, approvals, security and data handling.',
+  },
+  {
+    match: /^\/pricing$/,
+    title: 'Pricing',
+    description:
+      'Flat monthly pricing from $12. Every plan includes playbooks, integrations, approvals and unlimited human seats.',
+  },
+  {
+    match: /^\/resources$/,
+    title: 'Resources',
+    description:
+      'Playbooks and field notes on running AI employees: briefs, onboarding, and measuring return.',
+  },
+  {
+    match: /^\/resources\/[^/]+$/,
+    title: 'Resources',
+    description: 'A practical guide to running AI employees inside a real team.',
+  },
+  { match: /^\/login$/, title: 'Sign in', description: 'Sign in to your Nexora workspace.' },
+  {
+    match: /^\/signup$/,
+    title: 'Create your workspace',
+    description: 'Create a Nexora workspace and hire your first AI employee in minutes.',
+  },
+  { match: /^\/dashboard\/?$/, title: 'Dashboard', description: 'Your AI workforce at a glance.' },
+  { match: /^\/dashboard\/team$/, title: 'My team', description: 'Your hired AI employees.' },
+  { match: /^\/dashboard\/tasks$/, title: 'Tasks', description: 'The work queue for your AI employees.' },
+  { match: /^\/dashboard\/conversations$/, title: 'Conversations', description: 'Talk to your AI employees.' },
+  { match: /^\/dashboard\/analytics$/, title: 'Analytics', description: 'What your AI workforce delivers.' },
+  { match: /^\/dashboard\/billing$/, title: 'Billing', description: 'Plan, seats and invoices.' },
+  { match: /^\/dashboard\/settings$/, title: 'Settings', description: 'Workspace settings.' },
 ];
 
+function setMeta(attribute: 'name' | 'property', key: string, content: string) {
+  let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute(attribute, key);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', content);
+}
+
+function setCanonical(href: string) {
+  let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'canonical';
+    document.head.appendChild(link);
+  }
+  link.href = href;
+}
+
+/**
+ * Client-side equivalent of what a crawler needs: one canonical URL, a description and
+ * social tags per route, and `noindex` on everything behind the auth gate.
+ */
 function RouteMeta() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const entry = routeTitles.find((route) => route.match.test(pathname));
-    document.title = entry ? `${entry.title} · Nexora` : 'Page not found · Nexora';
+    const entry = routes.find((route) => route.match.test(pathname));
+    const title = entry ? `${entry.title} · Nexora` : 'Page not found · Nexora';
+    const description = entry?.description ?? DEFAULT_DESCRIPTION;
+    const origin = (import.meta.env.VITE_SITE_URL ?? window.location.origin).replace(/\/+$/, '');
+    const url = `${origin}${pathname === '/' ? '/' : pathname.replace(/\/+$/, '')}`;
+    const isPrivate = pathname.startsWith('/dashboard');
+
+    document.title = title;
+    setMeta('name', 'description', description);
+    setMeta('property', 'og:title', title);
+    setMeta('property', 'og:description', description);
+    setMeta('property', 'og:url', url);
+    setMeta('name', 'twitter:title', title);
+    setMeta('name', 'twitter:description', description);
+    setMeta('name', 'robots', isPrivate ? 'noindex, nofollow' : 'index, follow');
+    setCanonical(url);
   }, [pathname]);
 
   return null;
