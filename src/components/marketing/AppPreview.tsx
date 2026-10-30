@@ -64,7 +64,7 @@ function AreaChart() {
         ))}
         <path d={`${line} L ${width} ${height} L 0 ${height} Z`} fill="url(#preview-area)" />
         <path d={line} fill="none" stroke="url(#preview-line)" strokeWidth="2.4" strokeLinecap="round" />
-        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="4" fill="#1a1614" stroke="#4d8dff" strokeWidth="2.5" />
+        <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="4" fill="#22222c" stroke="#4d8dff" strokeWidth="2.5" />
       </svg>
       <div className="mt-2 flex justify-between px-0.5 font-mono text-[9px] uppercase tracking-wider text-[#8d9bb1]">
         {chartPoints.map((point) => (
@@ -97,10 +97,10 @@ export function AppPreview() {
         className="absolute -inset-x-10 -top-10 bottom-0 -z-10 rounded-[40px] bg-[radial-gradient(60%_60%_at_50%_20%,rgba(190,215,255,0.14),rgba(77,141,255,0.05)_55%,transparent_72%)] blur-2xl"
       />
 
-      <div className="relative overflow-hidden rounded-[22px] border border-white/12 bg-[#151210]/70 p-1.5 shadow-[0_50px_130px_-40px_rgba(0,0,0,0.9),0_40px_100px_-50px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(190,215,255,0.12)] backdrop-blur-xl md:rounded-[26px] md:p-2">
+      <div className="relative overflow-hidden rounded-[22px] border border-white/12 bg-[#1d1e28]/70 p-1.5 shadow-[0_50px_130px_-40px_rgba(0,0,0,0.9),0_40px_100px_-50px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(190,215,255,0.12)] backdrop-blur-xl md:rounded-[26px] md:p-2">
         <div className="pointer-events-none absolute inset-x-16 -top-px h-px bg-gradient-to-r from-transparent via-[#7aa8ff] to-transparent" />
         <div className="pointer-events-none absolute inset-x-24 top-0 h-16 bg-[radial-gradient(ellipse_at_top,rgba(190,215,255,0.08),transparent_70%)]" />
-        <div className="overflow-hidden rounded-[16px] border border-white/12 bg-[#1a1614] md:rounded-[20px]">
+        <div className="overflow-hidden rounded-[16px] border border-white/12 bg-[#22222c] md:rounded-[20px]">
           {/* chrome */}
           <div className="flex items-center gap-3 border-b border-white/12 bg-white/[0.018] px-4 py-2.5">
             <div className="flex gap-1.5">
@@ -120,7 +120,7 @@ export function AppPreview() {
 
           <div className="flex">
             {/* sidebar */}
-            <aside className="hidden w-[178px] shrink-0 flex-col border-r border-white/12 bg-[#130f0e]/60 p-3 md:flex">
+            <aside className="hidden w-[178px] shrink-0 flex-col border-r border-white/12 bg-[#1b1b26]/60 p-3 md:flex">
               <div className="flex items-center gap-2 px-1 py-2">
                 <LogoMark className="size-7 rounded-[8px]" />
                 <div className="leading-tight">
@@ -187,7 +187,7 @@ export function AppPreview() {
                         initials={person.initials}
                         accent={person.accent}
                         size="xs"
-                        className="ring-2 ring-[#1a1614]"
+                        className="ring-2 ring-[#22222c]"
                       />
                     ))}
                   </div>
@@ -280,7 +280,7 @@ export function AppPreview() {
       </div>
 
       {/* floating cards */}
-      <div className="absolute -right-3 top-24 hidden w-[196px] animate-float rounded-xl border border-white/12 bg-[#1a1614]/95 p-3 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:block xl:-right-10">
+      <div className="absolute -right-3 top-24 hidden w-[196px] animate-float rounded-xl border border-white/12 bg-[#22222c]/95 p-3 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:block xl:-right-10">
         <div className="flex items-center gap-2">
           <Avatar name="Kai" src="/team/kai.jpg" initials="KA" accent="mint" size="sm" status="online" />
           <div>

@@ -68,7 +68,7 @@ export function DashboardLayout() {
   const seatsTotal = 5;
 
   const sidebar = (
-    <div className="flex h-full flex-col border-r border-white/12 bg-[#130f0e]/55 backdrop-blur-2xl">
+    <div className="flex h-full flex-col border-r border-white/12 bg-[#1b1b26]/55 backdrop-blur-2xl">
       <div className="flex h-16 items-center justify-between px-4">
         <Logo />
         <button
@@ -221,7 +221,7 @@ export function DashboardLayout() {
       )}
 
       <div className="lg:pl-[248px]">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-white/12 bg-[#100e0d]/85 px-4 backdrop-blur-xl md:px-6">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-white/12 bg-[#181a25]/85 px-4 backdrop-blur-xl md:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
@@ -259,12 +259,12 @@ export function DashboardLayout() {
                 className="relative grid size-9 place-items-center rounded-lg text-[#aab8cc] transition hover:bg-white/5 hover:text-white"
               >
                 <Bell className="size-4" />
-                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-[#7aa8ff] ring-2 ring-[#100e0d]" />
+                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-[#7aa8ff] ring-2 ring-[#181a25]" />
               </button>
               {showNotifications && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setShowNotifications(false)} />
-                  <div className="absolute right-0 top-11 z-40 w-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#1b1715]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
+                  <div className="absolute right-0 top-11 z-40 w-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#23232d]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
                     <div className="flex items-center justify-between border-b border-white/12 px-3.5 py-2.5">
                       <p className="text-[12px] font-medium text-white">Activity</p>
                       <span className="text-[10px] text-[#9aa7bd]">{activities.length} updates</span>
@@ -320,7 +320,7 @@ export function DashboardLayout() {
               {showProfile && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setShowProfile(false)} />
-                  <div className="absolute right-0 top-11 z-40 w-[240px] overflow-hidden rounded-xl border border-white/10 bg-[#1b1715]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
+                  <div className="absolute right-0 top-11 z-40 w-[240px] overflow-hidden rounded-xl border border-white/10 bg-[#23232d]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
                     <div className="border-b border-white/12 px-3.5 py-3">
                       <p className="truncate text-[12px] font-medium text-white">{user?.name}</p>
                       <p className="truncate text-[10.5px] text-[#9aa7bd]">{user?.email}</p>

@@ -70,7 +70,7 @@ function PhoneFrame({
   return (
     <div
       className={cn(
-        'relative rounded-[38px] border border-white/20 bg-[linear-gradient(160deg,#243046,#1d1815_55%,#191512)] p-[6px]',
+        'relative rounded-[38px] border border-white/20 bg-[linear-gradient(160deg,#243046,#1d1815_55%,#21212a)] p-[6px]',
         glow
           ? 'shadow-[0_50px_120px_-40px_rgba(0,0,0,0.95),0_0_90px_-30px_rgba(77,141,255,0.4)]'
           : 'shadow-[0_40px_90px_-40px_rgba(0,0,0,0.9)]',
@@ -80,7 +80,7 @@ function PhoneFrame({
       <span aria-hidden="true" className="absolute -left-[2px] top-24 h-8 w-[2px] rounded-full bg-[#202a3d]" />
       <span aria-hidden="true" className="absolute -left-[2px] top-36 h-12 w-[2px] rounded-full bg-[#202a3d]" />
       <span aria-hidden="true" className="absolute -right-[2px] top-28 h-14 w-[2px] rounded-full bg-[#202a3d]" />
-      <div className="relative overflow-hidden rounded-[33px] border border-white/10 bg-[#100e0d]">
+      <div className="relative overflow-hidden rounded-[33px] border border-white/10 bg-[#181a25]">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-30 rounded-[33px] bg-[linear-gradient(115deg,rgba(190,215,255,0.08)_0%,transparent_32%,transparent_70%,rgba(190,215,255,0.04)_100%)]"
@@ -262,7 +262,7 @@ function TeamScreen() {
       </div>
 
       <div className="mt-2 px-3">
-        <div className="relative overflow-hidden rounded-xl border border-[#4d8dff]/25 bg-[linear-gradient(140deg,#241e1a,#191512_60%,#1a1614)] p-2.5">
+        <div className="relative overflow-hidden rounded-xl border border-[#4d8dff]/25 bg-[linear-gradient(140deg,#2c2a32,#191512_60%,#22222c)] p-2.5">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-6 -top-8 size-20 rounded-full bg-[radial-gradient(circle,rgba(77,141,255,0.5),transparent_70%)] blur-lg"
@@ -354,7 +354,7 @@ export function PhoneMockups() {
         </PhoneFrame>
       </div>
 
-      <div className="absolute -left-1 bottom-6 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#1a1614]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
+      <div className="absolute -left-1 bottom-6 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#22222c]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
         <span className="grid size-6 place-items-center rounded-full bg-[#4d8dff]/15">
           <Check className="size-3 text-[#9cc0ff]" />
         </span>
@@ -364,7 +364,7 @@ export function PhoneMockups() {
         </div>
       </div>
 
-      <div className="absolute -right-2 bottom-24 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#1a1614]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
+      <div className="absolute -right-2 bottom-24 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#22222c]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
         <span className="grid size-6 place-items-center rounded-full bg-[#4d8dff]/15">
           <Sparkles className="size-3 text-[#9cc0ff]" />
         </span>

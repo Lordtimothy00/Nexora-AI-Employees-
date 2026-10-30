@@ -202,7 +202,7 @@ export function Pricing() {
               <table className="w-full min-w-[720px] border-collapse text-left">
                 <thead>
                   <tr className="border-b border-white/12">
-                    <th scope="col" className="sticky left-0 z-10 bg-[#161211] px-5 py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#9aa7bd]">
+                    <th scope="col" className="sticky left-0 z-10 bg-[#1e1e29] px-5 py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#9aa7bd]">
                       Feature
                     </th>
                     {plans.map((plan) => (
@@ -233,7 +233,7 @@ export function Pricing() {
                         .filter((row) => (row.group ?? '') === group)
                         .map((row) => (
                           <tr key={row.label} className="border-t border-white/10 transition-colors hover:bg-white/[0.015]">
-                            <th scope="row" className="sticky left-0 z-10 bg-[#161211] px-5 py-3 text-left text-[12.5px] font-normal text-[#b9c6d9]">
+                            <th scope="row" className="sticky left-0 z-10 bg-[#1e1e29] px-5 py-3 text-left text-[12.5px] font-normal text-[#b9c6d9]">
                               {row.label}
                             </th>
                             {row.values.map((value, index) => (

@@ -69,7 +69,7 @@ export function TaskChart({
         ))}
         <path d={`${line} L ${last.x} ${height} L ${padding} ${height} Z`} fill={`url(#area-${gradientId})`} />
         <path d={line} fill="none" stroke={`url(#line-${gradientId})`} strokeWidth="2.2" strokeLinecap="round" />
-        <circle cx={last.x} cy={last.y} r="4.5" fill="#1a1614" stroke="#4d8dff" strokeWidth="2.5" />
+        <circle cx={last.x} cy={last.y} r="4.5" fill="#22222c" stroke="#4d8dff" strokeWidth="2.5" />
       </svg>
       <div className="mt-2 flex justify-between font-mono text-[9px] uppercase tracking-wider text-[#8d9bb1]">
         {labels.map((label, index) => (

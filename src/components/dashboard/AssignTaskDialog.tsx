@@ -72,7 +72,7 @@ export function AssignTaskDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="assign-task-title"
-        className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#1b1715]/85 backdrop-blur-2xl shadow-[0_40px_120px_-40px_rgba(0,0,0,1)] sm:rounded-[22px]"
+        className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#23232d]/85 backdrop-blur-2xl shadow-[0_40px_120px_-40px_rgba(0,0,0,1)] sm:rounded-[22px]"
       >
         <div className="flex items-start justify-between border-b border-white/12 px-5 py-4">
           <div>

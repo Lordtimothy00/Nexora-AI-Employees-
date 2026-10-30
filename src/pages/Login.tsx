@@ -131,7 +131,7 @@ export function Login() {
 
         <div className="relative py-1 text-center">
           <div className="absolute inset-x-0 top-1/2 h-px bg-white/8" />
-          <span className="relative bg-[#100e0d] px-3 text-[10.5px] uppercase tracking-[0.14em] text-[#8d9bb1]">
+          <span className="relative bg-[#181a25] px-3 text-[10.5px] uppercase tracking-[0.14em] text-[#8d9bb1]">
             or
           </span>
         </div>

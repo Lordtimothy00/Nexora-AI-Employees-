@@ -20,7 +20,7 @@ const particles = [
 export function AmbientBackground() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-[#100e0d]" />
+      <div className="absolute inset-0 bg-[#181a25]" />
 
       <div className="aurora aurora-blue animate-aurora left-1/2 top-[-22%] size-[760px] -translate-x-1/2 opacity-80" />
       <div

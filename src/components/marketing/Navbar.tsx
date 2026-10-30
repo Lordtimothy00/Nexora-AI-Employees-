@@ -41,7 +41,7 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-20 bg-gradient-to-b from-[#100e0d]/85 via-[#100e0d]/40 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-20 bg-gradient-to-b from-[#181a25]/85 via-[#181a25]/40 to-transparent"
       />
 
       <div className="mx-auto max-w-[1200px] px-3 pt-3 md:px-6">
@@ -49,7 +49,7 @@ export function Navbar() {
           className={cn(
             'flex h-[52px] items-center justify-between gap-2 rounded-[22px] border px-2 backdrop-blur-2xl backdrop-saturate-200 transition-all duration-300 md:h-[56px] md:gap-4 md:px-3',
             scrolled
-              ? 'border-white/22 bg-[#141110]/62 shadow-[0_18px_50px_-32px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.34),inset_0_0_0_1px_rgba(5,9,18,0.22),inset_0_16px_34px_-22px_rgba(0,0,0,0.55)]'
+              ? 'border-white/22 bg-[#1c1d28]/62 shadow-[0_18px_50px_-32px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.34),inset_0_0_0_1px_rgba(5,9,18,0.22),inset_0_16px_34px_-22px_rgba(0,0,0,0.55)]'
               : 'border-white/18 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.3),inset_0_0_0_1px_rgba(5,9,18,0.18),inset_0_16px_34px_-22px_rgba(0,0,0,0.45)]',
           )}
         >
@@ -120,7 +120,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="fixed inset-x-3 top-[70px] z-40 max-h-[calc(100dvh-84px)] overflow-y-auto rounded-[22px] border border-white/20 bg-[#141110]/72 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.32),inset_0_0_0_1px_rgba(5,9,18,0.22),inset_0_24px_48px_-28px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-200 md:hidden">
+        <div className="fixed inset-x-3 top-[70px] z-40 max-h-[calc(100dvh-84px)] overflow-y-auto rounded-[22px] border border-white/20 bg-[#1c1d28]/72 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.32),inset_0_0_0_1px_rgba(5,9,18,0.22),inset_0_24px_48px_-28px_rgba(0,0,0,0.55)] backdrop-blur-2xl backdrop-saturate-200 md:hidden">
           <nav aria-label="Mobile" className="flex flex-col gap-1">
             {links.map((link) => (
               <NavLink
