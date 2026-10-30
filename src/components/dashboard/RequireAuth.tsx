@@ -8,10 +8,10 @@ export function RequireAuth() {
 
   if (!isReady) {
     return (
-      <div className="grid min-h-screen place-items-center bg-[#0a0c11]">
+      <div className="grid min-h-screen place-items-center bg-[#051718]">
         <div className="flex flex-col items-center gap-4">
           <LogoMark className="animate-pulse" />
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9aa7bd]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9aaab3]">
             Opening workspace
           </p>
         </div>

@@ -6,7 +6,7 @@ experience: marketing site, catalogue, employee profiles, pricing, auth, and an 
 workspace with a working demo of the product.
 
 > Design direction: **Nexora AI OS** — Apple Vision Pro meets a futuristic SaaS command center.
-> Deep-space canvas (`#0a0c11`) with electric-blue (`#4d8dff`) and violet (`#8b5cf6`) aurora layers,
+> Deep-space canvas (`#051718`) with emerald (`#0bd39a`) and teal (`#12e3c0`) aurora layers,
 > drifting particles and a hairline grid. Surfaces are frosted glass (24–40px backdrop blur, subtle
 > blue-white edges, 20–28px corners), the navbar floats above the page, and the hero is ringed by
 > floating glass employee cards with live status indicators.
@@ -124,7 +124,7 @@ src/
 
 Tokens live in the `@theme` block of `src/index.css`:
 
-- **Canvas** near-black `#0a0c11` → **surface** `#121620` → **panel** `#151a24`
+- **Canvas** deep teal-black `#051718` → **surface** `#092128` → **panel** `#0a252c`
 - **Monochrome** cool-slate surfaces, silver borders (`rgba(226,236,247,0.10)`) and a near-white
   text ramp from `#f6f8fa` down to `#5f666d`
 - **Single accent** lime `#c8f060` (soft `#e2fa9e`, deep `#8fae2f`), used sparingly: live dots,
@@ -135,7 +135,7 @@ Tokens live in the `@theme` block of `src/index.css`:
 - **Type** Sora (display) / Inter (UI) / JetBrains Mono (labels & data)
 - **Primitives** `.glass` / `.glass-strong` (translucent, blurred surfaces), `.panel`, `.panel-hover`,
   `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`, `.reveal`, `.text-gradient`
-- Depth comes from frosted glass (34–44px backdrop blur, 185–195% saturation), layered blue/violet aurora glows, drifting particles and a masked hairline grid, 1px inset
+- Depth comes from frosted glass (34–44px backdrop blur, 185–195% saturation), layered emerald/teal aurora glows, drifting particles and a masked hairline grid, 1px inset
   highlights, layered gradients, conic light rings, and low-opacity white borders rather than heavy
   shadows. Signature surfaces: `.panel-accent` (graphite card with a
   lime hairline), `.ring-glow`, and `.neon-line`. The marketing header is a compact 52–56px floating

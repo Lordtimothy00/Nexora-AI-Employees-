@@ -5,14 +5,14 @@ export function LogoMark({ className, size = 'md' }: { className?: string; size?
   return (
     <span
       className={cn(
-        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#13161e,#13161e)] shadow-[inset_0_1px_0_rgba(190,215,255,0.16)]',
+        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#0a2125,#0a2125)] shadow-[inset_0_1px_0_rgba(186,255,228,0.16)]',
         size === 'sm' ? 'size-8 rounded-[9px]' : 'size-9 rounded-[11px]',
         className,
       )}
     >
       <span
         className={cn(
-          'absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(77,141,255,0.45),transparent_68%)]',
+          'absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(11,211,154,0.45),transparent_68%)]',
           size === 'sm' ? 'rounded-[9px]' : 'rounded-[11px]',
         )}
       />
@@ -20,8 +20,8 @@ export function LogoMark({ className, size = 'md' }: { className?: string; size?
         <defs>
           <linearGradient id="nexora-mark" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#ffffff" />
-            <stop offset="0.5" stopColor="#9cc0ff" />
-            <stop offset="1" stopColor="#8b5cf6" />
+            <stop offset="0.5" stopColor="#9df7c2" />
+            <stop offset="1" stopColor="#12e3c0" />
           </linearGradient>
         </defs>
         <path
@@ -66,13 +66,13 @@ export function Logo({
             )}
           >
             NEXORA
-            <span className="ml-1 font-mono text-[0.72em] font-medium tracking-[0.18em] text-[#9cc0ff]">
+            <span className="ml-1 font-mono text-[0.72em] font-medium tracking-[0.18em] text-[#9df7c2]">
               AI
             </span>
           </span>
           <span
             className={cn(
-              'size-1 rounded-full bg-[#4d8dff] shadow-[0_0_8px_1px_rgba(77,141,255,0.7)]',
+              'size-1 rounded-full bg-[#0bd39a] shadow-[0_0_8px_1px_rgba(11,211,154,0.7)]',
               size === 'sm' ? 'mt-0.5' : 'mt-1',
             )}
           />

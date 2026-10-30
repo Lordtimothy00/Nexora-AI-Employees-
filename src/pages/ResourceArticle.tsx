@@ -16,7 +16,7 @@ function ArticleMissing() {
           <h1 className="mt-6 text-[clamp(2rem,4.5vw,3rem)] font-semibold leading-[1.05]">
             That guide has moved.
           </h1>
-          <p className="mt-5 text-[15px] leading-relaxed text-[#aab8cc]">
+          <p className="mt-5 text-[15px] leading-relaxed text-[#aabbc2]">
             The resource you followed no longer exists. Everything current is on the resources
             index.
           </p>
@@ -50,7 +50,7 @@ export function ResourceArticle() {
               <Reveal>
                 <Link
                   to="/resources"
-                  className="inline-flex items-center gap-2 text-[12px] font-medium text-[#8d9bb1] transition-colors hover:text-white"
+                  className="inline-flex items-center gap-2 text-[12px] font-medium text-[#8d9ea7] transition-colors hover:text-white"
                 >
                   <ArrowLeft className="size-3.5" />
                   All resources
@@ -59,10 +59,10 @@ export function ResourceArticle() {
 
               <Reveal delay={60}>
                 <div className="mt-6 flex flex-wrap items-center gap-2.5">
-                  <span className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.05] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9cc0ff]">
+                  <span className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.05] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9df7c2]">
                     {guide.category}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 text-[11.5px] text-[#8d9bb1]">
+                  <span className="inline-flex items-center gap-1.5 text-[11.5px] text-[#8d9ea7]">
                     <Clock className="size-3" />
                     {guide.readTime}
                   </span>
@@ -76,11 +76,11 @@ export function ResourceArticle() {
               </Reveal>
 
               <Reveal delay={160}>
-                <p className="mt-5 text-[16px] leading-relaxed text-[#aab8cc]">{guide.summary}</p>
+                <p className="mt-5 text-[16px] leading-relaxed text-[#aabbc2]">{guide.summary}</p>
               </Reveal>
 
               <Reveal delay={210}>
-                <div className="mt-8 h-px bg-gradient-to-r from-[#4d8dff]/60 via-[#8b5cf6]/35 to-transparent" />
+                <div className="mt-8 h-px bg-gradient-to-r from-[#0bd39a]/60 via-[#12e3c0]/35 to-transparent" />
               </Reveal>
             </div>
           </div>
@@ -91,14 +91,14 @@ export function ResourceArticle() {
           <div className="shell">
             <div className="mx-auto max-w-2xl">
               <Reveal>
-                <p className="text-[17px] leading-[1.75] text-[#dbe4f2]">{guide.intro}</p>
+                <p className="text-[17px] leading-[1.75] text-[#dbe7e8]">{guide.intro}</p>
               </Reveal>
 
               {guide.sections.map((section, index) => (
                 <Reveal key={section.heading} delay={index * 40}>
                   <div className="mt-12">
                     <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#7aa8ff]">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#2fe3b0]">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       <h2 className="text-[clamp(1.3rem,2.2vw,1.7rem)] font-semibold leading-snug">
@@ -109,7 +109,7 @@ export function ResourceArticle() {
                     {section.paragraphs.map((paragraph) => (
                       <p
                         key={paragraph.slice(0, 40)}
-                        className="mt-4 text-[15.5px] leading-[1.75] text-[#aab8cc]"
+                        className="mt-4 text-[15.5px] leading-[1.75] text-[#aabbc2]"
                       >
                         {paragraph}
                       </p>
@@ -118,8 +118,8 @@ export function ResourceArticle() {
                     {section.bullets && (
                       <ul className="mt-5 space-y-2.5">
                         {section.bullets.map((bullet) => (
-                          <li key={bullet} className="flex gap-3 text-[15px] leading-relaxed text-[#aab8cc]">
-                            <span className="mt-[9px] size-1.5 shrink-0 rounded-full bg-[#4d8dff]" />
+                          <li key={bullet} className="flex gap-3 text-[15px] leading-relaxed text-[#aabbc2]">
+                            <span className="mt-[9px] size-1.5 shrink-0 rounded-full bg-[#0bd39a]" />
                             <span>{bullet}</span>
                           </li>
                         ))}
@@ -127,9 +127,9 @@ export function ResourceArticle() {
                     )}
 
                     {section.quote && (
-                      <blockquote className="mt-6 flex gap-3 rounded-r-[14px] border-l-2 border-[#4d8dff]/70 bg-white/[0.04] py-4 pl-5 pr-4">
-                        <Quote className="mt-0.5 size-4 shrink-0 text-[#7aa8ff]" aria-hidden="true" />
-                        <p className="text-[15px] italic leading-relaxed text-[#d8e1ee]">
+                      <blockquote className="mt-6 flex gap-3 rounded-r-[14px] border-l-2 border-[#0bd39a]/70 bg-white/[0.04] py-4 pl-5 pr-4">
+                        <Quote className="mt-0.5 size-4 shrink-0 text-[#2fe3b0]" aria-hidden="true" />
+                        <p className="text-[15px] italic leading-relaxed text-[#d8e4e4]">
                           {section.quote}
                         </p>
                       </blockquote>
@@ -138,12 +138,12 @@ export function ResourceArticle() {
                     {section.example && (
                       <div className="glass mt-6 overflow-hidden">
                         <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
-                          <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#8d9bb1]">
+                          <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#8d9ea7]">
                             {section.example.title}
                           </span>
-                          <span className="size-1.5 rounded-full bg-[#4d8dff] shadow-[0_0_10px_2px_rgba(77,141,255,0.5)]" />
+                          <span className="size-1.5 rounded-full bg-[#0bd39a] shadow-[0_0_10px_2px_rgba(11,211,154,0.5)]" />
                         </div>
-                        <pre className="overflow-x-auto px-4 py-4 font-mono text-[11.5px] leading-[1.7] text-[#ced8e6]">
+                        <pre className="overflow-x-auto px-4 py-4 font-mono text-[11.5px] leading-[1.7] text-[#cedbdc]">
                           {section.example.lines.join('\n')}
                         </pre>
                       </div>
@@ -155,14 +155,14 @@ export function ResourceArticle() {
               {/* TAKEAWAYS */}
               <Reveal>
                 <div className="glass-strong mt-14 p-6">
-                  <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#9cc0ff]">
+                  <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#9df7c2]">
                     What to take away
                   </h2>
                   <ul className="mt-4 space-y-3">
                     {guide.takeaways.map((takeaway) => (
-                      <li key={takeaway} className="flex gap-3 text-[14.5px] leading-relaxed text-[#dbe4f2]">
-                        <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#4d8dff]/15">
-                          <Check className="size-3 text-[#7aa8ff]" />
+                      <li key={takeaway} className="flex gap-3 text-[14.5px] leading-relaxed text-[#dbe7e8]">
+                        <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#0bd39a]/15">
+                          <Check className="size-3 text-[#2fe3b0]" />
                         </span>
                         <span>{takeaway}</span>
                       </li>
@@ -173,11 +173,11 @@ export function ResourceArticle() {
 
               <Reveal>
                 <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center">
-                  <p className="text-[13px] text-[#8d9bb1]">
+                  <p className="text-[13px] text-[#8d9ea7]">
                     Read next:{' '}
                     <Link
                       to={`/resources/${related === 'first-week-checklist' ? 'writing-a-brief' : 'first-week-checklist'}`}
-                      className="font-medium text-[#9cc0ff] underline-offset-4 hover:underline"
+                      className="font-medium text-[#9df7c2] underline-offset-4 hover:underline"
                     >
                       {related === 'first-week-checklist'
                         ? 'How to write a brief an AI can execute'
@@ -186,7 +186,7 @@ export function ResourceArticle() {
                   </p>
                   <Link
                     to="/resources"
-                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white transition-colors hover:text-[#9cc0ff]"
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white transition-colors hover:text-[#9df7c2]"
                   >
                     All resources
                     <ArrowUpRight className="size-3.5" />

@@ -115,7 +115,7 @@ const security = [
 ];
 
 const visualFrame =
-  'relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-white/12 bg-[#14171f] p-5';
+  'relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-white/12 bg-[#0a2227] p-5';
 
 function PhaseVisual({ kind }: { kind: string }) {
   if (kind === 'roles') {
@@ -133,17 +133,17 @@ function PhaseVisual({ kind }: { kind: string }) {
               className={cn(
                 'flex items-center gap-3 rounded-xl border px-3 py-2.5 transition',
                 row.active
-                  ? 'border-[#4d8dff]/40 bg-[#4d8dff]/10'
+                  ? 'border-[#0bd39a]/40 bg-[#0bd39a]/10'
                   : 'border-white/12 bg-white/[0.025]',
               )}
             >
               <Avatar name={row.name} src={row.src} initials={row.name.slice(0, 1)} accent={row.accent} size="sm" />
               <div className="flex-1">
                 <p className="text-[12px] font-medium text-white">{row.name}</p>
-                <p className="text-[10.5px] text-[#a7b4c8]">{row.role}</p>
+                <p className="text-[10.5px] text-[#a7b7be]">{row.role}</p>
               </div>
               {row.active ? (
-                <span className="rounded-full bg-[#4d8dff]/20 px-2 py-0.5 text-[9px] uppercase tracking-wider text-[#9cc0ff]">
+                <span className="rounded-full bg-[#0bd39a]/20 px-2 py-0.5 text-[9px] uppercase tracking-wider text-[#9df7c2]">
                   selected
                 </span>
               ) : (
@@ -159,7 +159,7 @@ function PhaseVisual({ kind }: { kind: string }) {
   if (kind === 'calibration') {
     return (
       <div className={visualFrame}>
-        <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#9aa7bd]">Calibration · 3 of 5</p>
+        <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#9aaab3]">Calibration · 3 of 5</p>
         <div className="mt-4 space-y-4">
           {[
             { label: 'Tone', value: 'Direct, warm', pct: 72 },
@@ -168,19 +168,19 @@ function PhaseVisual({ kind }: { kind: string }) {
           ].map((row) => (
             <div key={row.label}>
               <div className="flex items-center justify-between text-[10.5px]">
-                <span className="text-[#aab8cc]">{row.label}</span>
-                <span className="text-[#d8e1ee]">{row.value}</span>
+                <span className="text-[#aabbc2]">{row.label}</span>
+                <span className="text-[#d8e4e4]">{row.value}</span>
               </div>
               <div className="mt-1.5 h-1.5 rounded-full bg-white/8">
                 <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#7aa8ff,#2a5fd6)]"
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#2fe3b0,#078a63)]"
                   style={{ width: `${row.pct}%` }}
                 />
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded-lg border border-white/12 bg-white/[0.03] p-2.5 text-[10px] leading-relaxed text-[#b8c5d7]">
+        <div className="mt-5 rounded-lg border border-white/12 bg-white/[0.03] p-2.5 text-[10px] leading-relaxed text-[#b8c8cd]">
           “Write like a founder, not a brochure. Escalate anything over $150.”
         </div>
       </div>
@@ -197,16 +197,16 @@ function PhaseVisual({ kind }: { kind: string }) {
               className={cn(
                 'flex items-center justify-between rounded-lg border px-2.5 py-2 text-[10.5px]',
                 index % 3 === 1
-                  ? 'border-mint/25 bg-mint/[0.06] text-[#7aa8ff]'
-                  : 'border-white/12 bg-white/[0.03] text-[#b9c6d9]',
+                  ? 'border-mint/25 bg-mint/[0.06] text-[#2fe3b0]'
+                  : 'border-white/12 bg-white/[0.03] text-[#b9c9cf]',
               )}
             >
               {tool}
-              {index % 3 === 1 ? <Check className="size-3 text-mint" /> : <Plug className="size-3 text-[#8d9bb1]" />}
+              {index % 3 === 1 ? <Check className="size-3 text-mint" /> : <Plug className="size-3 text-[#8d9ea7]" />}
             </div>
           ))}
         </div>
-        <p className="mt-3 text-center text-[9.5px] text-[#9aa7bd]">4 connected · 2 available</p>
+        <p className="mt-3 text-center text-[9.5px] text-[#9aaab3]">4 connected · 2 available</p>
       </div>
     );
   }
@@ -215,10 +215,10 @@ function PhaseVisual({ kind }: { kind: string }) {
     return (
       <div className={visualFrame}>
         <div className="space-y-2.5">
-          <div className="ml-auto w-fit max-w-[90%] rounded-[22px] rounded-br-md bg-[#4d8dff]/18 px-3 py-2 text-[11px] text-[#e7edf7]">
+          <div className="ml-auto w-fit max-w-[90%] rounded-[22px] rounded-br-md bg-[#0bd39a]/18 px-3 py-2 text-[11px] text-[#e7f0ed]">
             Prep the Q4 board deck narrative by Friday.
           </div>
-          <div className="w-fit max-w-[92%] rounded-[22px] rounded-bl-md border border-white/12 bg-white/[0.04] px-3 py-2 text-[11px] text-[#ced8e6]">
+          <div className="w-fit max-w-[92%] rounded-[22px] rounded-bl-md border border-white/12 bg-white/[0.04] px-3 py-2 text-[11px] text-[#cedbdc]">
             Got it. I will pull numbers from Atlas, the churn story from last month, and draft the
             narrative before slides. First pass tomorrow at 10.
           </div>
@@ -227,12 +227,12 @@ function PhaseVisual({ kind }: { kind: string }) {
               {[0, 1, 2].map((dot) => (
                 <span
                   key={dot}
-                  className="size-1 animate-bounce rounded-full bg-[#7aa8ff]"
+                  className="size-1 animate-bounce rounded-full bg-[#2fe3b0]"
                   style={{ animationDelay: `${dot * 130}ms` }}
                 />
               ))}
             </span>
-            <span className="text-[9.5px] text-[#aab8cc]">Drafting · 62%</span>
+            <span className="text-[9.5px] text-[#aabbc2]">Drafting · 62%</span>
           </div>
         </div>
       </div>
@@ -243,21 +243,21 @@ function PhaseVisual({ kind }: { kind: string }) {
     <div className={visualFrame}>
       <div className="flex items-center justify-between">
         <p className="text-[11px] font-medium text-white">Hours saved this month</p>
-        <span className="rounded-full bg-mint/12 px-2 py-0.5 text-[9px] text-[#9cc0ff]">+22%</span>
+        <span className="rounded-full bg-mint/12 px-2 py-0.5 text-[9px] text-[#9df7c2]">+22%</span>
       </div>
       <p className="mt-2 font-display text-[26px] font-semibold text-white">312h</p>
       <div className="mt-3 flex items-end gap-1.5">
         {[38, 54, 44, 68, 61, 78, 72, 86, 94].map((height, index) => (
           <div
             key={index}
-            className="flex-1 rounded-sm bg-[linear-gradient(180deg,rgba(77,141,255,0.9),rgba(139,92,246,0.12))]"
+            className="flex-1 rounded-sm bg-[linear-gradient(180deg,rgba(11,211,154,0.9),rgba(18,227,192,0.12))]"
             style={{ height: `${height * 0.5}px` }}
           />
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-between border-t border-white/12 pt-2.5 text-[9.5px] text-[#9aa7bd]">
+      <div className="mt-3 flex items-center justify-between border-t border-white/12 pt-2.5 text-[9.5px] text-[#9aaab3]">
         <span>3 employees</span>
-        <span className="text-[#9cc0ff]">View analytics →</span>
+        <span className="text-[#9df7c2]">View analytics →</span>
       </div>
     </div>
   );
@@ -272,7 +272,7 @@ export function HowItWorks() {
           <div className="mx-auto max-w-3xl text-center">
             <Reveal>
               <span className="eyebrow">
-                <Sparkles className="size-3 text-[#7aa8ff]" /> How Nexora works
+                <Sparkles className="size-3 text-[#2fe3b0]" /> How Nexora works
               </span>
             </Reveal>
             <Reveal delay={70}>
@@ -283,7 +283,7 @@ export function HowItWorks() {
               </h1>
             </Reveal>
             <Reveal delay={130}>
-              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-[#b8c5d7] md:text-base">
+              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-[#b8c8cd] md:text-base">
                 No job posts, no interview loops, no six-week ramp. Pick a role, calibrate it to your
                 business, and assign the work you have been putting off.
               </p>
@@ -311,7 +311,7 @@ export function HowItWorks() {
                 <div key={item.label} className="flex items-center gap-6">
                   <div className="text-center">
                     <p className="text-[13px] font-medium text-white">{item.value}</p>
-                    <p className="text-[10.5px] uppercase tracking-[0.08em] text-[#9aa7bd]">{item.label}</p>
+                    <p className="text-[10.5px] uppercase tracking-[0.08em] text-[#9aaab3]">{item.label}</p>
                   </div>
                   {index < 3 && <span className="hidden h-7 w-px bg-white/10 sm:block" />}
                 </div>
@@ -330,18 +330,18 @@ export function HowItWorks() {
                 <div className="grid gap-6 rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5 transition-colors hover:border-white/14 md:grid-cols-[1.15fr_1fr] md:items-center md:p-7">
                   <div className={cn(index % 2 === 1 && 'md:order-2')}>
                     <div className="flex items-center gap-3">
-                      <span className="grid size-10 place-items-center rounded-xl border border-[#4d8dff]/25 bg-[#4d8dff]/10 font-mono text-[11px] text-[#9cc0ff]">
+                      <span className="grid size-10 place-items-center rounded-xl border border-[#0bd39a]/25 bg-[#0bd39a]/10 font-mono text-[11px] text-[#9df7c2]">
                         {phase.number}
                       </span>
-                      <phase.icon className="size-4 text-[#a7b4c8]" strokeWidth={1.7} />
+                      <phase.icon className="size-4 text-[#a7b7be]" strokeWidth={1.7} />
                     </div>
                     <h2 className="mt-4 font-display text-[clamp(1.35rem,2.4vw,1.8rem)] font-semibold leading-snug">
                       {phase.title}
                     </h2>
-                    <p className="mt-3 max-w-lg text-[13.5px] leading-relaxed text-[#aab8cc]">{phase.body}</p>
+                    <p className="mt-3 max-w-lg text-[13.5px] leading-relaxed text-[#aabbc2]">{phase.body}</p>
                     <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
                       {phase.points.map((point) => (
-                        <li key={point} className="inline-flex items-center gap-1.5 text-[12px] text-[#cfd9e8]">
+                        <li key={point} className="inline-flex items-center gap-1.5 text-[12px] text-[#cfdcde]">
                           <Check className="size-3.5 text-mint" /> {point}
                         </li>
                       ))}
@@ -378,8 +378,8 @@ export function HowItWorks() {
               />
               <Reveal delay={100}>
                 <div className="panel mt-8 p-5">
-                  <div className="flex items-center gap-2 text-[11px] text-[#aab8cc]">
-                    <Clock className="size-3.5 text-[#7aa8ff]" /> Working hours
+                  <div className="flex items-center gap-2 text-[11px] text-[#aabbc2]">
+                    <Clock className="size-3.5 text-[#2fe3b0]" /> Working hours
                   </div>
                   <p className="mt-2 font-display text-[22px] font-semibold text-white">24 / 7 / 365</p>
                   <div className="mt-3 flex gap-1">
@@ -388,12 +388,12 @@ export function HowItWorks() {
                         key={hour}
                         className={cn(
                           'h-5 flex-1 rounded-[2px]',
-                          hour % 5 === 0 ? 'bg-[#4d8dff]/70' : 'bg-[#4d8dff]/25',
+                          hour % 5 === 0 ? 'bg-[#0bd39a]/70' : 'bg-[#0bd39a]/25',
                         )}
                       />
                     ))}
                   </div>
-                  <div className="mt-1.5 flex justify-between font-mono text-[9px] text-[#8d9bb1]">
+                  <div className="mt-1.5 flex justify-between font-mono text-[9px] text-[#8d9ea7]">
                     <span>00</span>
                     <span>06</span>
                     <span>12</span>
@@ -405,20 +405,20 @@ export function HowItWorks() {
             </div>
 
             <div className="relative">
-              <div className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-[#4d8dff]/50 via-white/10 to-transparent" />
+              <div className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-[#0bd39a]/50 via-white/10 to-transparent" />
               <div className="space-y-3">
                 {dayInLife.map((item, index) => (
                   <Reveal key={item.time} delay={index * 50}>
                     <div className="relative flex gap-4">
-                      <div className="relative z-10 mt-3 grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-[#14171f]">
-                        <item.icon className="size-3.5 text-[#7aa8ff]" strokeWidth={1.7} />
+                      <div className="relative z-10 mt-3 grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-[#0a2227]">
+                        <item.icon className="size-3.5 text-[#2fe3b0]" strokeWidth={1.7} />
                       </div>
                       <div className="flex-1 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4 transition-colors hover:border-white/14">
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-[13px] font-medium text-white">{item.title}</p>
-                          <span className="font-mono text-[10px] text-[#9aa7bd]">{item.time}</span>
+                          <span className="font-mono text-[10px] text-[#9aaab3]">{item.time}</span>
                         </div>
-                        <p className="mt-1 text-[12px] leading-relaxed text-[#aab8cc]">{item.detail}</p>
+                        <p className="mt-1 text-[12px] leading-relaxed text-[#aabbc2]">{item.detail}</p>
                       </div>
                     </div>
                   </Reveal>
@@ -441,13 +441,13 @@ export function HowItWorks() {
           <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
             {integrations.map((integration, index) => (
               <Reveal key={integration.name} delay={index * 25}>
-                <div className="group flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-3 py-2.5 transition-all hover:border-[#4d8dff]/30 hover:bg-white/[0.04]">
-                  <span className="grid size-7 shrink-0 place-items-center rounded-md border border-white/10 bg-white/[0.04] font-display text-[11px] font-semibold text-[#9cc0ff]">
+                <div className="group flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-3 py-2.5 transition-all hover:border-[#0bd39a]/30 hover:bg-white/[0.04]">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-md border border-white/10 bg-white/[0.04] font-display text-[11px] font-semibold text-[#9df7c2]">
                     {integration.name[0]}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-[11.5px] font-medium text-[#d8e1ee]">{integration.name}</p>
-                    <p className="truncate text-[9px] uppercase tracking-[0.08em] text-[#8d9bb1]">
+                    <p className="truncate text-[11.5px] font-medium text-[#d8e4e4]">{integration.name}</p>
+                    <p className="truncate text-[9px] uppercase tracking-[0.08em] text-[#8d9ea7]">
                       {integration.category}
                     </p>
                   </div>
@@ -456,9 +456,9 @@ export function HowItWorks() {
             ))}
           </div>
           <Reveal delay={120}>
-            <p className="mt-6 text-center text-[12px] text-[#9aa7bd]">
+            <p className="mt-6 text-center text-[12px] text-[#9aaab3]">
               Plus Google Sheets, Airtable, Segment, Linear, Ashby, and any REST API on Scale.{' '}
-              <a href="#security" className="text-[#9cc0ff] hover:text-white">
+              <a href="#security" className="text-[#9df7c2] hover:text-white">
                 Read the security model <ChevronRight className="inline size-3" />
               </a>
             </p>
@@ -492,7 +492,7 @@ export function HowItWorks() {
                   ].map((badge) => (
                     <div key={badge.label} className="rounded-xl border border-white/12 bg-white/[0.025] px-4 py-3">
                       <p className="font-display text-[15px] font-semibold text-white">{badge.value}</p>
-                      <p className="mt-0.5 text-[10px] uppercase tracking-[0.1em] text-[#9aa7bd]">{badge.label}</p>
+                      <p className="mt-0.5 text-[10px] uppercase tracking-[0.1em] text-[#9aaab3]">{badge.label}</p>
                     </div>
                   ))}
                 </div>
@@ -503,9 +503,9 @@ export function HowItWorks() {
               {security.map((item, index) => (
                 <Reveal key={item.title} delay={index * 50}>
                   <div className="h-full rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5">
-                    <item.icon className="size-4 text-[#dae3f0]" strokeWidth={1.7} />
+                    <item.icon className="size-4 text-[#dae6e6]" strokeWidth={1.7} />
                     <h3 className="mt-3 font-display text-[14px] font-medium text-white">{item.title}</h3>
-                    <p className="mt-1.5 text-[12px] leading-relaxed text-[#aab8cc]">{item.body}</p>
+                    <p className="mt-1.5 text-[12px] leading-relaxed text-[#aabbc2]">{item.body}</p>
                   </div>
                 </Reveal>
               ))}
@@ -528,12 +528,12 @@ export function HowItWorks() {
                 <div className="mt-6 flex items-center gap-3 rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4">
                   <div className="flex -space-x-2">
                     {['/team/nova.jpg', '/team/kai.jpg', '/team/atlas.jpg'].map((src) => (
-                      <Avatar key={src} name="Nexora team" src={src} initials="NX" accent="violet" size="sm" className="ring-2 ring-[#14171f]" />
+                      <Avatar key={src} name="Nexora team" src={src} initials="NX" accent="violet" size="sm" className="ring-2 ring-[#0a2227]" />
                     ))}
                   </div>
                   <div className="text-[12px]">
-                    <p className="text-[#d8e1ee]">Real humans, no sales theatre.</p>
-                    <p className="text-[#9aa7bd]">Average reply: 3 hours</p>
+                    <p className="text-[#d8e4e4]">Real humans, no sales theatre.</p>
+                    <p className="text-[#9aaab3]">Average reply: 3 hours</p>
                   </div>
                 </div>
               </Reveal>

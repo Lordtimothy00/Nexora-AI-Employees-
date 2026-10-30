@@ -69,12 +69,12 @@ export function DashboardLayout() {
   const seatsTotal = 5;
 
   const sidebar = (
-    <div className="flex h-full flex-col border-r border-white/12 bg-[#0e1017]/55 backdrop-blur-2xl">
+    <div className="flex h-full flex-col border-r border-white/12 bg-[#071b1e]/55 backdrop-blur-2xl">
       <div className="flex h-16 items-center justify-between px-4">
         <Logo />
         <button
           type="button"
-          className="grid size-8 place-items-center rounded-lg text-[#9aa7bd] hover:bg-white/5 hover:text-white lg:hidden"
+          className="grid size-8 place-items-center rounded-lg text-[#9aaab3] hover:bg-white/5 hover:text-white lg:hidden"
           onClick={() => setMobileOpen(false)}
           aria-label="Close menu"
         >
@@ -84,14 +84,14 @@ export function DashboardLayout() {
 
       <div className="px-3">
         <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.03] p-2.5">
-          <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#eef4ff] font-display text-[12px] font-bold text-[#060a13]">
+          <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#eef7f5] font-display text-[12px] font-bold text-[#05130f]">
             {initialsOf(user?.company ?? 'Nexora')}
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[12px] font-medium text-white">{user?.company ?? 'Workspace'}</p>
-            <p className="text-[10px] capitalize text-[#a7b4c8]">Growth plan · {seatsUsed} seats</p>
+            <p className="text-[10px] capitalize text-[#a7b7be]">Growth plan · {seatsUsed} seats</p>
           </div>
-          <ChevronDown className="size-3.5 shrink-0 text-[#8d9bb1]" />
+          <ChevronDown className="size-3.5 shrink-0 text-[#8d9ea7]" />
         </div>
       </div>
 
@@ -102,7 +102,7 @@ export function DashboardLayout() {
       </div>
 
       <nav className="scroll-thin mt-5 flex-1 overflow-y-auto px-2 pb-4" aria-label="Workspace">
-        <p className="px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9bb1]">
+        <p className="px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9ea7]">
           Workspace
         </p>
         {workspaceNav.map((item) => (
@@ -115,19 +115,19 @@ export function DashboardLayout() {
                 'group relative mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12.5px] transition-colors',
                 isActive
                   ? 'bg-white/[0.07] text-white'
-                  : 'text-[#aab8cc] hover:bg-white/[0.04] hover:text-white',
+                  : 'text-[#aabbc2] hover:bg-white/[0.04] hover:text-white',
               )
             }
           >
             {({ isActive }) => (
               <>
                 {isActive && (
-                  <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[linear-gradient(180deg,#7aa8ff,#2a5fd6)]" />
+                  <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[linear-gradient(180deg,#2fe3b0,#078a63)]" />
                 )}
-                <item.icon className={cn('size-4', isActive ? 'text-[#9cc0ff]' : 'text-[#9aa7bd]')} />
+                <item.icon className={cn('size-4', isActive ? 'text-[#9df7c2]' : 'text-[#9aaab3]')} />
                 <span className="flex-1">{item.label}</span>
                 {item.label === 'Tasks' && (
-                  <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5 font-mono text-[9px] text-[#b9c6d9]">
+                  <span className="rounded-full bg-white/[0.06] px-1.5 py-0.5 font-mono text-[9px] text-[#b9c9cf]">
                     12
                   </span>
                 )}
@@ -136,7 +136,7 @@ export function DashboardLayout() {
           </NavLink>
         ))}
 
-        <p className="mt-5 px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9bb1]">
+        <p className="mt-5 px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9ea7]">
           Account
         </p>
         {accountNav.map((item) => (
@@ -146,13 +146,13 @@ export function DashboardLayout() {
             className={({ isActive }) =>
               cn(
                 'mb-0.5 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12.5px] transition-colors',
-                isActive ? 'bg-white/[0.07] text-white' : 'text-[#aab8cc] hover:bg-white/[0.04] hover:text-white',
+                isActive ? 'bg-white/[0.07] text-white' : 'text-[#aabbc2] hover:bg-white/[0.04] hover:text-white',
               )
             }
           >
             {({ isActive }) => (
               <>
-                <item.icon className={cn('size-4', isActive ? 'text-[#9cc0ff]' : 'text-[#9aa7bd]')} />
+                <item.icon className={cn('size-4', isActive ? 'text-[#9df7c2]' : 'text-[#9aaab3]')} />
                 {item.label}
               </>
             )}
@@ -163,7 +163,7 @@ export function DashboardLayout() {
       <div className="border-t border-white/10 p-3">
         <div className="rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-3">
           <div className="flex items-center justify-between text-[10.5px]">
-            <span className="text-[#aab8cc]">Employee seats</span>
+            <span className="text-[#aabbc2]">Employee seats</span>
             <span className="font-medium text-white">
               {seatsUsed} / {seatsTotal}
             </span>
@@ -174,14 +174,14 @@ export function DashboardLayout() {
                 key={index}
                 className={cn(
                   'h-1.5 flex-1 rounded-full',
-                  index < seatsUsed ? 'bg-[linear-gradient(90deg,#7aa8ff,#2a5fd6)]' : 'bg-white/10',
+                  index < seatsUsed ? 'bg-[linear-gradient(90deg,#2fe3b0,#078a63)]' : 'bg-white/10',
                 )}
               />
             ))}
           </div>
           <Link
             to="/pricing"
-            className="mt-2.5 inline-flex items-center gap-1 text-[10.5px] text-[#9cc0ff] hover:text-white"
+            className="mt-2.5 inline-flex items-center gap-1 text-[10.5px] text-[#9df7c2] hover:text-white"
           >
             Add seats <ArrowUpRight className="size-2.5" />
           </Link>
@@ -191,7 +191,7 @@ export function DashboardLayout() {
           <Avatar name={user?.name ?? 'You'} initials={initialsOf(user?.name ?? 'You')} accent="violet" size="sm" status="online" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-[12px] font-medium text-white">{user?.name}</p>
-            <p className="truncate text-[10px] text-[#9aa7bd]">{user?.email}</p>
+            <p className="truncate text-[10px] text-[#9aaab3]">{user?.email}</p>
           </div>
           <button
             type="button"
@@ -200,7 +200,7 @@ export function DashboardLayout() {
               navigate('/');
             }}
             aria-label="Sign out"
-            className="grid size-7 place-items-center rounded-lg text-[#9aa7bd] transition hover:bg-white/8 hover:text-white"
+            className="grid size-7 place-items-center rounded-lg text-[#9aaab3] transition hover:bg-white/8 hover:text-white"
           >
             <LogOut className="size-3.5" />
           </button>
@@ -222,20 +222,20 @@ export function DashboardLayout() {
       )}
 
       <div className="lg:pl-[248px]">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-white/12 bg-[#0a0c11]/85 px-4 backdrop-blur-xl md:px-6">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-white/12 bg-[#051718]/85 px-4 backdrop-blur-xl md:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="grid size-9 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-[#ced8e6] lg:hidden"
+              className="grid size-9 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-[#cedbdc] lg:hidden"
               aria-label="Open menu"
             >
               <Menu className="size-4" />
             </button>
-            <div className="hidden items-center gap-1.5 text-[11.5px] text-[#8d9bb1] sm:flex">
+            <div className="hidden items-center gap-1.5 text-[11.5px] text-[#8d9ea7] sm:flex">
               <span>Workspace</span>
               <span>/</span>
-              <span className="text-[#ced8e6]">{title}</span>
+              <span className="text-[#cedbdc]">{title}</span>
             </div>
             <span className="text-[13px] font-medium text-white sm:hidden">{title}</span>
           </div>
@@ -243,7 +243,7 @@ export function DashboardLayout() {
           <div className="flex items-center gap-1.5">
             <Link
               to="/"
-              className="hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11.5px] text-[#aab8cc] transition hover:bg-white/5 hover:text-white sm:flex"
+              className="hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11.5px] text-[#aabbc2] transition hover:bg-white/5 hover:text-white sm:flex"
             >
               View site <ArrowUpRight className="size-3" />
             </Link>
@@ -257,18 +257,18 @@ export function DashboardLayout() {
                 }}
                 aria-label="Notifications"
                 aria-expanded={showNotifications}
-                className="relative grid size-9 place-items-center rounded-lg text-[#aab8cc] transition hover:bg-white/5 hover:text-white"
+                className="relative grid size-9 place-items-center rounded-lg text-[#aabbc2] transition hover:bg-white/5 hover:text-white"
               >
                 <Bell className="size-4" />
-                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-[#7aa8ff] ring-2 ring-[#0a0c11]" />
+                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-[#2fe3b0] ring-2 ring-[#051718]" />
               </button>
               {showNotifications && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setShowNotifications(false)} />
-                  <div className="absolute right-0 top-11 z-40 w-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#151821]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
+                  <div className="absolute right-0 top-11 z-40 w-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#0a2329]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
                     <div className="flex items-center justify-between border-b border-white/12 px-3.5 py-2.5">
                       <p className="text-[12px] font-medium text-white">Activity</p>
-                      <span className="text-[10px] text-[#9aa7bd]">{activities.length} updates</span>
+                      <span className="text-[10px] text-[#9aaab3]">{activities.length} updates</span>
                     </div>
                     <div className="max-h-80 overflow-y-auto">
                       {activities.slice(0, 6).map((activity) => {
@@ -283,8 +283,8 @@ export function DashboardLayout() {
                               size="xs"
                             />
                             <div className="min-w-0">
-                              <p className="text-[11px] leading-relaxed text-[#ced8e6]">{activity.text}</p>
-                              <p className="mt-0.5 text-[9.5px] text-[#8d9bb1]">
+                              <p className="text-[11px] leading-relaxed text-[#cedbdc]">{activity.text}</p>
+                              <p className="mt-0.5 text-[9.5px] text-[#8d9ea7]">
                                 {person?.name} · {timeAgo(activity.at)}
                               </p>
                             </div>
@@ -295,7 +295,7 @@ export function DashboardLayout() {
                     <Link
                       to="/dashboard"
                       onClick={() => setShowNotifications(false)}
-                      className="block border-t border-white/12 px-3.5 py-2.5 text-center text-[11px] text-[#9cc0ff] hover:bg-white/[0.03]"
+                      className="block border-t border-white/12 px-3.5 py-2.5 text-center text-[11px] text-[#9df7c2] hover:bg-white/[0.03]"
                     >
                       View all activity
                     </Link>
@@ -316,20 +316,20 @@ export function DashboardLayout() {
                 className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] p-0.5 pr-1.5 transition hover:bg-white/[0.06]"
               >
                 <Avatar name={user?.name ?? 'You'} initials={initialsOf(user?.name ?? 'You')} accent="violet" size="xs" />
-                <ChevronDown className="size-3 text-[#9aa7bd]" />
+                <ChevronDown className="size-3 text-[#9aaab3]" />
               </button>
               {showProfile && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setShowProfile(false)} />
-                  <div className="absolute right-0 top-11 z-40 w-[240px] overflow-hidden rounded-xl border border-white/10 bg-[#151821]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
+                  <div className="absolute right-0 top-11 z-40 w-[240px] overflow-hidden rounded-xl border border-white/10 bg-[#0a2329]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
                     <div className="border-b border-white/12 px-3.5 py-3">
                       <p className="truncate text-[12px] font-medium text-white">{user?.name}</p>
-                      <p className="truncate text-[10.5px] text-[#9aa7bd]">{user?.email}</p>
+                      <p className="truncate text-[10.5px] text-[#9aaab3]">{user?.email}</p>
                     </div>
-                    <Link to="/dashboard/settings" className="flex items-center gap-2 px-3.5 py-2 text-[11.5px] text-[#b9c6d9] hover:bg-white/[0.04] hover:text-white">
+                    <Link to="/dashboard/settings" className="flex items-center gap-2 px-3.5 py-2 text-[11.5px] text-[#b9c9cf] hover:bg-white/[0.04] hover:text-white">
                       <Settings className="size-3.5" /> Account settings
                     </Link>
-                    <Link to="/dashboard/billing" className="flex items-center gap-2 px-3.5 py-2 text-[11.5px] text-[#b9c6d9] hover:bg-white/[0.04] hover:text-white">
+                    <Link to="/dashboard/billing" className="flex items-center gap-2 px-3.5 py-2 text-[11.5px] text-[#b9c9cf] hover:bg-white/[0.04] hover:text-white">
                       <CreditCard className="size-3.5" /> Billing
                     </Link>
                     <button
@@ -338,7 +338,7 @@ export function DashboardLayout() {
                         logout();
                         navigate('/');
                       }}
-                      className="flex w-full items-center gap-2 border-t border-white/12 px-3.5 py-2 text-left text-[11.5px] text-[#b9c6d9] hover:bg-white/[0.04] hover:text-white"
+                      className="flex w-full items-center gap-2 border-t border-white/12 px-3.5 py-2 text-left text-[11.5px] text-[#b9c9cf] hover:bg-white/[0.04] hover:text-white"
                     >
                       <LogOut className="size-3.5" /> Sign out
                     </button>

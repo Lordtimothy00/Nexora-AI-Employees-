@@ -16,7 +16,7 @@ export function HeroBackdrop({ className }: { className?: string }) {
       <div className="absolute inset-x-0 top-0 h-[820px] bg-grid mask-fade-b opacity-[0.45]" />
 
       {/* horizon glow */}
-      <div className="absolute inset-x-0 top-[660px] h-px bg-gradient-to-r from-transparent via-[#4d8dff]/40 to-transparent" />
+      <div className="absolute inset-x-0 top-[660px] h-px bg-gradient-to-r from-transparent via-[#0bd39a]/40 to-transparent" />
 
       <div className="noise absolute inset-0" />
     </div>
@@ -25,9 +25,9 @@ export function HeroBackdrop({ className }: { className?: string }) {
 
 export function SectionGlow({ tone = 'ember' }: { tone?: 'ember' | 'olive' | 'clay' }) {
   const tones = {
-    ember: 'bg-[radial-gradient(circle,rgba(77,141,255,0.16),transparent_65%)]',
-    olive: 'bg-[radial-gradient(circle,rgba(139,92,246,0.16),transparent_65%)]',
-    clay: 'bg-[radial-gradient(circle,rgba(122,168,255,0.12),transparent_65%)]',
+    ember: 'bg-[radial-gradient(circle,rgba(11,211,154,0.16),transparent_65%)]',
+    olive: 'bg-[radial-gradient(circle,rgba(18,227,192,0.16),transparent_65%)]',
+    clay: 'bg-[radial-gradient(circle,rgba(47,227,176,0.12),transparent_65%)]',
   };
   return (
     <div

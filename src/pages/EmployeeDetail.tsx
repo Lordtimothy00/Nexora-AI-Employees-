@@ -76,7 +76,7 @@ export function EmployeeDetail() {
       <section className="page-section shell flex min-h-[70vh] flex-col items-center justify-center py-32 text-center">
         <span className="eyebrow">404 · Role not found</span>
         <h1 className="mt-6 text-3xl font-semibold">That employee is not on the roster.</h1>
-        <p className="mt-3 max-w-md text-[14px] text-[#aab8cc]">
+        <p className="mt-3 max-w-md text-[14px] text-[#aabbc2]">
           They may have been renamed or the link is out of date. Browse the full team to find the
           right specialist.
         </p>
@@ -108,7 +108,7 @@ export function EmployeeDetail() {
       <section className="page-section relative overflow-hidden pb-10 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[12px] text-[#9aa7bd]">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[12px] text-[#9aaab3]">
             <Link to="/employees" className="transition-colors hover:text-white">
               AI Employees
             </Link>
@@ -117,7 +117,7 @@ export function EmployeeDetail() {
               {employee.department}
             </Link>
             <ChevronRight className="size-3" />
-            <span className="text-[#b9c6d9]">{employee.name}</span>
+            <span className="text-[#b9c9cf]">{employee.name}</span>
           </nav>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
@@ -145,37 +145,37 @@ export function EmployeeDetail() {
                     >
                       {employee.department}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-mint/25 bg-mint/[0.07] px-2.5 py-1 text-[10.5px] text-[#9cc0ff]">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-mint/25 bg-mint/[0.07] px-2.5 py-1 text-[10.5px] text-[#9df7c2]">
                       <span className="size-1.5 rounded-full bg-mint" /> {employee.availability}
                     </span>
-                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#b2bfd2]">
+                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#b2c2c8]">
                       AI employee
                     </span>
                   </div>
                   <h1 className="mt-4 font-display text-[clamp(2.2rem,4.6vw,3.4rem)] font-semibold leading-[1.02]">
                     {employee.name}
                   </h1>
-                  <p className="mt-1 text-[16px] text-[#cfd9e8] md:text-lg">{employee.role}</p>
-                  <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-[#aab8cc]">
+                  <p className="mt-1 text-[16px] text-[#cfdcde] md:text-lg">{employee.role}</p>
+                  <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-[#aabbc2]">
                     {employee.tagline}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-[#b2bfd2]">
+                  <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-[#b2c2c8]">
                     <span className="inline-flex items-center gap-1.5">
-                      <Star className="size-3.5 fill-[#dbe4f2] text-[#dbe4f2]" />
+                      <Star className="size-3.5 fill-[#dbe7e8] text-[#dbe7e8]" />
                       <span className="font-medium text-white">{employee.rating.toFixed(1)}</span>
-                      <span className="text-[#9aa7bd]">rating</span>
+                      <span className="text-[#9aaab3]">rating</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <Users className="size-3.5 text-[#a7b4c8]" />
+                      <Users className="size-3.5 text-[#a7b7be]" />
                       {employee.deployments.toLocaleString()} teams
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <Clock className="size-3.5 text-[#a7b4c8]" />
+                      <Clock className="size-3.5 text-[#a7b7be]" />
                       Replies {employee.responseTime.toLowerCase()}
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <Languages className="size-3.5 text-[#a7b4c8]" />
+                      <Languages className="size-3.5 text-[#a7b7be]" />
                       {employee.languages.join(', ')}
                     </span>
                   </div>
@@ -191,7 +191,7 @@ export function EmployeeDetail() {
                 ].map((stat) => (
                   <div key={stat.label} className="rounded-xl border border-white/12 bg-white/[0.025] px-4 py-3">
                     <p className="font-display text-[18px] font-semibold text-white">{stat.value}</p>
-                    <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.08em] text-[#9aa7bd]">{stat.label}</p>
+                    <p className="mt-0.5 text-[10.5px] uppercase tracking-[0.08em] text-[#9aaab3]">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -202,11 +202,11 @@ export function EmployeeDetail() {
               <div className="panel relative overflow-hidden p-5 md:p-6">
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-10 -top-px h-px bg-gradient-to-r from-transparent via-[#7aa8ff]/80 to-transparent"
+                  className="pointer-events-none absolute inset-x-10 -top-px h-px bg-gradient-to-r from-transparent via-[#2fe3b0]/80 to-transparent"
                 />
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(77,141,255,0.14),transparent)]"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(11,211,154,0.14),transparent)]"
                 />
                 <div
                   aria-hidden="true"
@@ -218,17 +218,17 @@ export function EmployeeDetail() {
                 <div className="relative">
                   <div className="flex items-baseline justify-between">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#9aa7bd]">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#9aaab3]">
                         Hire {employee.name}
                       </p>
                       <p className="mt-2 flex items-baseline gap-1.5">
                         <span className="font-display text-[32px] font-semibold leading-none text-white">
                           ${employee.priceMonthly}
                         </span>
-                        <span className="text-[12.5px] text-[#aab8cc]">/ month</span>
+                        <span className="text-[12.5px] text-[#aabbc2]">/ month</span>
                       </p>
                     </div>
-                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-1 text-[10px] text-[#b2bfd2]">
+                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-1 text-[10px] text-[#b2c2c8]">
                       Included in Growth
                     </span>
                   </div>
@@ -237,7 +237,7 @@ export function EmployeeDetail() {
                     <div className="mt-5 space-y-2.5">
                       <div className="flex items-center gap-2 rounded-xl border border-mint/25 bg-mint/[0.07] px-3.5 py-3">
                         <CheckCircle2 className="size-4 shrink-0 text-mint" />
-                        <p className="text-[12.5px] text-[#7aa8ff]">
+                        <p className="text-[12.5px] text-[#2fe3b0]">
                           {employee.name} is already on your team.
                         </p>
                       </div>
@@ -247,7 +247,7 @@ export function EmployeeDetail() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full text-[12px] text-[#a7b4c8] hover:text-rose-300"
+                        className="w-full text-[12px] text-[#a7b7be] hover:text-rose-300"
                         onClick={() => release(employee.id)}
                       >
                         Remove from team
@@ -263,7 +263,7 @@ export function EmployeeDetail() {
                       >
                         {user ? `Hire ${employee.name}` : 'Start free and hire'}
                       </Button>
-                      <p className="mt-3 text-center text-[11px] text-[#9aa7bd]">
+                      <p className="mt-3 text-center text-[11px] text-[#9aaab3]">
                         14-day trial · No card required · Cancel anytime
                       </p>
                     </>
@@ -271,7 +271,7 @@ export function EmployeeDetail() {
 
                   <div className="my-5 h-px w-full bg-white/8" />
 
-                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#9aa7bd]">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#9aaab3]">
                     What you get
                   </p>
                   <ul className="mt-3 space-y-2.5">
@@ -281,7 +281,7 @@ export function EmployeeDetail() {
                       `${employee.tools.length} native tool integrations`,
                       'Human-in-the-loop approval policies',
                     ].map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-[#cfd9e8]">
+                      <li key={item} className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-[#cfdcde]">
                         <Check className="mt-0.5 size-3.5 shrink-0 text-mint" />
                         {item}
                       </li>
@@ -289,8 +289,8 @@ export function EmployeeDetail() {
                   </ul>
 
                   <div className="mt-5 flex items-center gap-3 rounded-xl border border-white/12 bg-white/[0.045] px-3.5 py-3 backdrop-blur-xl">
-                    <ShieldCheck className="size-4 shrink-0 text-[#dae3f0]" />
-                    <p className="text-[11px] leading-relaxed text-[#aab8cc]">
+                    <ShieldCheck className="size-4 shrink-0 text-[#dae6e6]" />
+                    <p className="text-[11px] leading-relaxed text-[#aabbc2]">
                       Every action logged and reversible. Data never used to train shared models.
                     </p>
                   </div>
@@ -298,7 +298,7 @@ export function EmployeeDetail() {
                   <button
                     type="button"
                     onClick={() => setTab('work')}
-                    className="mt-4 flex w-full items-center justify-center gap-1.5 text-[12px] text-[#9cc0ff] transition-colors hover:text-white"
+                    className="mt-4 flex w-full items-center justify-center gap-1.5 text-[12px] text-[#9df7c2] transition-colors hover:text-white"
                   >
                     <Sparkles className="size-3" /> See {employee.name}&apos;s sample work
                   </button>
@@ -306,7 +306,7 @@ export function EmployeeDetail() {
               </div>
 
               <div className="mt-3 flex items-center justify-between rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-4 py-3">
-                <div className="flex items-center gap-2 text-[11.5px] text-[#aab8cc]">
+                <div className="flex items-center gap-2 text-[11.5px] text-[#aabbc2]">
                   <Users className="size-3.5" />
                   Hired by {employee.deployments.toLocaleString()} teams
                 </div>
@@ -314,7 +314,7 @@ export function EmployeeDetail() {
                   {['/team/nova.jpg', '/team/kai.jpg', '/team/mira.jpg'].map((src, index) => (
                     <span
                       key={src}
-                      className="size-5 overflow-hidden rounded-full border border-[#14171f] bg-white/10"
+                      className="size-5 overflow-hidden rounded-full border border-[#0a2227] bg-white/10"
                     >
                       <img src={src} alt="" className="size-full object-cover" />
                       <span className="sr-only">Customer {index + 1}</span>
@@ -339,12 +339,12 @@ export function EmployeeDetail() {
                 aria-pressed={tab === item.id}
                 className={cn(
                   'relative shrink-0 px-4 py-4 text-[13px] font-medium transition-colors',
-                  tab === item.id ? 'text-white' : 'text-[#a7b4c8] hover:text-[#ced8e6]',
+                  tab === item.id ? 'text-white' : 'text-[#a7b7be] hover:text-[#cedbdc]',
                 )}
               >
                 {item.label}
                 {tab === item.id && (
-                  <span className="absolute inset-x-3 -bottom-px h-[2px] rounded-full bg-[linear-gradient(90deg,#7aa8ff,#2a5fd6)]" />
+                  <span className="absolute inset-x-3 -bottom-px h-[2px] rounded-full bg-[linear-gradient(90deg,#2fe3b0,#078a63)]" />
                 )}
               </button>
             ))}
@@ -360,12 +360,12 @@ export function EmployeeDetail() {
                 <Reveal>
                   <div>
                     <h2 className="font-display text-[22px] font-semibold">About {employee.name}</h2>
-                    <p className="mt-3 text-[14.5px] leading-[1.75] text-[#b9c6d9]">{employee.bio}</p>
+                    <p className="mt-3 text-[14.5px] leading-[1.75] text-[#b9c9cf]">{employee.bio}</p>
                     <div className="mt-5 flex flex-wrap gap-2">
                       {employee.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1 text-[11.5px] text-[#cfd9e8]"
+                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1 text-[11.5px] text-[#cfdcde]"
                         >
                           {tag}
                         </span>
@@ -377,14 +377,14 @@ export function EmployeeDetail() {
                 <Reveal delay={60}>
                   <div>
                     <div className="flex items-center gap-2">
-                      <BadgeCheck className="size-4 text-[#7aa8ff]" />
+                      <BadgeCheck className="size-4 text-[#2fe3b0]" />
                       <h2 className="font-display text-[22px] font-semibold">What {employee.name} delivers</h2>
                     </div>
                     <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
                       {employee.deliverables.map((item) => (
                         <div
                           key={item}
-                          className="flex items-start gap-2.5 rounded-xl border border-white/12 bg-white/[0.025] p-3.5 text-[13px] leading-relaxed text-[#cfd9e8]"
+                          className="flex items-start gap-2.5 rounded-xl border border-white/12 bg-white/[0.025] p-3.5 text-[13px] leading-relaxed text-[#cfdcde]"
                         >
                           <Check className="mt-0.5 size-4 shrink-0 text-mint" />
                           {item}
@@ -397,10 +397,10 @@ export function EmployeeDetail() {
                 <Reveal delay={100}>
                   <div>
                     <div className="flex items-center gap-2">
-                      <MessageSquare className="size-4 text-[#7aa8ff]" />
+                      <MessageSquare className="size-4 text-[#2fe3b0]" />
                       <h2 className="font-display text-[22px] font-semibold">A real working session</h2>
                     </div>
-                    <p className="mt-2 text-[13px] text-[#a7b4c8]">
+                    <p className="mt-2 text-[13px] text-[#a7b7be]">
                       Excerpt from a workspace conversation with {employee.name}.
                     </p>
                     <div className="panel mt-4 space-y-3 p-4 md:p-5">
@@ -424,12 +424,12 @@ export function EmployeeDetail() {
                               className={cn(
                                 'rounded-[22px] px-4 py-2.5 text-[13px] leading-relaxed',
                                 turn.from === 'human'
-                                  ? 'rounded-br-md bg-[#4d8dff]/18 text-[#e7edf7]'
-                                  : 'rounded-bl-md border border-white/12 bg-white/[0.045] text-[#d2dce9]',
+                                  ? 'rounded-br-md bg-[#0bd39a]/18 text-[#e7f0ed]'
+                                  : 'rounded-bl-md border border-white/12 bg-white/[0.045] text-[#d2dfdf]',
                               )}
                             >
                               {turn.from === 'employee' && (
-                                <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.1em] text-[#a7b4c8]">
+                                <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.1em] text-[#a7b7be]">
                                   {employee.name}
                                 </p>
                               )}
@@ -438,7 +438,7 @@ export function EmployeeDetail() {
                           </div>
                         </div>
                       ))}
-                      <div className="flex items-center gap-2 pl-9 text-[10.5px] text-[#8d9bb1]">
+                      <div className="flex items-center gap-2 pl-9 text-[10.5px] text-[#8d9ea7]">
                         <span className="size-1.5 rounded-full bg-mint" /> Session logged · 4 min
                       </div>
                     </div>
@@ -458,8 +458,8 @@ export function EmployeeDetail() {
                         { label: 'Approval required', value: 'Sends, spend, and external comms' },
                       ].map((row) => (
                         <div key={row.label} className="flex items-start justify-between gap-4 border-b border-white/10 pb-2.5 last:border-0 last:pb-0">
-                          <span className="text-[11.5px] text-[#9aa7bd]">{row.label}</span>
-                          <span className="max-w-[60%] text-right text-[11.5px] font-medium text-[#d2dce9]">
+                          <span className="text-[11.5px] text-[#9aaab3]">{row.label}</span>
+                          <span className="max-w-[60%] text-right text-[11.5px] font-medium text-[#d2dfdf]">
                             {row.value}
                           </span>
                         </div>
@@ -475,7 +475,7 @@ export function EmployeeDetail() {
                       {employee.tools.map((tool) => (
                         <span
                           key={tool}
-                          className="rounded-lg border border-white/12 bg-white/[0.03] px-2.5 py-1.5 text-[11.5px] text-[#cfd9e8]"
+                          className="rounded-lg border border-white/12 bg-white/[0.03] px-2.5 py-1.5 text-[11.5px] text-[#cfdcde]"
                         >
                           {tool}
                         </span>
@@ -484,7 +484,7 @@ export function EmployeeDetail() {
                     <button
                       type="button"
                       onClick={() => setTab('integrations')}
-                      className="mt-3 inline-flex items-center gap-1 text-[11.5px] text-[#9cc0ff] hover:text-white"
+                      className="mt-3 inline-flex items-center gap-1 text-[11.5px] text-[#9df7c2] hover:text-white"
                     >
                       Integration details <ArrowRight className="size-3" />
                     </button>
@@ -492,9 +492,9 @@ export function EmployeeDetail() {
                 </Reveal>
 
                 <Reveal delay={100}>
-                  <div className="rounded-[22px] border border-[#4d8dff]/25 bg-[linear-gradient(160deg,rgba(77,141,255,0.14),rgba(77,141,255,0.02))] p-5">
-                    <Zap className="size-4 text-[#9cc0ff]" />
-                    <p className="mt-3 text-[13px] leading-relaxed text-[#e6ecf6]">
+                  <div className="rounded-[22px] border border-[#0bd39a]/25 bg-[linear-gradient(160deg,rgba(11,211,154,0.14),rgba(11,211,154,0.02))] p-5">
+                    <Zap className="size-4 text-[#9df7c2]" />
+                    <p className="mt-3 text-[13px] leading-relaxed text-[#e6efec]">
                       Pair {employee.name} with a second employee and share context across both. Most
                       teams hire two within the first month.
                     </p>
@@ -513,7 +513,7 @@ export function EmployeeDetail() {
                 <Reveal key={skill} delay={index * 40}>
                   <div className="panel h-full p-5">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#8d9bb1]">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#8d9ea7]">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       <CheckCircle2 className="size-4 text-mint/80" />
@@ -525,14 +525,14 @@ export function EmployeeDetail() {
                         style={{ width: `${72 + ((index * 7) % 26)}%` }}
                       />
                     </div>
-                    <p className="mt-2 text-[10.5px] text-[#9aa7bd]">Calibrated to your playbook</p>
+                    <p className="mt-2 text-[10.5px] text-[#9aaab3]">Calibrated to your playbook</p>
                   </div>
                 </Reveal>
               ))}
               <Reveal delay={200}>
                 <div className="panel flex h-full flex-col justify-center p-5">
                   <h3 className="font-display text-[15px] font-semibold">Need something custom?</h3>
-                  <p className="mt-2 text-[12.5px] leading-relaxed text-[#aab8cc]">
+                  <p className="mt-2 text-[12.5px] leading-relaxed text-[#aabbc2]">
                     Growth and Scale workspaces can extend any employee with a custom playbook or
                     internal API.
                   </p>
@@ -552,15 +552,15 @@ export function EmployeeDetail() {
                     <div className="flex items-center justify-between gap-3 border-b border-white/12 px-5 py-3.5">
                       <div>
                         <p className="font-display text-[14px] font-medium text-white">{work.title}</p>
-                        <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#9aa7bd]">
+                        <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#9aaab3]">
                           {work.meta}
                         </p>
                       </div>
-                      <span className="rounded-full border border-mint/25 bg-mint/[0.07] px-2 py-0.5 text-[9.5px] uppercase tracking-wider text-[#9cc0ff]">
+                      <span className="rounded-full border border-mint/25 bg-mint/[0.07] px-2 py-0.5 text-[9.5px] uppercase tracking-wider text-[#9df7c2]">
                         Delivered
                       </span>
                     </div>
-                    <pre className="scroll-thin max-h-[320px] overflow-auto whitespace-pre-wrap px-5 py-4 font-sans text-[12.5px] leading-[1.8] text-[#cfd9e8]">
+                    <pre className="scroll-thin max-h-[320px] overflow-auto whitespace-pre-wrap px-5 py-4 font-sans text-[12.5px] leading-[1.8] text-[#cfdcde]">
 {work.body}
                     </pre>
                   </div>
@@ -569,8 +569,8 @@ export function EmployeeDetail() {
               <Reveal delay={140}>
                 <div className="panel flex flex-col justify-between gap-4 p-5 md:flex-row md:items-center">
                   <div className="flex items-start gap-3">
-                    <Sparkles className="mt-0.5 size-4 shrink-0 text-[#7aa8ff]" />
-                    <p className="max-w-md text-[12.5px] leading-relaxed text-[#b8c5d7]">
+                    <Sparkles className="mt-0.5 size-4 shrink-0 text-[#2fe3b0]" />
+                    <p className="max-w-md text-[12.5px] leading-relaxed text-[#b8c8cd]">
                       These are real outputs generated during a calibration run. Your employee learns
                       your standards from every review you give.
                     </p>
@@ -587,7 +587,7 @@ export function EmployeeDetail() {
             <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
               <div>
                 <h2 className="font-display text-[22px] font-semibold">Native connections</h2>
-                <p className="mt-2 max-w-xl text-[13.5px] leading-relaxed text-[#aab8cc]">
+                <p className="mt-2 max-w-xl text-[13.5px] leading-relaxed text-[#aabbc2]">
                   {employee.name} works inside these tools with scoped permissions. Connect once at
                   onboarding; every action appears in the audit log.
                 </p>
@@ -595,12 +595,12 @@ export function EmployeeDetail() {
                   {employee.tools.map((tool, index) => (
                     <Reveal key={tool} delay={index * 40}>
                       <div className="flex items-center gap-3 rounded-xl border border-white/12 bg-white/[0.025] p-3.5">
-                        <span className="grid size-9 place-items-center rounded-lg border border-white/10 bg-white/[0.04] font-display text-[13px] font-semibold text-[#9cc0ff]">
+                        <span className="grid size-9 place-items-center rounded-lg border border-white/10 bg-white/[0.04] font-display text-[13px] font-semibold text-[#9df7c2]">
                           {tool[0]}
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-[13px] font-medium text-white">{tool}</p>
-                          <p className="text-[10.5px] text-[#9aa7bd]">Read & write · scoped</p>
+                          <p className="text-[10.5px] text-[#9aaab3]">Read & write · scoped</p>
                         </div>
                         <Plug className="size-3.5 text-mint" />
                       </div>
@@ -611,7 +611,7 @@ export function EmployeeDetail() {
               <aside className="space-y-3">
                 <div className="panel p-5">
                   <h3 className="font-display text-[15px] font-semibold">Permissions</h3>
-                  <ul className="mt-3 space-y-2.5 text-[12px] text-[#b8c5d7]">
+                  <ul className="mt-3 space-y-2.5 text-[12px] text-[#b8c8cd]">
                     {[
                       'Read: CRM records, inbox threads, docs',
                       'Write: drafts only until approved',
@@ -619,7 +619,7 @@ export function EmployeeDetail() {
                       'Export: logged and rate-limited',
                     ].map((item) => (
                       <li key={item} className="flex items-start gap-2">
-                        <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-[#dae3f0]" />
+                        <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-[#dae6e6]" />
                         {item}
                       </li>
                     ))}
@@ -627,10 +627,10 @@ export function EmployeeDetail() {
                 </div>
                 <div className="panel p-5">
                   <div className="flex items-center gap-2">
-                    <Globe2 className="size-4 text-[#9cc0ff]" />
+                    <Globe2 className="size-4 text-[#9df7c2]" />
                     <h3 className="font-display text-[15px] font-semibold">Need a custom API?</h3>
                   </div>
-                  <p className="mt-2 text-[12px] leading-relaxed text-[#aab8cc]">
+                  <p className="mt-2 text-[12px] leading-relaxed text-[#aabbc2]">
                     Scale workspaces can expose internal endpoints as tools with request-level audit
                     logs.
                   </p>
@@ -649,14 +649,14 @@ export function EmployeeDetail() {
         <div className="shell">
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9aa7bd]">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9aaab3]">
                 Build a team
               </p>
               <h2 className="mt-2 font-display text-[22px] font-semibold">Employees who pair well with {employee.name}</h2>
             </div>
             <Link
               to="/employees"
-              className="hidden items-center gap-1.5 text-[12.5px] text-[#9cc0ff] transition hover:text-white sm:inline-flex"
+              className="hidden items-center gap-1.5 text-[12.5px] text-[#9df7c2] transition hover:text-white sm:inline-flex"
             >
               View all <ArrowRight className="size-3.5" />
             </Link>
@@ -674,7 +674,7 @@ export function EmployeeDetail() {
       {/* Hire toast */}
       {justHired && (
         <div className="fixed bottom-5 left-1/2 z-[60] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 animate-rise">
-          <div className="flex items-start gap-3 rounded-[22px] border border-mint/30 bg-[#13161e]/95 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,1)] backdrop-blur-xl">
+          <div className="flex items-start gap-3 rounded-[22px] border border-mint/30 bg-[#0a2125]/95 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,1)] backdrop-blur-xl">
             <Avatar
               name={employee.name}
               src={employee.avatar}
@@ -685,12 +685,12 @@ export function EmployeeDetail() {
             />
             <div className="flex-1">
               <p className="text-[13px] font-medium text-white">{employee.name} is on your team.</p>
-              <p className="mt-0.5 text-[11.5px] leading-relaxed text-[#cfd9e8]">
+              <p className="mt-0.5 text-[11.5px] leading-relaxed text-[#cfdcde]">
                 First task queued. Head to your workspace to assign briefs and set approvals.
               </p>
               <Link
                 to="/dashboard"
-                className="mt-2 inline-flex items-center gap-1 text-[11.5px] font-medium text-[#9cc0ff] hover:text-white"
+                className="mt-2 inline-flex items-center gap-1 text-[11.5px] font-medium text-[#9df7c2] hover:text-white"
               >
                 Open dashboard <ArrowRight className="size-3" />
               </Link>
@@ -699,7 +699,7 @@ export function EmployeeDetail() {
               type="button"
               onClick={() => setJustHired(false)}
               aria-label="Dismiss"
-              className="grid size-6 place-items-center rounded-full text-[#9aa7bd] hover:bg-white/10 hover:text-white"
+              className="grid size-6 place-items-center rounded-full text-[#9aaab3] hover:bg-white/10 hover:text-white"
             >
               <X className="size-3.5" />
             </button>

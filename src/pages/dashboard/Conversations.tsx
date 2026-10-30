@@ -88,7 +88,7 @@ export function Conversations() {
           <aside className={cn('flex-col border-r border-white/12', mobileChat ? 'hidden lg:flex' : 'flex')}>
             <div className="flex items-center justify-between border-b border-white/12 px-3.5 py-3">
               <p className="text-[12px] font-medium text-white">Team</p>
-              <span className="font-mono text-[9px] text-[#8d9bb1]">{hires.length} channels</span>
+              <span className="font-mono text-[9px] text-[#8d9ea7]">{hires.length} channels</span>
             </div>
             <div className="scroll-thin flex-1 overflow-y-auto">
               {hires.map((hire) => {
@@ -122,13 +122,13 @@ export function Conversations() {
                       <div className="flex items-center justify-between gap-2">
                         <p className="truncate text-[12px] font-medium text-white">{employee.name}</p>
                         {last && (
-                          <span className="shrink-0 font-mono text-[8.5px] text-[#8d9bb1]">
+                          <span className="shrink-0 font-mono text-[8.5px] text-[#8d9ea7]">
                             {formatTime(last.at)}
                           </span>
                         )}
                       </div>
-                      <p className="truncate text-[9.5px] text-[#8d9bb1]">{employee.role}</p>
-                      <p className="mt-1 truncate text-[10px] text-[#a7b4c8]">
+                      <p className="truncate text-[9.5px] text-[#8d9ea7]">{employee.role}</p>
+                      <p className="mt-1 truncate text-[10px] text-[#a7b7be]">
                         {last ? last.text : 'No messages yet'}
                       </p>
                     </div>
@@ -139,7 +139,7 @@ export function Conversations() {
             <div className="border-t border-white/12 p-3">
               <Link
                 to="/employees"
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-white/12 py-2 text-[10.5px] text-[#aab8cc] transition hover:border-[#4d8dff]/40 hover:text-white"
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-white/12 py-2 text-[10.5px] text-[#aabbc2] transition hover:border-[#0bd39a]/40 hover:text-white"
               >
                 <Sparkles className="size-3" /> Hire another employee
               </Link>
@@ -156,7 +156,7 @@ export function Conversations() {
                       type="button"
                       onClick={() => setMobileChat(false)}
                       aria-label="Back to team list"
-                      className="grid size-7 place-items-center rounded-lg text-[#a7b4c8] hover:bg-white/8 hover:text-white lg:hidden"
+                      className="grid size-7 place-items-center rounded-lg text-[#a7b7be] hover:bg-white/8 hover:text-white lg:hidden"
                     >
                       <ArrowLeft className="size-4" />
                     </button>
@@ -171,11 +171,11 @@ export function Conversations() {
                     <div className="min-w-0">
                       <p className="truncate text-[12.5px] font-medium text-white">
                         {person.name}
-                        <span className="ml-2 font-mono text-[9px] uppercase tracking-[0.1em] text-[#8d9bb1]">
+                        <span className="ml-2 font-mono text-[9px] uppercase tracking-[0.1em] text-[#8d9ea7]">
                           AI employee
                         </span>
                       </p>
-                      <p className="flex items-center gap-1.5 truncate text-[10px] text-[#9aa7bd]">
+                      <p className="flex items-center gap-1.5 truncate text-[10px] text-[#9aaab3]">
                         <span className="size-1.5 rounded-full bg-mint" />
                         Active · replies {person.responseTime.toLowerCase()}
                       </p>
@@ -183,13 +183,13 @@ export function Conversations() {
                   </div>
                   <Link
                     to={`/employees/${person.slug}`}
-                    className="inline-flex items-center gap-1 rounded-lg border border-white/12 px-2.5 py-1.5 text-[10.5px] text-[#b9c6d9] transition hover:border-white/20 hover:text-white"
+                    className="inline-flex items-center gap-1 rounded-lg border border-white/12 px-2.5 py-1.5 text-[10.5px] text-[#b9c9cf] transition hover:border-white/20 hover:text-white"
                   >
                     Profile <ArrowUpRight className="size-3" />
                   </Link>
                 </div>
 
-                <div ref={scrollRef} className="scroll-thin flex-1 space-y-3 overflow-y-auto bg-[#10131b]/45 px-4 py-4">
+                <div ref={scrollRef} className="scroll-thin flex-1 space-y-3 overflow-y-auto bg-[#081e22]/45 px-4 py-4">
                   <div className="mx-auto mb-4 flex max-w-sm flex-col items-center rounded-xl border border-white/10 bg-white/[0.045] backdrop-blur-xl px-4 py-3 text-center">
                     <Avatar
                       name={person.name}
@@ -202,14 +202,14 @@ export function Conversations() {
                     <p className="text-[11.5px] font-medium text-white">
                       This is the start of your channel with {person.name}.
                     </p>
-                    <p className="mt-1 text-[10px] leading-relaxed text-[#9aa7bd]">
+                    <p className="mt-1 text-[10px] leading-relaxed text-[#9aaab3]">
                       {person.name} has access to {person.tools.slice(0, 3).join(', ')} and follows your
                       approval policy.
                     </p>
                   </div>
 
                   {thread.length === 0 && (
-                    <p className="text-center text-[10.5px] text-[#8d9bb1]">
+                    <p className="text-center text-[10.5px] text-[#8d9ea7]">
                       Send a brief to get started. Try one of the prompts below.
                     </p>
                   )}
@@ -232,15 +232,15 @@ export function Conversations() {
                           className={cn(
                             'max-w-[78%] rounded-[22px] px-3.5 py-2.5 text-[12px] leading-relaxed',
                             mine
-                              ? 'rounded-br-md bg-[#4d8dff]/20 text-[#e7edf7]'
-                              : 'rounded-bl-md border border-white/12 bg-white/[0.04] text-[#d2dce9]',
+                              ? 'rounded-br-md bg-[#0bd39a]/20 text-[#e7f0ed]'
+                              : 'rounded-bl-md border border-white/12 bg-white/[0.04] text-[#d2dfdf]',
                           )}
                         >
                           <p className="whitespace-pre-wrap">{message.text}</p>
                           <p
                             className={cn(
                               'mt-1 font-mono text-[8px]',
-                              mine ? 'text-[#d6dfec]' : 'text-[#8d9bb1]',
+                              mine ? 'text-[#d6e2e2]' : 'text-[#8d9ea7]',
                             )}
                           >
                             {formatTime(message.at)}
@@ -263,7 +263,7 @@ export function Conversations() {
                         {[0, 1, 2].map((dot) => (
                           <span
                             key={dot}
-                            className="size-1.5 animate-bounce rounded-full bg-[#7aa8ff]"
+                            className="size-1.5 animate-bounce rounded-full bg-[#2fe3b0]"
                             style={{ animationDelay: `${dot * 130}ms` }}
                           />
                         ))}
@@ -272,7 +272,7 @@ export function Conversations() {
                   )}
                 </div>
 
-                <div className="border-t border-white/12 bg-[#0e1017]/60 p-3">
+                <div className="border-t border-white/12 bg-[#071b1e]/60 p-3">
                   {thread.length < 4 && (
                     <div className="mb-2 flex flex-wrap gap-1.5">
                       {suggestions.map((suggestion) => (
@@ -280,14 +280,14 @@ export function Conversations() {
                           key={suggestion}
                           type="button"
                           onClick={() => send(suggestion)}
-                          className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-[#b9c6d9] transition hover:border-white/20 hover:text-white"
+                          className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-[#b9c9cf] transition hover:border-white/20 hover:text-white"
                         >
                           {suggestion}
                         </button>
                       ))}
                     </div>
                   )}
-                  <div className="flex items-end gap-2 rounded-xl border border-white/10 bg-white/[0.03] p-2 focus-within:border-[#4d8dff]/50">
+                  <div className="flex items-end gap-2 rounded-xl border border-white/10 bg-white/[0.03] p-2 focus-within:border-[#0bd39a]/50">
                     <textarea
                       value={draft}
                       onChange={(event) => setDraft(event.target.value)}
@@ -300,27 +300,27 @@ export function Conversations() {
                       rows={1}
                       placeholder={`Message ${person.name}…`}
                       aria-label={`Message ${person.name}`}
-                      className="scroll-thin max-h-24 min-h-[34px] flex-1 resize-none bg-transparent px-2 py-1.5 text-[12px] text-white placeholder:text-[#8d9bb1] focus:outline-none"
+                      className="scroll-thin max-h-24 min-h-[34px] flex-1 resize-none bg-transparent px-2 py-1.5 text-[12px] text-white placeholder:text-[#8d9ea7] focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => send(draft)}
                       disabled={!draft.trim()}
                       aria-label="Send message"
-                      className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#2f6bff] text-white transition hover:brightness-110 disabled:opacity-40"
+                      className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#08b884] text-white transition hover:brightness-110 disabled:opacity-40"
                     >
                       <Send className="size-3.5" />
                     </button>
                   </div>
-                  <p className="mt-1.5 px-1 text-[9px] text-[#8d9bb1]">
+                  <p className="mt-1.5 px-1 text-[9px] text-[#8d9ea7]">
                     Enter to send · Shift + Enter for a new line · All actions logged
                   </p>
                 </div>
               </>
             ) : (
               <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-                <MessageSquare className="size-6 text-[#8d9bb1]" />
-                <p className="mt-3 text-[12px] text-[#9aa7bd]">Select a teammate to start a conversation.</p>
+                <MessageSquare className="size-6 text-[#8d9ea7]" />
+                <p className="mt-3 text-[12px] text-[#9aaab3]">Select a teammate to start a conversation.</p>
               </div>
             )}
           </section>

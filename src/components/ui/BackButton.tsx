@@ -50,10 +50,10 @@ export function BackButton() {
       title={label}
       className={cn(
         'group fixed bottom-4 left-4 z-40 grid size-11 place-items-center rounded-full border border-white/12',
-        'bg-[#10131b]/70 text-[#ced8e6]',
+        'bg-[#081e22]/70 text-[#cedbdc]',
         'shadow-[0_18px_50px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.34)] backdrop-blur-2xl backdrop-saturate-200',
         'transition duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.08] hover:text-white',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d8dff]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0c11]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0bd39a]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#051718]',
         'md:bottom-6 md:left-6 print:hidden',
         // keep clear of the fixed dashboard sidebar on large screens
         onDashboard && 'lg:left-[264px]',

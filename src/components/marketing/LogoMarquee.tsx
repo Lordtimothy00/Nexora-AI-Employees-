@@ -8,8 +8,8 @@ export function LogoMarquee() {
         <div className="flex w-max animate-marquee items-center gap-14 pr-14">
           {row.map((logo, index) => (
             <div key={`${logo}-${index}`} className="flex items-center gap-2.5">
-              <span className="size-1.5 rotate-45 bg-[#28344b]" />
-              <span className="font-display text-[15px] font-medium tracking-[-0.01em] text-[#98a4b6] transition-colors hover:text-[#cfd9e8]">
+              <span className="size-1.5 rotate-45 bg-[#1f3a3a]" />
+              <span className="font-display text-[15px] font-medium tracking-[-0.01em] text-[#98a7ac] transition-colors hover:text-[#cfdcde]">
                 {logo}
               </span>
             </div>

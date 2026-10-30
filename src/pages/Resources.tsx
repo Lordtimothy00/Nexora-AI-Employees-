@@ -27,9 +27,9 @@ const guideIcons = {
 } as const;
 
 const guideTints: Record<string, string> = {
-  'first-week-checklist': 'rgba(77,141,255,0.16)',
-  'writing-a-brief': 'rgba(139,92,246,0.16)',
-  'measuring-roi': 'rgba(156,192,255,0.14)',
+  'first-week-checklist': 'rgba(11,211,154,0.16)',
+  'writing-a-brief': 'rgba(18,227,192,0.16)',
+  'measuring-roi': 'rgba(146,255,214,0.14)',
 };
 
 const library = [
@@ -73,7 +73,7 @@ export function Resources() {
           <div className="mx-auto max-w-2xl text-center">
             <Reveal>
               <span className="eyebrow">
-                <BookOpen className="size-3 text-[#9cc0ff]" />
+                <BookOpen className="size-3 text-[#9df7c2]" />
                 Resources
               </span>
             </Reveal>
@@ -85,7 +85,7 @@ export function Resources() {
               </h1>
             </Reveal>
             <Reveal delay={130}>
-              <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed text-[#aab8cc] md:text-[16.5px]">
+              <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed text-[#aabbc2] md:text-[16.5px]">
                 Playbooks, templates, and benchmarks from teams already delegating real work to AI
                 employees.
               </p>
@@ -129,19 +129,19 @@ export function Resources() {
                       style={{ background: guideTints[guide.slug] }}
                     />
                     <div className="relative flex items-center justify-between">
-                      <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9cc0ff]">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9df7c2]">
                         <Icon className="size-3" />
                         {guide.category}
                       </span>
-                      <ArrowUpRight className="size-4 text-[#8d9bb1] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+                      <ArrowUpRight className="size-4 text-[#8d9ea7] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
                     </div>
                     <h3 className="relative mt-5 font-display text-[17px] font-semibold leading-snug text-white">
                       {guide.title}
                     </h3>
-                    <p className="relative mt-3 flex-1 text-[13.5px] leading-relaxed text-[#a3b1c6]">
+                    <p className="relative mt-3 flex-1 text-[13.5px] leading-relaxed text-[#a3b4bc]">
                       {guide.summary}
                     </p>
-                    <div className="relative mt-6 flex items-center gap-1.5 text-[11px] text-[#8d9bb1]">
+                    <div className="relative mt-6 flex items-center gap-1.5 text-[11px] text-[#8d9ea7]">
                       <Clock className="size-3" />
                       {guide.readTime}
                     </div>
@@ -179,7 +179,7 @@ export function Resources() {
                   to={item.to}
                   className="glass group flex h-full items-start gap-4 p-5 transition duration-300 hover:-translate-y-0.5 hover:border-white/25"
                 >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-white/12 bg-[linear-gradient(140deg,rgba(77,141,255,0.22),rgba(139,92,246,0.18))] text-[#cfe0ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-white/12 bg-[linear-gradient(140deg,rgba(11,211,154,0.22),rgba(18,227,192,0.18))] text-[#d6ffef] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                     <item.icon className="size-4" />
                   </span>
                   <div className="min-w-0 flex-1">
@@ -187,10 +187,10 @@ export function Resources() {
                       <h3 className="font-display text-[14.5px] font-medium text-white">
                         {item.title}
                       </h3>
-                      <ArrowUpRight className="size-3.5 shrink-0 text-[#8d9bb1] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+                      <ArrowUpRight className="size-3.5 shrink-0 text-[#8d9ea7] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
                     </div>
-                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#9dabc0]">{item.body}</p>
-                    <span className="mt-2.5 inline-block font-mono text-[9px] uppercase tracking-[0.14em] text-[#7aa8ff]">
+                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#9daeb6]">{item.body}</p>
+                    <span className="mt-2.5 inline-block font-mono text-[9px] uppercase tracking-[0.14em] text-[#2fe3b0]">
                       {item.meta}
                     </span>
                   </div>
