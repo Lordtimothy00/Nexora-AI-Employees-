@@ -6,6 +6,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { ButtonLink } from '@/components/ui/Button';
 import { useWorkspace, replyFor } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
+import { requestEmployeeReply } from '@/lib/replies';
 import { cn } from '@/lib/utils';
 
 const suggestions = [
@@ -48,18 +49,44 @@ export function Conversations() {
     };
   }, []);
 
-  const send = (text: string) => {
+
+  const send = async (text: string) => {
     const content = text.trim();
     if (!content || !selectedId) return;
-    appendMessage(selectedId, content);
+
+    const employeeId = selectedId;
+    const employee = getEmployeeById(employeeId);
+    const history = messages
+      .filter((message) => message.employeeId === employeeId)
+      .slice(-8)
+      .map((message) => ({ from: message.from, text: message.text }));
+
+    appendMessage(employeeId, content);
     setDraft('');
     setTyping(true);
-    const delay = 1100 + Math.random() * 900;
-    const timer = window.setTimeout(() => {
-      appendMessage(selectedId, replyFor(selectedId, content), 'employee');
-      setTyping(false);
-    }, delay);
-    timers.current.push(timer);
+
+    const startedAt = Date.now();
+    const answer = employee
+      ? await requestEmployeeReply({
+          employee: {
+            name: employee.name,
+            role: employee.role,
+            tagline: employee.tagline,
+            deliverables: employee.deliverables,
+            skills: employee.skills,
+            tools: employee.tools,
+          },
+          history,
+          message: content,
+        })
+      : null;
+
+    // Keep the indicator on screen long enough to read as "thinking", not a flicker.
+    const settle = 650 - (Date.now() - startedAt);
+    if (settle > 0) await new Promise((resolve) => window.setTimeout(resolve, settle));
+
+    appendMessage(employeeId, answer ?? replyFor(employeeId, content), 'employee');
+    setTyping(false);
   };
 
   return (
@@ -305,7 +332,7 @@ export function Conversations() {
                     <button
                       type="button"
                       onClick={() => send(draft)}
-                      disabled={!draft.trim()}
+                      disabled={!draft.trim() || typing}
                       aria-label="Send message"
                       className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#08b884] text-white transition hover:brightness-110 disabled:opacity-40"
                     >

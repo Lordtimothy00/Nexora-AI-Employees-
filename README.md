@@ -99,6 +99,20 @@ write their own rows. The browser uses the publishable key; no service-role key 
 If the env vars are absent (or `MODE === 'test'`), `getSupabase()` returns `null` and the app falls
 back to the localStorage workspace below — `npm run dev` and `npm test` work with no backend at all.
 
+### Employee replies
+
+Employee answers come from the `employee-reply` edge function (`supabase/functions/employee-reply`),
+deployed with JWT verification on.
+
+- Set **one** secret on the project: `OPENAI_API_KEY` (uses `gpt-4o-mini`) or `ANTHROPIC_API_KEY`
+  (uses `claude-3-5-haiku-latest`).
+- The browser sends the employee's persona plus the last eight turns; the function builds the system
+  prompt server-side and calls the provider directly — no SDK, no key in the bundle.
+- No key, or any failure, returns a non-2xx response. `requestEmployeeReply()` then returns `null`
+  and the app falls back to the scripted `replyFor()` templates, so chat always answers.
+- Replies are written back through the normal `messages` table, so they are workspace-scoped and
+  visible to every member.
+
 ### Team seats
 
 A workspace is a first-class thing now, not just one person's row.
@@ -213,8 +227,8 @@ text on the dark canvas.
 
 ## Production notes
 
-- **Auth and persistence are real** (`supabase.auth` + five RLS-protected tables). Employee replies
-  from `replyFor()` are still canned — that is the remaining seam for an LLM/edge function.
+- **Auth, persistence and employee replies are real** — `supabase.auth`, workspace-scoped tables,
+  and the `employee-reply` edge function. Billing/Stripe is the remaining seam.
 - **Only the publishable key ships.** It is safe in a browser bundle; RLS is what protects the data.
 - **No secrets or network calls** are required to run the app — without env vars it is fully local.
 - **Vercel:** `vercel.json` is included with SPA rewrites and asset caching; `npm run build` outputs
