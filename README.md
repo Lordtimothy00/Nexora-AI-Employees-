@@ -113,6 +113,22 @@ deployed with JWT verification on.
 - Replies are written back through the normal `messages` table, so they are workspace-scoped and
   visible to every member.
 
+### Billing (Stripe)
+
+Two edge functions, both deployed and inert until keys exist:
+
+- `create-checkout-session` — takes `{ plan }`, reads the caller's id from the JWT, and creates a
+  Stripe Checkout session with the plan stashed in `metadata` (and on the subscription). Needs
+  `STRIPE_SECRET_KEY` plus `STRIPE_PRICE_LAUNCH` / `STRIPE_PRICE_GROWTH` / `STRIPE_PRICE_SCALE`.
+- `stripe-webhook` — verifies the `stripe-signature` header with HMAC-SHA256 (no SDK), then sets
+  `profiles.plan` on `checkout.session.completed` and drops back to `launch` on
+  `customer.subscription.deleted`. Needs `STRIPE_WEBHOOK_SECRET`, and deploys with JWT verification
+  **off** — the signature is the authentication.
+
+The Billing page calls `startCheckout(plan)` and redirects to the returned URL; with no keys the
+function answers 501 and the page shows "checkout is not available yet" instead of failing silently.
+Returning from Stripe lands on `/dashboard/billing?checkout=success|cancelled`, which shows a toast.
+
 ### Team seats
 
 A workspace is a first-class thing now, not just one person's row.

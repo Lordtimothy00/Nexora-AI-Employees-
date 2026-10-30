@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowUpRight, Check, CreditCard, Download, ReceiptText, Sparkles } from 'lucide-react';
 import { PageHeader, Panel, Toast } from '@/components/dashboard/ui';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { plans } from '@/data/site';
+import { startCheckout, type CheckoutPlanId } from '@/lib/billing';
+import { useSearchParams } from 'react-router-dom';
 import { downloadFile } from '@/lib/download';
 import { cn, currency } from '@/lib/utils';
 
@@ -15,13 +17,41 @@ const invoices = [
 ];
 
 export function Billing() {
+  const beginCheckout = async (planId: CheckoutPlanId) => {
+    setCheckingOut(planId);
+    const result = await startCheckout(planId);
+    if ('url' in result) {
+      window.location.assign(result.url);
+      return;
+    }
+    setCheckingOut(null);
+    setToast(result.error);
+  };
+
   const { user } = useAuth();
   const { hires, completedThisMonth } = useWorkspace();
   const [toast, setToast] = useState<string | null>(null);
+  const [checkingOut, setCheckingOut] = useState<CheckoutPlanId | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const outcome = searchParams.get('checkout');
+    if (!outcome) return;
+
+    setToast(
+      outcome === 'success'
+        ? 'Payment received — Stripe will confirm your new plan in a moment.'
+        : 'Checkout cancelled. Nothing was charged.',
+    );
+    searchParams.delete('checkout');
+    setSearchParams(searchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
   const currentPlan = plans.find((plan) => plan.id === (user?.plan ?? 'growth')) ?? plans[1];
   const tasksIncluded = currentPlan.id === 'launch' ? 500 : currentPlan.id === 'growth' ? 4000 : 100000;
   const tasksUsed = Math.min(completedThisMonth, tasksIncluded);
   const seatsIncluded = currentPlan.id === 'launch' ? 1 : currentPlan.id === 'growth' ? 5 : 999;
+  const upgradePlan =
+    plans[plans.findIndex((plan) => plan.id === currentPlan.id) + 1] ?? plans[plans.length - 1];
   const monthsActive = (() => {
     const start = user?.createdAt ? new Date(user.createdAt) : new Date();
     const now = new Date();
@@ -80,7 +110,11 @@ export function Billing() {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <Button size="sm" onClick={() => showToast('Plan changes are disabled in this preview.')}>
+              <Button
+                size="sm"
+                loading={checkingOut === upgradePlan.id}
+                onClick={() => beginCheckout(upgradePlan.id)}
+              >
                 Upgrade plan
               </Button>
               <Button
@@ -255,7 +289,8 @@ export function Billing() {
                   size="sm"
                   className="mt-3 w-full"
                   disabled={isCurrent}
-                  onClick={() => showToast('Plan changes are disabled in this preview.')}
+                  loading={checkingOut === plan.id}
+                  onClick={() => beginCheckout(plan.id)}
                 >
                   {isCurrent ? 'Current plan' : `Switch to ${plan.name}`}
                 </Button>
