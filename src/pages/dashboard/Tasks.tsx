@@ -217,7 +217,7 @@ export function Tasks() {
                           <span className="font-mono text-[8.5px] text-[#8d9bb1]">{task.due}</span>
                         </div>
                         <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-1.5">
-                          <span className="text-[8.5px] text-[#5f6b7d]">{person?.name ?? 'Unassigned'}</span>
+                          <span className="text-[8.5px] text-[#8d9bb1]">{person?.name ?? 'Unassigned'}</span>
                           <div className="flex items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
                             <button
                               type="button"
@@ -245,8 +245,8 @@ export function Tasks() {
 
                   {columnTasks.length === 0 && (
                     <div className="flex h-[120px] flex-col items-center justify-center rounded-xl border border-dashed border-white/12 text-center">
-                      <p className="text-[10px] text-[#5f6b7d]">Nothing here</p>
-                      <p className="mt-0.5 text-[9px] text-[#28344b]">Drag a task in</p>
+                      <p className="text-[10px] text-[#8d9bb1]">Nothing here</p>
+                      <p className="mt-0.5 text-[9px] text-[#8d9bb1]">Drag a task in</p>
                     </div>
                   )}
                 </div>

@@ -21,7 +21,7 @@ function CellValue({ value }: { value: string | boolean }) {
     );
   }
   if (value === false) {
-    return <Minus className="size-3.5 text-[#28344b]" aria-label="Not included" />;
+    return <Minus className="size-3.5 text-[#8d9bb1]" aria-label="Not included" />;
   }
   return <span className="text-[12px] text-[#cfd9e8]">{value}</span>;
 }

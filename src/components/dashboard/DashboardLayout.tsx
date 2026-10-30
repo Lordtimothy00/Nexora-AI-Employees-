@@ -101,7 +101,7 @@ export function DashboardLayout() {
       </div>
 
       <nav className="scroll-thin mt-5 flex-1 overflow-y-auto px-2 pb-4" aria-label="Workspace">
-        <p className="px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5f6b7d]">
+        <p className="px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9bb1]">
           Workspace
         </p>
         {workspaceNav.map((item) => (
@@ -135,7 +135,7 @@ export function DashboardLayout() {
           </NavLink>
         ))}
 
-        <p className="mt-5 px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#5f6b7d]">
+        <p className="mt-5 px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9bb1]">
           Account
         </p>
         {accountNav.map((item) => (

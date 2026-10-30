@@ -430,7 +430,7 @@ export function HowItWorks() {
       </section>
 
       {/* integrations */}
-      <section className="page-section relative py-20 md:py-28">
+      <section id="integrations" className="page-section relative py-20 md:py-28">
         <div className="shell">
           <SectionHeading
             eyebrow="Integrations"

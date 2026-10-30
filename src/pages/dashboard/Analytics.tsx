@@ -116,7 +116,7 @@ export function Analytics() {
       {hires.length === 0 ? (
         <Panel>
           <div className="flex flex-col items-center py-14 text-center">
-            <Users className="size-6 text-[#5f6b7d]" />
+            <Users className="size-6 text-[#8d9bb1]" />
             <p className="mt-3 font-display text-[15px] font-semibold text-white">No data to analyse yet</p>
             <p className="mt-1.5 max-w-sm text-[12.5px] text-[#aab8cc]">
               Hire your first employee and analytics begin populating within the hour.

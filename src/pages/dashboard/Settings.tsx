@@ -107,7 +107,7 @@ export function Settings() {
                 <div>
                   <p className="text-[12px] font-medium text-white">{name || 'Your name'}</p>
                   <p className="text-[10.5px] text-[#9aa7bd]">{email}</p>
-                  <p className="mt-0.5 text-[9.5px] text-[#5f6b7d]">Avatar initials update automatically</p>
+                  <p className="mt-0.5 text-[9.5px] text-[#8d9bb1]">Avatar initials update automatically</p>
                 </div>
               </div>
 

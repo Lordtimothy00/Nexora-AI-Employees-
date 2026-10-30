@@ -195,6 +195,11 @@
     outline-offset: 3px;
   }
 
+  /* In-page anchors stop below the floating header instead of under it. */
+  section[id] {
+    scroll-margin-top: 6.5rem;
+  }
+
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;

@@ -6,83 +6,60 @@ import {
   Clock,
   Compass,
   FileText,
-  LifeBuoy,
   Play,
-  ScrollText,
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { HeroBackdrop } from '@/components/marketing/HeroBackdrop';
 import { FinalCta } from '@/components/marketing/FinalCta';
 import { Accordion } from '@/components/ui/Accordion';
 import { ButtonLink } from '@/components/ui/Button';
 import { Reveal } from '@/components/ui/Reveal';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { guides } from '@/data/resources';
 import { faqs } from '@/data/site';
 
-const featured = [
-  {
-    category: 'Playbook',
-    title: 'The first-week onboarding checklist for an AI employee',
-    body: 'What to connect, what to calibrate, and the three tasks to hand over first so your employee is productive on day one.',
-    read: '6 min read',
-    icon: Compass,
-    tint: 'rgba(77,141,255,0.16)',
-  },
-  {
-    category: 'Guide',
-    title: 'How to write a brief an AI can actually execute',
-    body: 'The difference between “clean up our pipeline” and a brief that ships. Templates for briefs, reviews, and handoffs.',
-    read: '8 min read',
-    icon: FileText,
-    tint: 'rgba(139,92,246,0.16)',
-  },
-  {
-    category: 'Benchmark',
-    title: 'Measuring ROI on your AI team',
-    body: 'Hours reclaimed, response times, and pipeline touched — the four numbers we track with every customer.',
-    read: '5 min read',
-    icon: Play,
-    tint: 'rgba(156,192,255,0.14)',
-  },
-];
+const guideIcons = {
+  'first-week-checklist': Compass,
+  'writing-a-brief': FileText,
+  'measuring-roi': Play,
+} as const;
+
+const guideTints: Record<string, string> = {
+  'first-week-checklist': 'rgba(77,141,255,0.16)',
+  'writing-a-brief': 'rgba(139,92,246,0.16)',
+  'measuring-roi': 'rgba(156,192,255,0.14)',
+};
 
 const library = [
   {
     title: 'Documentation',
-    body: 'Setup, calibration, permissions, and every dashboard screen explained.',
-    meta: '24 articles',
+    body: 'Pick a role, calibrate it, and understand every screen in the workspace.',
+    meta: 'Step by step',
     icon: BookOpen,
+    to: '/how-it-works',
   },
   {
-    title: 'API & integrations',
+    title: 'Integrations',
     body: 'Connect your CRM, helpdesk, inbox, or warehouse — or build a custom tool.',
-    meta: '40+ integrations',
+    meta: '40+ native tools',
     icon: Braces,
+    to: '/how-it-works#integrations',
   },
   {
     title: 'Security & trust',
-    body: 'How scoped permissions, audit logs, and data retention actually work.',
+    body: 'Scoped permissions, audit logs, and what happens to your data on day 30.',
     meta: 'SOC 2 Type II',
     icon: ShieldCheck,
-  },
-  {
-    title: 'Templates',
-    body: 'Briefs, playbooks, and QA rubrics you can hand to an employee today.',
-    meta: '18 templates',
-    icon: ScrollText,
+    to: '/how-it-works#security',
   },
   {
     title: 'Customer stories',
     body: 'How teams from 6 to 600 people run their first AI employees.',
-    meta: '12 stories',
+    meta: 'Real teams',
     icon: Sparkles,
-  },
-  {
-    title: 'Help center',
-    body: 'Stuck on something? Search answers or talk to a human in minutes.',
-    meta: 'Avg. reply 3m',
-    icon: LifeBuoy,
+    to: '/#customers',
   },
 ];
 
@@ -127,7 +104,7 @@ export function Resources() {
         </div>
       </section>
 
-      {/* FEATURED */}
+      {/* FEATURED GUIDES */}
       <section className="page-section relative py-16 md:py-20">
         <div className="shell">
           <SectionHeading
@@ -137,34 +114,41 @@ export function Resources() {
           />
 
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {featured.map((item, index) => (
-              <Reveal key={item.title} delay={index * 70}>
-                <article className="glass group relative flex h-full flex-col overflow-hidden rounded-[22px] p-6 transition duration-300 hover:-translate-y-1 hover:border-white/25">
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -right-16 -top-16 size-40 rounded-full blur-2xl"
-                    style={{ background: item.tint }}
-                  />
-                  <div className="relative flex items-center justify-between">
-                    <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9cc0ff]">
-                      <item.icon className="size-3" />
-                      {item.category}
-                    </span>
-                    <ArrowUpRight className="size-4 text-[#6f7f96] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
-                  </div>
-                  <h3 className="relative mt-5 font-display text-[17px] font-semibold leading-snug text-white">
-                    {item.title}
-                  </h3>
-                  <p className="relative mt-3 flex-1 text-[13.5px] leading-relaxed text-[#a3b1c6]">
-                    {item.body}
-                  </p>
-                  <div className="relative mt-6 flex items-center gap-1.5 text-[11px] text-[#7f8ea6]">
-                    <Clock className="size-3" />
-                    {item.read}
-                  </div>
-                </article>
-              </Reveal>
-            ))}
+            {guides.map((guide, index) => {
+              const Icon = guideIcons[guide.slug as keyof typeof guideIcons] ?? FileText;
+
+              return (
+                <Reveal key={guide.slug} delay={index * 70}>
+                  <Link
+                    to={`/resources/${guide.slug}`}
+                    className="glass group relative flex h-full flex-col overflow-hidden p-6 transition duration-300 hover:-translate-y-1 hover:border-white/25"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute -right-16 -top-16 size-40 rounded-full blur-2xl"
+                      style={{ background: guideTints[guide.slug] }}
+                    />
+                    <div className="relative flex items-center justify-between">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9cc0ff]">
+                        <Icon className="size-3" />
+                        {guide.category}
+                      </span>
+                      <ArrowUpRight className="size-4 text-[#8d9bb1] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+                    </div>
+                    <h3 className="relative mt-5 font-display text-[17px] font-semibold leading-snug text-white">
+                      {guide.title}
+                    </h3>
+                    <p className="relative mt-3 flex-1 text-[13.5px] leading-relaxed text-[#a3b1c6]">
+                      {guide.summary}
+                    </p>
+                    <div className="relative mt-6 flex items-center gap-1.5 text-[11px] text-[#8d9bb1]">
+                      <Clock className="size-3" />
+                      {guide.readTime}
+                    </div>
+                  </Link>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -175,7 +159,7 @@ export function Resources() {
           <SectionHeading
             eyebrow="Library"
             title="The whole shelf."
-            description="Documentation, integrations, templates, and the trust center — all in one place."
+            description="Documentation, integrations, security, and the teams already running AI employees."
             action={
               <ButtonLink
                 to="/signup"
@@ -188,27 +172,29 @@ export function Resources() {
             }
           />
 
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-3 sm:grid-cols-2">
             {library.map((item, index) => (
               <Reveal key={item.title} delay={index * 45}>
-                <div className="glass group flex h-full items-start gap-4 rounded-[22px] p-5 transition duration-300 hover:-translate-y-0.5 hover:border-white/25">
+                <Link
+                  to={item.to}
+                  className="glass group flex h-full items-start gap-4 p-5 transition duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                >
                   <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-white/12 bg-[linear-gradient(140deg,rgba(77,141,255,0.22),rgba(139,92,246,0.18))] text-[#cfe0ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                     <item.icon className="size-4" />
                   </span>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
                       <h3 className="font-display text-[14.5px] font-medium text-white">
                         {item.title}
                       </h3>
-                      <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[#7f8ea6]">
-                        {item.meta}
-                      </span>
+                      <ArrowUpRight className="size-3.5 shrink-0 text-[#8d9bb1] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
                     </div>
-                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#9dabc0]">
-                      {item.body}
-                    </p>
+                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#9dabc0]">{item.body}</p>
+                    <span className="mt-2.5 inline-block font-mono text-[9px] uppercase tracking-[0.14em] text-[#7aa8ff]">
+                      {item.meta}
+                    </span>
                   </div>
-                </div>
+                </Link>
               </Reveal>
             ))}
           </div>
@@ -225,7 +211,7 @@ export function Resources() {
               description="The things teams want to know before their first hire."
             />
             <Reveal delay={80}>
-              <Accordion items={faqs.slice(0, 5)} className="glass rounded-[22px] px-6" />
+              <Accordion items={faqs.slice(0, 5)} className="glass px-6" />
             </Reveal>
           </div>
         </div>

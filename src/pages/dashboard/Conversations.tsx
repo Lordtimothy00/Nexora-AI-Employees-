@@ -122,7 +122,7 @@ export function Conversations() {
                       <div className="flex items-center justify-between gap-2">
                         <p className="truncate text-[12px] font-medium text-white">{employee.name}</p>
                         {last && (
-                          <span className="shrink-0 font-mono text-[8.5px] text-[#5f6b7d]">
+                          <span className="shrink-0 font-mono text-[8.5px] text-[#8d9bb1]">
                             {formatTime(last.at)}
                           </span>
                         )}
@@ -209,7 +209,7 @@ export function Conversations() {
                   </div>
 
                   {thread.length === 0 && (
-                    <p className="text-center text-[10.5px] text-[#5f6b7d]">
+                    <p className="text-center text-[10.5px] text-[#8d9bb1]">
                       Send a brief to get started. Try one of the prompts below.
                     </p>
                   )}
@@ -312,14 +312,14 @@ export function Conversations() {
                       <Send className="size-3.5" />
                     </button>
                   </div>
-                  <p className="mt-1.5 px-1 text-[9px] text-[#5f6b7d]">
+                  <p className="mt-1.5 px-1 text-[9px] text-[#8d9bb1]">
                     Enter to send · Shift + Enter for a new line · All actions logged
                   </p>
                 </div>
               </>
             ) : (
               <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-                <MessageSquare className="size-6 text-[#5f6b7d]" />
+                <MessageSquare className="size-6 text-[#8d9bb1]" />
                 <p className="mt-3 text-[12px] text-[#9aa7bd]">Select a teammate to start a conversation.</p>
               </div>
             )}

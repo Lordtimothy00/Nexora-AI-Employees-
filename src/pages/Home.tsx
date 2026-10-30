@@ -647,7 +647,7 @@ export function Home() {
                       </span>
                       <div>
                         <p className="text-[13px] font-medium text-white">{feature.title}</p>
-                        <p className="mt-0.5 max-w-sm text-[12px] leading-relaxed text-[#8b97a9]">{feature.body}</p>
+                        <p className="mt-0.5 max-w-sm text-[12px] leading-relaxed text-[#8d9bb1]">{feature.body}</p>
                       </div>
                     </div>
                   ))}
@@ -672,7 +672,7 @@ export function Home() {
                       {platform}
                     </span>
                   ))}
-                  <span className="text-[11px] text-[#5f6b7d]">One workspace, every screen.</span>
+                  <span className="text-[11px] text-[#8d9bb1]">One workspace, every screen.</span>
                 </div>
               </Reveal>
             </div>

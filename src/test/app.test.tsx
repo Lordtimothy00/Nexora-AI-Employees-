@@ -45,7 +45,14 @@ describe('marketing pages', () => {
     expect(
       screen.getByText(/The first-week onboarding checklist/i),
     ).toBeInTheDocument();
-    expect(screen.getByText('Templates')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Documentation/i })).toBeInTheDocument();
+  });
+
+  it('opens a resource article from the index', async () => {
+    renderAt('/resources/writing-a-brief');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/write a brief/i);
+    expect(screen.getByRole('heading', { name: /Four lines every brief needs/i })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /All resources/i }).length).toBeGreaterThan(0);
   });
 
   it('lists every AI employee and filters by department', async () => {

@@ -47,7 +47,7 @@ function TabBar({ active }: { active: number }) {
           key={item.label}
           className={cn(
             'flex flex-col items-center gap-0.5 transition-colors',
-            index === active ? 'text-[#9cc0ff]' : 'text-[#485568]',
+            index === active ? 'text-[#9cc0ff]' : 'text-[#8d9bb1]',
           )}
         >
           <item.icon className="size-3" />
@@ -119,7 +119,7 @@ function ChatScreen() {
         <Avatar name="Ava" src="/team/ava.jpg" initials="AV" accent="violet" size="xs" status="online" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-[10px] font-medium text-white">Ava</p>
-          <p className="flex items-center gap-1 text-[7px] text-[#4d8dff]">
+          <p className="flex items-center gap-1 text-[7px] text-[#7aa8ff]">
             <span className="size-1 rounded-full bg-[#4d8dff]" /> online · replies in 2 min
           </p>
         </div>
@@ -146,7 +146,7 @@ function ChatScreen() {
                 <p className="truncate text-[7.5px] font-medium text-white">Sequence v2</p>
                 <p className="truncate text-[6px] text-[#8d9bb1]">3 touches · reconciliation angle</p>
               </div>
-              <Check className="size-2.5 text-[#4d8dff]" />
+              <Check className="size-2.5 text-[#7aa8ff]" />
             </div>
           </div>
           <div className="mt-1.5 rounded-md bg-[linear-gradient(100deg,#9cc0ff,#4d8dff)] px-2 py-1 text-center text-[7.5px] font-semibold text-[#060a13]">

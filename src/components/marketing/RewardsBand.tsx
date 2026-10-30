@@ -80,10 +80,10 @@ export function RewardsBand() {
                   </ButtonLink>
                   <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[11.5px] text-[#a7b4c8]">
                     <span className="inline-flex items-center gap-1">
-                      <Check className="size-3 text-[#4d8dff]" /> Points never expire
+                      <Check className="size-3 text-[#7aa8ff]" /> Points never expire
                     </span>
                     <span className="inline-flex items-center gap-1">
-                      <Check className="size-3 text-[#4d8dff]" /> Applied to your next invoice
+                      <Check className="size-3 text-[#7aa8ff]" /> Applied to your next invoice
                     </span>
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export function RewardsBand() {
                   })}
                 </div>
 
-                <p className="flex items-center gap-1.5 text-[9px] text-[#5f6b7d]">
+                <p className="flex items-center gap-1.5 text-[9px] text-[#8d9bb1]">
                   <Sparkles className="size-2.5" />
                   Illustrative rewards in this preview. Points shown are from the demo workspace.
                 </p>

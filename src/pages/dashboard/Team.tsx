@@ -198,7 +198,7 @@ export function Team() {
                       <button
                         type="button"
                         onClick={() => setConfirming(person.id)}
-                        className="mt-2 w-full text-center text-[9.5px] text-[#5f6b7d] transition hover:text-rose-300"
+                        className="mt-2 w-full text-center text-[9.5px] text-[#8d9bb1] transition hover:text-rose-300"
                       >
                         Remove from team
                       </button>
