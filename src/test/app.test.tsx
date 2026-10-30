@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '@/App';
 import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
+import { explainReplyFailure } from '@/lib/replies';
 
 beforeEach(() => {
   resetBackStack();
@@ -295,5 +296,15 @@ describe('empty workspace', () => {
 
     expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
+  });
+});
+
+describe('reply failure messages', () => {
+  it('names an out-of-credits provider instead of leaking a raw 429', () => {
+    expect(
+      explainReplyFailure('provider_error', 'openai 429: {"error":{"type":"insufficient_quota"}}'),
+    ).toMatch(/run out of credits/i);
+    expect(explainReplyFailure('provider_error', 'openai 401: bad key')).toMatch(/502/);
+    expect(explainReplyFailure('not_configured')).toMatch(/no model key is set/i);
   });
 });

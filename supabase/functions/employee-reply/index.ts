@@ -128,11 +128,25 @@ Deno.serve(async (request) => {
 
   if (!body?.message?.trim() || !body?.employee?.name) return json({ error: 'bad_request' }, 400);
 
-  try {
-    const reply = openaiKey ? await askOpenAI(openaiKey, body) : await askAnthropic(anthropicKey as string, body);
-    if (!reply) return json({ error: 'empty_reply' }, 502);
-    return json({ reply, provider: openaiKey ? 'openai' : 'anthropic' });
-  } catch (error) {
-    return json({ error: 'provider_error', detail: String(error) }, 502);
+  // Try every configured provider, not just the first one. An account with no credits
+  // left is a billing problem, not a code problem, and the other provider may be fine.
+  const attempts = [
+    openaiKey ? { provider: 'openai', key: openaiKey, ask: askOpenAI } : null,
+    anthropicKey ? { provider: 'anthropic', key: anthropicKey, ask: askAnthropic } : null,
+  ].filter((attempt): attempt is { provider: string; key: string; ask: typeof askOpenAI } =>
+    attempt !== null,
+  );
+
+  const failures: string[] = [];
+  for (const attempt of attempts) {
+    try {
+      const reply = await attempt.ask(attempt.key, body);
+      if (reply) return json({ reply, provider: attempt.provider });
+      failures.push(`${attempt.provider}: empty reply`);
+    } catch (error) {
+      failures.push(String(error).slice(0, 240));
+    }
   }
+
+  return json({ error: 'provider_error', detail: failures.join(' | ') }, 502);
 });

@@ -101,7 +101,15 @@ export async function requestEmployeeReply(request: ReplyRequest): Promise<Reply
 }
 
 /** One sentence a person can act on, shown next to the scripted reply. */
-export function explainReplyFailure(reason: ReplyFailureReason): string {
+export function explainReplyFailure(
+  reason: ReplyFailureReason,
+  detail?: string,
+): string {
+  // Out of credits arrives as a 502 with a provider payload; say it in plain words.
+  if (/insufficient_quota|no credits remaining/i.test(detail ?? '')) {
+    return 'Scripted replies — the model provider account has run out of credits.';
+  }
+
   switch (reason) {
     case 'no_backend':
       return 'Scripted replies — this build has no backend configured.';
