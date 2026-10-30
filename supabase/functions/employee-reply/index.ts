@@ -32,6 +32,10 @@ const GEMINI_MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3.8-flash';
 const OPENAI_MODEL = Deno.env.get('OPENAI_MODEL') ?? 'gpt-4o-mini';
 const ANTHROPIC_MODEL = Deno.env.get('ANTHROPIC_MODEL') ?? 'claude-3-5-haiku-latest';
 
+// A provider that stops answering must not hold the whole reply hostage: cap each attempt so
+// the next provider gets a turn and the caller hears back inside a chat-sized pause.
+const PROVIDER_TIMEOUT_MS = 12_000;
+
 type Turn = { from: 'human' | 'employee'; text: string };
 
 interface EmployeeSeed {
@@ -74,6 +78,7 @@ function turns(history: Turn[] | undefined) {
 async function askOpenAI(key: string, body: Body): Promise<string> {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
+    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
     body: JSON.stringify({
       model: OPENAI_MODEL,
@@ -98,6 +103,7 @@ async function askOpenAI(key: string, body: Body): Promise<string> {
 async function askAnthropic(key: string, body: Body): Promise<string> {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
+    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     headers: {
       'content-type': 'application/json',
       'x-api-key': key,
@@ -127,6 +133,7 @@ async function askGemini(key: string, body: Body): Promise<string> {
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
     {
       method: 'POST',
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: systemPrompt(body.employee) }] },
@@ -137,7 +144,11 @@ async function askGemini(key: string, body: Body): Promise<string> {
           })),
           { role: 'user', parts: [{ text: body.message }] },
         ],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 320 },
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 320,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }),
     },
   );
@@ -187,6 +198,7 @@ Deno.serve(async (request) => {
 
   const failures: string[] = [];
   for (const attempt of attempts) {
+    const startedAt = Date.now();
     if ((cooling.get(attempt.provider) ?? 0) > Date.now()) {
       failures.push(`${attempt.provider}: skipped, cooling down after a recent failure`);
       continue;
@@ -194,10 +206,10 @@ Deno.serve(async (request) => {
 
     try {
       const reply = await attempt.ask(attempt.key, body);
-      if (reply) return json({ reply, provider: attempt.provider });
+      if (reply) return json({ reply, provider: attempt.provider, ms: Date.now() - startedAt });
       failures.push(`${attempt.provider}: empty reply`);
     } catch (error) {
-      const message = String(error);
+      const message = `${attempt.provider} (${Date.now() - startedAt}ms) ${String(error)}`;
       failures.push(message.slice(0, 240));
       // 429/401/403 mean the account, not the request, is the problem.
       if (/\b(429|401|403)\b|quota/i.test(message)) {
