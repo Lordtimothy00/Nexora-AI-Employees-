@@ -77,6 +77,50 @@ const dueIn = (days: number) =>
     day: 'numeric',
   });
 
+const historySeed: Activity[] = (() => {
+  const lines: { employeeId: string; text: string; kind: Activity['kind'] }[] = [
+    { employeeId: 'emp_kai', text: 'Cleared the overnight support queue', kind: 'delivery' },
+    { employeeId: 'emp_ava', text: 'Qualified 6 inbound accounts from the pricing page', kind: 'approval' },
+    { employeeId: 'emp_atlas', text: 'Refreshed the weekly retention cohort', kind: 'delivery' },
+    { employeeId: 'emp_kai', text: 'Escalated 2 refund requests above policy', kind: 'alert' },
+    { employeeId: 'emp_ava', text: 'Shipped follow-up sequence v3 to 240 contacts', kind: 'delivery' },
+    { employeeId: 'emp_atlas', text: 'Reconciled usage data against billing', kind: 'delivery' },
+    { employeeId: 'emp_kai', text: 'Rewrote 9 macros from resolved tickets', kind: 'approval' },
+  ];
+
+  const out: Activity[] = [];
+  let index = 0;
+
+  for (let day = 30; day >= 1; day -= 1) {
+    if (day % 6 === 0) continue; // quiet days keep the trend honest
+    const perDay = day % 4 === 0 ? 1 : 2;
+
+    for (let slot = 0; slot < perDay; slot += 1) {
+      const line = lines[index % lines.length];
+      out.push({
+        id: `act_h${index}`,
+        employeeId: line.employeeId,
+        text: line.text,
+        at: iso(day, 2 + slot * 4),
+        kind: line.kind,
+      });
+      index += 1;
+    }
+  }
+
+  return out;
+})();
+
+const seedActivityList: Activity[] = [
+  { id: 'act_01', employeeId: 'emp_kai', text: 'Resolved 112 tickets in the northeast carrier delay batch', at: iso(0, 2), kind: 'delivery' },
+  { id: 'act_02', employeeId: 'emp_ava', text: 'Booked 3 qualified meetings from the fintech sequence', at: iso(0, 4), kind: 'approval' },
+  { id: 'act_03', employeeId: 'emp_atlas', text: 'Published the October revenue churn readout', at: iso(1, 1), kind: 'delivery' },
+  { id: 'act_04', employeeId: 'emp_atlas', text: 'Flagged an activation drop isolated to iOS web checkout', at: iso(1, 6), kind: 'alert' },
+  { id: 'act_05', employeeId: 'emp_ava', text: 'Sequence v1 crossed a 9.4% reply rate', at: iso(2, 3), kind: 'delivery' },
+  { id: 'act_06', employeeId: 'emp_atlas', text: 'Joined your workspace as Data Analyst', at: iso(12), kind: 'hire' },
+  ...historySeed,
+];
+
 const seedState: WorkspaceState = {
   hires: [
     { employeeId: 'emp_ava', hiredAt: iso(64), status: 'active', tasksCompleted: 128, utilization: 82 },
@@ -203,14 +247,9 @@ const seedState: WorkspaceState = {
       at: iso(0, 8),
     },
   ],
-  activities: [
-    { id: 'act_01', employeeId: 'emp_kai', text: 'Resolved 112 tickets in the northeast carrier delay batch', at: iso(0, 2), kind: 'delivery' },
-    { id: 'act_02', employeeId: 'emp_ava', text: 'Booked 3 qualified meetings from the fintech sequence', at: iso(0, 4), kind: 'approval' },
-    { id: 'act_03', employeeId: 'emp_atlas', text: 'Published the October revenue churn readout', at: iso(1, 1), kind: 'delivery' },
-    { id: 'act_04', employeeId: 'emp_atlas', text: 'Flagged an activation drop isolated to iOS web checkout', at: iso(1, 6), kind: 'alert' },
-    { id: 'act_05', employeeId: 'emp_ava', text: 'Sequence v1 crossed a 9.4% reply rate', at: iso(2, 3), kind: 'delivery' },
-    { id: 'act_06', employeeId: 'emp_atlas', text: 'Joined your workspace as Data Analyst', at: iso(12), kind: 'hire' },
-  ],
+  activities: [...seedActivityList].sort(
+    (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime(),
+  ),
 };
 
 const readState = (): WorkspaceState => {

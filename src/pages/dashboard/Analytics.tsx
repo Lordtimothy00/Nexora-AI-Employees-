@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Download, Sparkles, TrendingUp, Users, Clock, Target } from 'lucide-react';
+import { Download, Sparkles, TrendingDown, TrendingUp, Users, Clock, Target } from 'lucide-react';
 import { PageHeader, Panel, StatCard, Toast, MiniBar } from '@/components/dashboard/ui';
 import { DonutChart, TaskChart } from '@/components/dashboard/TaskChart';
 import { Avatar } from '@/components/ui/Avatar';
@@ -7,16 +7,8 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
 import { csvEscape, downloadFile } from '@/lib/download';
+import { activitySeries } from '@/lib/metrics';
 import { cn } from '@/lib/utils';
-
-const ranges = {
-  '7d': { data: [26, 38, 34, 52, 47, 63, 78], labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], multiplier: 1 },
-  '30d': {
-    data: [18, 26, 22, 34, 30, 44, 39, 52, 47, 58, 54, 68, 62, 74],
-    labels: ['1 Oct', '5', '9', '13', '17', '21', '25', '29'],
-    multiplier: 4.2,
-  },
-};
 
 const deptColors: Record<string, string> = {
   Sales: '#2fe3b0',
@@ -28,11 +20,14 @@ const deptColors: Record<string, string> = {
 };
 
 export function Analytics() {
-  const { hires, hoursSaved, utilization, completedThisMonth, tasks } = useWorkspace();
-  const [range, setRange] = useState<keyof typeof ranges>('7d');
+  const { hires, hoursSaved, utilization, completedThisMonth, tasks, activities } = useWorkspace();
+  const [range, setRange] = useState<'7d' | '30d'>('7d');
   const [toast, setToast] = useState<string | null>(null);
 
-  const chart = ranges[range];
+  const chart = useMemo(
+    () => activitySeries(activities, range === '7d' ? 7 : 30, { completionsOnly: true }),
+    [activities, range],
+  );
   const totalDelivered = hires.reduce((sum, hire) => sum + hire.tasksCompleted, 0);
   const spend = hires.length * 49;
   const costPerTask = totalDelivered > 0 ? spend / Math.max(completedThisMonth, 1) : 0;
@@ -159,12 +154,28 @@ export function Analytics() {
             >
               <div className="mb-3 flex items-end gap-3">
                 <p className="font-display text-[26px] font-semibold leading-none text-white">
-                  {Math.round(chart.data.reduce((sum, value) => sum + value, 0) * chart.multiplier)}
+                  {chart.total}
                 </p>
-                <span className="mb-0.5 inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-0.5 text-[10px] text-[#9df7c2]">
-                  <TrendingUp className="size-2.5" /> 18.4%
-                </span>
-                <span className="mb-0.5 text-[10.5px] text-[#9aaab3]">vs. previous period</span>
+                {chart.changePct === null ? (
+                  <span className="mb-0.5 text-[10.5px] text-[#9aaab3]">no prior period</span>
+                ) : (
+                  <>
+                    <span
+                      className={cn(
+                        'mb-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px]',
+                        chart.changePct >= 0 ? 'bg-mint/10 text-[#9df7c2]' : 'bg-rose-500/10 text-rose-300',
+                      )}
+                    >
+                      {chart.changePct >= 0 ? (
+                        <TrendingUp className="size-2.5" />
+                      ) : (
+                        <TrendingDown className="size-2.5" />
+                      )}
+                      {Math.abs(chart.changePct)}%
+                    </span>
+                    <span className="mb-0.5 text-[10.5px] text-[#9aaab3]">vs. previous period</span>
+                  </>
+                )}
               </div>
               <TaskChart data={chart.data} labels={chart.labels} height={200} />
             </Panel>

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
   Check,
@@ -20,18 +21,8 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
+import { activitySeries } from '@/lib/metrics';
 import { cn, greeting } from '@/lib/utils';
-
-const rangeData = {
-  '7d': {
-    data: [26, 38, 34, 52, 47, 63, 78],
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  },
-  '30d': {
-    data: [18, 26, 22, 34, 30, 44, 39, 52, 47, 58, 54, 68, 62, 74],
-    labels: ['1 Oct', '5', '9', '13', '17', '21', '25', '29'],
-  },
-};
 
 export function Overview() {
   const { user } = useAuth();
@@ -44,13 +35,16 @@ export function Overview() {
     utilization,
     moveTask,
   } = useWorkspace();
-  const [range, setRange] = useState<keyof typeof rangeData>('7d');
+  const [range, setRange] = useState<'7d' | '30d'>('7d');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const activeHires = hires.filter((hire) => hire.status === 'active');
   const approvals = tasks.filter((task) => task.status === 'review');
-  const chart = rangeData[range];
+  const chart = useMemo(
+    () => activitySeries(activities, range === '7d' ? 7 : 30, { completionsOnly: true }),
+    [activities, range],
+  );
   const firstName = user?.name.split(' ')[0] ?? 'there';
 
   const approve = (taskId: string, title: string) => {
@@ -157,13 +151,29 @@ export function Overview() {
               <div className="mb-3 flex items-end justify-between">
                 <div>
                   <p className="font-display text-[26px] font-semibold leading-none text-white">
-                    {chart.data.reduce((sum, value) => sum + value, 0)}
+                    {chart.total}
                   </p>
                   <p className="mt-1 text-[11px] text-[#9aaab3]">tasks completed · last {range === '7d' ? '7' : '30'} days</p>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-1 text-[10.5px] text-[#9df7c2]">
-                  <ArrowUpRight className="size-3" /> 18.4%
-                </span>
+                {chart.changePct === null ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-2 py-1 text-[10.5px] text-[#a7b7be]">
+                    no prior window
+                  </span>
+                ) : (
+                  <span
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10.5px]',
+                      chart.changePct >= 0 ? 'bg-mint/10 text-[#9df7c2]' : 'bg-rose-500/10 text-rose-300',
+                    )}
+                  >
+                    {chart.changePct >= 0 ? (
+                      <ArrowUpRight className="size-3" />
+                    ) : (
+                      <ArrowDownRight className="size-3" />
+                    )}
+                    {Math.abs(chart.changePct)}%
+                  </span>
+                )}
               </div>
               <TaskChart data={chart.data} labels={chart.labels} height={168} />
             </Panel>
