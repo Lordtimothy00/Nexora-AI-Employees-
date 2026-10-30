@@ -131,7 +131,7 @@ export function Billing() {
 
         <div className="space-y-3">
           <Panel title="Payment method">
-            <div className="relative overflow-hidden rounded-xl border border-white/12 bg-[linear-gradient(140deg,#212b3e,#131c2c_60%,#22222c)] p-4">
+            <div className="relative overflow-hidden rounded-xl border border-white/12 bg-[linear-gradient(140deg,#212b3e,#131c2c_60%,#14171f)] p-4">
               <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-12 size-32 rounded-full bg-[radial-gradient(circle,rgba(77,141,255,0.16),transparent_70%)] blur-xl" />
               <div aria-hidden="true" className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-[#a8c8ff] to-transparent" />
               <div className="relative flex items-center justify-between">

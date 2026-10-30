@@ -338,7 +338,7 @@ export function Overview() {
                         initials={person.initials}
                         accent={person.accent}
                         size="sm"
-                        className="ring-2 ring-[#22222c]"
+                        className="ring-2 ring-[#14171f]"
                       />
                     );
                   })}

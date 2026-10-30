@@ -6,7 +6,7 @@ experience: marketing site, catalogue, employee profiles, pricing, auth, and an 
 workspace with a working demo of the product.
 
 > Design direction: **Nexora AI OS** — Apple Vision Pro meets a futuristic SaaS command center.
-> Deep-space canvas (`#05070d`) with electric-blue (`#4d8dff`) and violet (`#8b5cf6`) aurora layers,
+> Deep-space canvas (`#0a0c11`) with electric-blue (`#4d8dff`) and violet (`#8b5cf6`) aurora layers,
 > drifting particles and a hairline grid. Surfaces are frosted glass (24–40px backdrop blur, subtle
 > blue-white edges, 20–28px corners), the navbar floats above the page, and the hero is ringed by
 > floating glass employee cards with live status indicators.
@@ -124,7 +124,7 @@ src/
 
 Tokens live in the `@theme` block of `src/index.css`:
 
-- **Canvas** cool near-black `#060910` → **surface** `#0f1219` → **panel** `#12151c`
+- **Canvas** near-black `#0a0c11` → **surface** `#121620` → **panel** `#151a24`
 - **Monochrome** cool-slate surfaces, silver borders (`rgba(226,236,247,0.10)`) and a near-white
   text ramp from `#f6f8fa` down to `#5f666d`
 - **Single accent** lime `#c8f060` (soft `#e2fa9e`, deep `#8fae2f`), used sparingly: live dots,

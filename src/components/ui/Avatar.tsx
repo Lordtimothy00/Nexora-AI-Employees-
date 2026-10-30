@@ -79,7 +79,7 @@ export function Avatar({
       {status && (
         <span
           className={cn(
-            'absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[#20202a]',
+            'absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[#12151d]',
             statusColors[status],
           )}
           aria-label={status}

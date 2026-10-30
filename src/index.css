@@ -22,10 +22,10 @@
   --color-lime-soft: #9cc0ff;
   --color-lime-deep: #2457d6;
 
-  --color-ink: #181a25;
-  --color-ink-2: #1d1e28;
-  --color-surface: #22222c;
-  --color-panel: #25242d;
+  --color-ink: #0a0c11;
+  --color-ink-2: #0e1118;
+  --color-surface: #121620;
+  --color-panel: #151a24;
   --color-line: rgba(190,215,255,0.1);
 
   --color-nexa: #4d8dff;
@@ -151,16 +151,16 @@
 
   html {
     -webkit-text-size-adjust: 100%;
-    scrollbar-color: #212b3e #181a25;
+    scrollbar-color: #212b3e #0a0c11;
   }
 
   body {
     background-color: var(--color-ink);
     background-image:
-      radial-gradient(1120px 680px at 50% -14%, rgba(77,141,255,0.2), transparent 70%),
-      radial-gradient(900px 760px at 104% 26%, rgba(139,92,246,0.18), transparent 66%),
-      radial-gradient(860px 700px at -6% 72%, rgba(46,104,255,0.16), transparent 66%),
-      radial-gradient(700px 520px at 70% 108%, rgba(139,92,246,0.14), transparent 68%);
+      radial-gradient(120% 62% at 50% -14%, rgba(77,141,255,0.12), transparent 70%),
+      radial-gradient(95% 70% at 104% 26%, rgba(139,92,246,0.1), transparent 66%),
+      radial-gradient(90% 66% at -6% 72%, rgba(46,104,255,0.08), transparent 66%),
+      radial-gradient(80% 55% at 70% 108%, rgba(139,92,246,0.07), transparent 68%);
     background-attachment: fixed;
     color: #dee7f4;
     font-family: var(--font-sans);
@@ -205,12 +205,12 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #181a25;
+    background: #0a0c11;
   }
   ::-webkit-scrollbar-thumb {
     background: #212b3e;
     border-radius: 999px;
-    border: 2px solid #181a25;
+    border: 2px solid #0a0c11;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #383d46;
@@ -470,13 +470,115 @@
     will-change: transform, opacity;
   }
 
+  /* Hero light. Deliberately a *budget*: the canvas must stay dark, the glow is a
+     highlight. Mobile gets roughly half the desktop alpha so a 400px viewport does
+     not turn into a lavender sheet. */
+  .hero-halo {
+    position: absolute;
+    left: 50%;
+    top: -460px;
+    width: 1280px;
+    height: 980px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    filter: blur(18px);
+    background: radial-gradient(
+      ellipse at center,
+      rgba(77, 141, 255, 0.18),
+      rgba(46, 104, 255, 0.06) 46%,
+      transparent 72%
+    );
+  }
+
+  .hero-glow {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(20px);
+    pointer-events: none;
+  }
+
+  .hero-glow--violet {
+    right: -240px;
+    top: 40px;
+    width: 620px;
+    height: 620px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.16), transparent 68%);
+  }
+
+  .hero-glow--blue {
+    left: -260px;
+    top: 260px;
+    width: 560px;
+    height: 560px;
+    background: radial-gradient(circle, rgba(77, 141, 255, 0.12), transparent 68%);
+  }
+
+  .hero-ring {
+    position: absolute;
+    left: 50%;
+    top: 140px;
+    width: 1080px;
+    height: 1080px;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+    filter: blur(64px);
+    opacity: 0.28;
+    background: conic-gradient(
+      from 150deg at 50% 50%,
+      transparent 0deg,
+      rgba(77, 141, 255, 0.34) 55deg,
+      transparent 120deg,
+      rgba(139, 92, 246, 0.26) 205deg,
+      transparent 255deg,
+      rgba(122, 168, 255, 0.22) 315deg,
+      transparent 360deg
+    );
+  }
+
+  @media (max-width: 767px) {
+    .hero-halo {
+      top: -330px;
+      width: 860px;
+      height: 720px;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(77, 141, 255, 0.1),
+        rgba(46, 104, 255, 0.03) 46%,
+        transparent 72%
+      );
+    }
+
+    .hero-glow--violet {
+      opacity: 0.5;
+    }
+
+    .hero-glow--blue {
+      opacity: 0.45;
+    }
+
+    .hero-ring {
+      opacity: 0.14;
+    }
+  }
+
   .aurora-blue {
-    background: radial-gradient(circle, rgba(77, 141, 255, 0.55), rgba(46, 104, 255, 0.16) 48%, transparent 72%);
+    background: radial-gradient(circle, rgba(77, 141, 255, 0.3), rgba(46, 104, 255, 0.09) 48%, transparent 72%);
   }
 
   .aurora-violet {
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.5), rgba(109, 40, 217, 0.16) 48%, transparent 72%);
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.26), rgba(109, 40, 217, 0.08) 48%, transparent 72%);
   }
+
+  @media (max-width: 767px) {
+    .aurora-blue {
+      background: radial-gradient(circle, rgba(77, 141, 255, 0.18), rgba(46, 104, 255, 0.05) 48%, transparent 72%);
+    }
+
+    .aurora-violet {
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15), rgba(109, 40, 217, 0.05) 48%, transparent 72%);
+    }
+  }
+
 
   .grid-lines {
     background-image:

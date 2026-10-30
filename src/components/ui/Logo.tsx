@@ -5,7 +5,7 @@ export function LogoMark({ className, size = 'md' }: { className?: string; size?
   return (
     <span
       className={cn(
-        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#21212a,#21212a)] shadow-[inset_0_1px_0_rgba(190,215,255,0.16)]',
+        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#13161e,#13161e)] shadow-[inset_0_1px_0_rgba(190,215,255,0.16)]',
         size === 'sm' ? 'size-8 rounded-[9px]' : 'size-9 rounded-[11px]',
         className,
       )}

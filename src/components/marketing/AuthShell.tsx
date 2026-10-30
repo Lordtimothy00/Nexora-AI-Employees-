@@ -22,7 +22,7 @@ export function AuthShell({
     <div className="relative grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
       <AmbientBackground />
       {/* brand panel */}
-      <aside className="relative hidden overflow-hidden border-r border-white/12 bg-[#1b1b26]/55 p-10 backdrop-blur-2xl lg:flex lg:flex-col lg:justify-between xl:p-14">
+      <aside className="relative hidden overflow-hidden border-r border-white/12 bg-[#0e1017]/55 p-10 backdrop-blur-2xl lg:flex lg:flex-col lg:justify-between xl:p-14">
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_30%_20%,black,transparent_75%)]" />
         <div className="pointer-events-none absolute -left-32 top-1/4 size-[560px] rounded-full bg-[radial-gradient(circle,rgba(190,215,255,0.08),transparent_65%)]" />
         <div className="pointer-events-none absolute -right-40 bottom-0 size-[620px] rounded-full opacity-50 blur-[40px] [background:conic-gradient(from_200deg_at_50%_50%,transparent_0deg,rgba(77,141,255,0.35)_70deg,transparent_150deg,rgba(139,92,246,0.3)_230deg,transparent_320deg)]" />
@@ -92,7 +92,7 @@ export function AuthShell({
       </aside>
 
       {/* form panel */}
-      <main className="relative flex min-h-screen flex-col justify-center bg-[#181a25] px-5 py-10 sm:px-8">
+      <main className="relative flex min-h-screen flex-col justify-center bg-[#0a0c11] px-5 py-10 sm:px-8">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,rgba(77,141,255,0.14),transparent_65%)] lg:hidden" />
         <div className="relative mx-auto w-full max-w-[400px]">
           <div className="mb-8 flex items-center justify-between lg:hidden">

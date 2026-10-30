@@ -115,7 +115,7 @@ const security = [
 ];
 
 const visualFrame =
-  'relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-white/12 bg-[#22222c] p-5';
+  'relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-white/12 bg-[#14171f] p-5';
 
 function PhaseVisual({ kind }: { kind: string }) {
   if (kind === 'roles') {
@@ -410,7 +410,7 @@ export function HowItWorks() {
                 {dayInLife.map((item, index) => (
                   <Reveal key={item.time} delay={index * 50}>
                     <div className="relative flex gap-4">
-                      <div className="relative z-10 mt-3 grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-[#22222c]">
+                      <div className="relative z-10 mt-3 grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-[#14171f]">
                         <item.icon className="size-3.5 text-[#7aa8ff]" strokeWidth={1.7} />
                       </div>
                       <div className="flex-1 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4 transition-colors hover:border-white/14">
@@ -528,7 +528,7 @@ export function HowItWorks() {
                 <div className="mt-6 flex items-center gap-3 rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4">
                   <div className="flex -space-x-2">
                     {['/team/nova.jpg', '/team/kai.jpg', '/team/atlas.jpg'].map((src) => (
-                      <Avatar key={src} name="Nexora team" src={src} initials="NX" accent="violet" size="sm" className="ring-2 ring-[#22222c]" />
+                      <Avatar key={src} name="Nexora team" src={src} initials="NX" accent="violet" size="sm" className="ring-2 ring-[#14171f]" />
                     ))}
                   </div>
                   <div className="text-[12px]">

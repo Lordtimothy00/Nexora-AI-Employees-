@@ -20,23 +20,23 @@ const particles = [
 export function AmbientBackground() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-[#181a25]" />
+      <div className="absolute inset-0 bg-[#0a0c11]" />
 
-      <div className="aurora aurora-blue animate-aurora left-1/2 top-[-22%] size-[760px] -translate-x-1/2 opacity-80" />
+      <div className="aurora aurora-blue animate-aurora left-1/2 top-[-22%] size-[760px] -translate-x-1/2 opacity-55" />
       <div
-        className="aurora aurora-violet animate-aurora right-[-16%] top-[10%] size-[620px] opacity-70"
+        className="aurora aurora-violet animate-aurora right-[-16%] top-[10%] size-[620px] opacity-45"
         style={{ animationDelay: '-7s' }}
       />
       <div
-        className="aurora aurora-blue animate-aurora bottom-[2%] left-[-18%] size-[680px] opacity-50"
+        className="aurora aurora-blue animate-aurora bottom-[2%] left-[-18%] size-[680px] opacity-35"
         style={{ animationDelay: '-12s' }}
       />
       <div
-        className="aurora aurora-violet animate-aurora bottom-[-24%] left-1/2 size-[600px] -translate-x-1/2 opacity-40"
+        className="aurora aurora-violet animate-aurora bottom-[-24%] left-1/2 size-[600px] -translate-x-1/2 opacity-30"
         style={{ animationDelay: '-4s' }}
       />
 
-      <div className="grid-lines absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_at_50%_18%,black,transparent_74%)]" />
+      <div className="grid-lines absolute inset-0 opacity-45 [mask-image:radial-gradient(ellipse_at_50%_18%,black,transparent_74%)]" />
 
       <div className="absolute inset-0">
         {particles.map((particle, index) => (
@@ -56,7 +56,7 @@ export function AmbientBackground() {
         ))}
       </div>
 
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,transparent_30%,rgba(16,14,13,0.85)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,transparent_30%,rgba(10,12,17,0.92)_100%)]" />
       <div className="noise absolute inset-0 opacity-60" />
     </div>
   );
