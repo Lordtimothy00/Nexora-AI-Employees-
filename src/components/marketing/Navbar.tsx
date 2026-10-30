@@ -5,6 +5,7 @@ import { Logo } from '@/components/ui/Logo';
 import { ButtonLink } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
+import { prefetchRoute } from '@/lib/prefetch';
 
 const links = [
   { label: 'AI Employees', to: '/employees' },
@@ -63,6 +64,8 @@ export function Navbar() {
               <NavLink
                 key={link.to}
                 to={link.to}
+                onMouseEnter={() => prefetchRoute(link.to)}
+                onFocus={() => prefetchRoute(link.to)}
                 className={({ isActive }) =>
                   cn(
                     'relative rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors',
@@ -81,6 +84,7 @@ export function Navbar() {
             {user ? (
               <ButtonLink
                 to="/dashboard"
+                onMouseEnter={() => prefetchRoute('/dashboard')}
                 size="sm"
                 className="h-9 px-3.5 text-[12.5px]"
                 iconRight={<ArrowRight className="size-3.5" />}
@@ -91,12 +95,14 @@ export function Navbar() {
               <>
                 <Link
                   to="/login"
+                  onMouseEnter={() => prefetchRoute('/login')}
                   className="rounded-full px-3 py-2 text-[12.5px] font-medium text-[#b9c9cf] transition-colors hover:text-white"
                 >
                   Sign in
                 </Link>
                 <ButtonLink
                   to="/signup"
+                  onMouseEnter={() => prefetchRoute('/signup')}
                   size="sm"
                   className="h-9 px-3.5 text-[12.5px]"
                   iconRight={<ArrowRight className="size-3.5" />}
@@ -126,6 +132,8 @@ export function Navbar() {
               <NavLink
                 key={link.to}
                 to={link.to}
+                onMouseEnter={() => prefetchRoute(link.to)}
+                onFocus={() => prefetchRoute(link.to)}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center justify-between rounded-xl px-3.5 py-3 text-[14px] transition-colors',

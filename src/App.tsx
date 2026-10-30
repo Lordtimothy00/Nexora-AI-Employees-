@@ -8,6 +8,7 @@ import { RequireAuth } from '@/components/dashboard/RequireAuth';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { BackButton } from '@/components/ui/BackButton';
 import { RouteFallback } from '@/components/ui/RouteFallback';
+import { prefetchLikelyRoutes } from '@/lib/prefetch';
 import { Home } from '@/pages/Home';
 
 const Employees = lazy(() => import('@/pages/Employees').then((m) => ({ default: m.Employees })));
@@ -60,6 +61,10 @@ function RouteMeta() {
 }
 
 export default function App() {
+  useEffect(() => {
+    prefetchLikelyRoutes();
+  }, []);
+
   return (
     <AuthProvider>
       <WorkspaceProvider>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Linkedin, Twitter, Youtube } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
+import { prefetchRoute } from '@/lib/prefetch';
 
 const columns = [
   {
@@ -83,6 +84,8 @@ export function Footer() {
                     <li key={link.label}>
                       <Link
                         to={link.to}
+                        onMouseEnter={() => prefetchRoute(link.to)}
+                        onFocus={() => prefetchRoute(link.to)}
                         className="group inline-flex items-center gap-1 text-[13.5px] text-[#b9c9cf] transition-colors hover:text-white"
                       >
                         {link.label}
