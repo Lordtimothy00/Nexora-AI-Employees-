@@ -10,6 +10,7 @@ const links = [
   { label: 'AI Employees', to: '/employees' },
   { label: 'Solutions', to: '/how-it-works' },
   { label: 'Pricing', to: '/pricing' },
+  { label: 'Resources', to: '/resources' },
 ];
 
 export function Navbar() {

@@ -12,6 +12,7 @@ import { Employees } from '@/pages/Employees';
 import { EmployeeDetail } from '@/pages/EmployeeDetail';
 import { HowItWorks } from '@/pages/HowItWorks';
 import { Pricing } from '@/pages/Pricing';
+import { Resources } from '@/pages/Resources';
 import { Login } from '@/pages/Login';
 import { Signup } from '@/pages/Signup';
 import { NotFound } from '@/pages/NotFound';
@@ -29,6 +30,7 @@ const routeTitles: { match: RegExp; title: string }[] = [
   { match: /^\/employees\/[^/]+$/, title: 'AI Employee' },
   { match: /^\/how-it-works$/, title: 'How it works' },
   { match: /^\/pricing$/, title: 'Pricing' },
+  { match: /^\/resources$/, title: 'Resources' },
   { match: /^\/login$/, title: 'Sign in' },
   { match: /^\/signup$/, title: 'Create your workspace' },
   { match: /^\/dashboard\/?$/, title: 'Dashboard' },
@@ -67,6 +69,7 @@ export default function App() {
               <Route path="employees/:slug" element={<EmployeeDetail />} />
               <Route path="how-it-works" element={<HowItWorks />} />
               <Route path="pricing" element={<Pricing />} />
+              <Route path="resources" element={<Resources />} />
             </Route>
 
             <Route path="login" element={<Login />} />

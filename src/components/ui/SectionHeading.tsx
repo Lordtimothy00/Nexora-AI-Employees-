@@ -29,7 +29,7 @@ export function SectionHeading({
         {eyebrow && (
           <div className={cn('mb-4 flex', align === 'center' && 'justify-center')}>
             <span className="eyebrow">
-              <span className="size-1.5 rounded-full bg-[#7aa8ff] shadow-[0_0_10px_2px_rgba(215,246,140,0.6)]" />
+              <span className="size-1.5 rounded-full bg-[#7aa8ff] shadow-[0_0_10px_2px_rgba(77,141,255,0.65)]" />
               {eyebrow}
             </span>
           </div>

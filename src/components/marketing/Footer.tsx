@@ -9,6 +9,7 @@ const columns = [
       { label: 'AI Employees', to: '/employees' },
       { label: 'How it works', to: '/how-it-works' },
       { label: 'Pricing', to: '/pricing' },
+      { label: 'Resources', to: '/resources' },
       { label: 'Dashboard', to: '/dashboard' },
     ],
   },

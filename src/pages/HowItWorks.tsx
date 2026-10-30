@@ -250,7 +250,7 @@ function PhaseVisual({ kind }: { kind: string }) {
         {[38, 54, 44, 68, 61, 78, 72, 86, 94].map((height, index) => (
           <div
             key={index}
-            className="flex-1 rounded-sm bg-[linear-gradient(180deg,rgba(215,246,140,0.9),rgba(215,246,140,0.12))]"
+            className="flex-1 rounded-sm bg-[linear-gradient(180deg,rgba(77,141,255,0.9),rgba(139,92,246,0.12))]"
             style={{ height: `${height * 0.5}px` }}
           />
         ))}

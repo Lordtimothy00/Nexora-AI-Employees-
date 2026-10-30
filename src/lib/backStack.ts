@@ -13,6 +13,7 @@ const staticLabels: { match: RegExp; label: string }[] = [
   { match: /^\/employees\/?$/, label: 'AI Employees' },
   { match: /^\/how-it-works$/, label: 'How it works' },
   { match: /^\/pricing$/, label: 'Pricing' },
+  { match: /^\/resources$/, label: 'Resources' },
   { match: /^\/login$/, label: 'Sign in' },
   { match: /^\/signup$/, label: 'Sign up' },
   { match: /^\/dashboard\/?$/, label: 'Dashboard' },

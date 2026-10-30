@@ -39,6 +39,15 @@ describe('marketing pages', () => {
     expect(screen.getAllByText('Ava').length).toBeGreaterThan(0);
   });
 
+  it('renders the resources library and its guides', async () => {
+    renderAt('/resources');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/run an AI team/i);
+    expect(
+      screen.getByText(/The first-week onboarding checklist/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Templates')).toBeInTheDocument();
+  });
+
   it('lists every AI employee and filters by department', async () => {
     const user = userEvent.setup();
     renderAt('/employees');
