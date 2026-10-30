@@ -10,3 +10,6 @@ dist-ssr
 
 # build artifacts
 *.tsbuildinfo
+
+# Reference art kept locally, never committed
+image-search/
