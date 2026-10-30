@@ -7,6 +7,7 @@ import { resetBackStack } from '@/lib/backStack';
 
 beforeEach(() => {
   resetBackStack();
+  localStorage.removeItem('nexora.workspace.v2');
 });
 
 const renderAt = (path: string) => {
@@ -198,5 +199,77 @@ describe('authentication and dashboard', () => {
     await user.type(screen.getByLabelText('Create password'), 'supersecret1');
     await user.click(screen.getByRole('button', { name: /Create workspace/i }));
     expect(screen.getByText(/Please accept the terms/i)).toBeInTheDocument();
+  });
+});
+
+const seedEmptyWorkspace = () => {
+  localStorage.setItem(
+    'nexora.workspace.v2',
+    JSON.stringify({ hires: [], tasks: [], messages: [], activities: [] }),
+  );
+};
+
+describe('empty workspace', () => {
+  beforeEach(() => {
+    seedSession();
+    seedEmptyWorkspace();
+  });
+
+  it('offers a first hire on every dashboard surface instead of blank panels', async () => {
+    const surfaces: { path: string; copy: RegExp }[] = [
+      { path: '/dashboard', copy: /Your first employee is waiting/i },
+      { path: '/dashboard/team', copy: /No employees hired yet/i },
+      { path: '/dashboard/tasks', copy: /No one to delegate to yet/i },
+      { path: '/dashboard/conversations', copy: /No conversations yet/i },
+      { path: '/dashboard/analytics', copy: /No data to analyse yet/i },
+    ];
+
+    for (const surface of surfaces) {
+      const view = renderAt(surface.path);
+      expect(await screen.findByText(surface.copy)).toBeInTheDocument();
+      view.unmount();
+    }
+  });
+
+  it('shows no receipts for a brand-new account', async () => {
+    renderAt('/dashboard/billing');
+    expect(await screen.findByText(/No invoices yet/i)).toBeInTheDocument();
+    expect(screen.queryByText('INV-2041')).not.toBeInTheDocument();
+  });
+
+  it('shows receipts once the account has billing history', async () => {
+    localStorage.setItem(
+      'nexora.auth.v1',
+      JSON.stringify({
+        user: {
+          id: 'usr_old',
+          name: 'Alex Morgan',
+          email: 'demo@nexora.ai',
+          company: 'Northwind Labs',
+          role: 'Founder & CEO',
+          plan: 'growth',
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 92).toISOString(),
+        },
+      }),
+    );
+
+    renderAt('/dashboard/billing');
+    expect(await screen.findByText('INV-2041')).toBeInTheDocument();
+    expect(screen.queryByText(/No invoices yet/i)).not.toBeInTheDocument();
+  });
+
+  it('renders billing and settings with no employees and no errors', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const billing = renderAt('/dashboard/billing');
+    expect(await screen.findByRole('heading', { name: /^Billing/i })).toBeInTheDocument();
+    billing.unmount();
+
+    const settings = renderAt('/dashboard/settings');
+    expect(await screen.findByRole('heading', { name: /^Settings/i })).toBeInTheDocument();
+    settings.unmount();
+
+    expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 });

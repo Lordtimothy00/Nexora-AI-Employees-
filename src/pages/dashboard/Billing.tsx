@@ -20,8 +20,16 @@ export function Billing() {
   const [toast, setToast] = useState<string | null>(null);
   const currentPlan = plans.find((plan) => plan.id === (user?.plan ?? 'growth')) ?? plans[1];
   const tasksIncluded = currentPlan.id === 'launch' ? 500 : currentPlan.id === 'growth' ? 4000 : 100000;
-  const tasksUsed = Math.min(1284 + completedThisMonth, tasksIncluded);
+  const tasksUsed = Math.min(completedThisMonth, tasksIncluded);
   const seatsIncluded = currentPlan.id === 'launch' ? 1 : currentPlan.id === 'growth' ? 5 : 999;
+  const monthsActive = (() => {
+    const start = user?.createdAt ? new Date(user.createdAt) : new Date();
+    const now = new Date();
+    const months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+    return Math.max(0, months);
+  })();
+  const history = invoices.slice(0, Math.min(invoices.length, monthsActive));
+
   const nextInvoice = new Date();
   nextInvoice.setMonth(nextInvoice.getMonth() + 1);
   nextInvoice.setDate(1);
@@ -162,6 +170,18 @@ export function Billing() {
       </div>
 
       <Panel title="Invoices" subtitle="Download receipts for your records" padded={false}>
+        {history.length === 0 ? (
+          <div className="flex flex-col items-center px-6 py-12 text-center">
+            <span className="grid size-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-[#7aa8ff]">
+              <ReceiptText className="size-4" />
+            </span>
+            <p className="mt-3 font-display text-[13.5px] font-semibold text-white">No invoices yet</p>
+            <p className="mt-1 max-w-[280px] text-[11.5px] leading-relaxed text-[#aab8cc]">
+              You are inside the 14-day trial. Your first receipt appears here once it converts —
+              nothing is charged before then.
+            </p>
+          </div>
+        ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-left">
             <thead>
@@ -175,7 +195,7 @@ export function Billing() {
               </tr>
             </thead>
             <tbody>
-              {invoices.map((invoice) => (
+              {history.map((invoice) => (
                 <tr key={invoice.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.015]">
                   <td className="px-4 py-3 font-mono text-[11px] text-white">{invoice.id}</td>
                   <td className="px-3 py-3 text-[11px] text-[#b9c6d9]">{invoice.date}</td>
@@ -200,6 +220,7 @@ export function Billing() {
             </tbody>
           </table>
         </div>
+        )}
       </Panel>
 
       <Panel title="Available plans" subtitle="Move up or down at any time — prorated automatically">

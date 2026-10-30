@@ -29,6 +29,11 @@ interface AuthContextValue {
 const STORAGE_KEY = 'nexora.auth.v1';
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+// The demo workspace is meant to look established: three months of history so the
+// billing and analytics screens have something real to show. Fresh signups start at
+// today and correctly see empty states instead.
+const demoCreatedAt = new Date(Date.now() - 1000 * 60 * 60 * 24 * 92).toISOString();
+
 const demoUser: User = {
   id: 'usr_demo',
   name: 'Alex Morgan',
@@ -36,7 +41,7 @@ const demoUser: User = {
   company: 'Northwind Labs',
   role: 'Founder & CEO',
   plan: 'growth',
-  createdAt: new Date().toISOString(),
+  createdAt: demoCreatedAt,
 };
 
 const readStoredUser = (): User | null => {
@@ -88,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               email,
               company: isDemo ? demoUser.company : 'New workspace',
               plan: isDemo ? demoUser.plan : 'growth',
-              createdAt: new Date().toISOString(),
+              createdAt: isDemo ? demoUser.createdAt : new Date().toISOString(),
             };
       persist(next);
       return next;
