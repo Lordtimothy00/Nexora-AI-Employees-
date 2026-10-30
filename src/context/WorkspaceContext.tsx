@@ -16,8 +16,12 @@ import {
   deleteHire as deleteRemoteHire,
   ensureWorkspace,
   fetchWorkspace,
+  fetchWorkspaces,
+  getWorkspaceId,
   setHireStatus,
   setTaskStatus,
+  switchWorkspace as switchRemoteWorkspace,
+  type WorkspaceSummary,
 } from '@/lib/backend';
 import { backendConfigured } from '@/lib/supabase';
 
@@ -77,6 +81,11 @@ interface WorkspaceContextValue extends WorkspaceState {
   utilization: number;
   /** What the current team costs per month, read from each employee's price. */
   monthlySpend: number;
+  /** Workspaces this person can move between. Empty in the local demo. */
+  workspaces: WorkspaceSummary[];
+  activeWorkspace: WorkspaceSummary | null;
+  switching: boolean;
+  switchWorkspace: (workspaceId: string) => Promise<void>;
 }
 
 const STORAGE_KEY = 'nexora.workspace.v2';
@@ -287,11 +296,25 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<WorkspaceState>(seedState);
   const [hydrated, setHydrated] = useState(false);
 
+  const [workspaces, setWorkspaces] = useState<WorkspaceSummary[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [switching, setSwitching] = useState(false);
+
   const refresh = useCallback(async () => {
     try {
       setState(await fetchWorkspace());
     } catch {
       /* keep the optimistic state; the next mutation retries */
+    }
+  }, []);
+
+  const loadWorkspaces = useCallback(async () => {
+    try {
+      const [list, current] = await Promise.all([fetchWorkspaces(), getWorkspaceId()]);
+      setWorkspaces(list);
+      setActiveId(current);
+    } catch {
+      /* single-workspace accounts and the demo simply keep the static label */
     }
   }, []);
 
@@ -313,6 +336,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         await ensureWorkspace(user?.company);
         const snapshot = await fetchWorkspace();
         if (!cancelled) setState(snapshot);
+        if (!cancelled) void loadWorkspaces();
       } catch {
         if (!cancelled) setState({ hires: [], tasks: [], messages: [], activities: [] });
       } finally {
@@ -323,7 +347,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [authReady, remote, user?.id, user?.company]);
+  }, [authReady, remote, user?.id, user?.company, loadWorkspaces]);
 
   useEffect(() => {
     if (!hydrated || remote || !authReady) return;
@@ -440,6 +464,21 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     [remote, refresh],
   );
 
+  const switchWorkspace = useCallback(
+    async (workspaceId: string) => {
+      if (!remote || workspaceId === activeId) return;
+      setSwitching(true);
+      try {
+        await switchRemoteWorkspace(workspaceId);
+        setActiveId(workspaceId);
+        await refresh();
+      } finally {
+        setSwitching(false);
+      }
+    },
+    [remote, activeId, refresh],
+  );
+
   const completedThisMonth = useMemo(
     () => state.hires.reduce((sum, hire) => sum + Math.round(hire.tasksCompleted * 0.22), 0) + state.tasks.filter((t) => t.status === 'done').length,
     [state.hires, state.tasks],
@@ -481,8 +520,12 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       hoursSaved,
       utilization,
       monthlySpend,
+      workspaces,
+      activeWorkspace: workspaces.find((workspace) => workspace.id === activeId) ?? null,
+      switching,
+      switchWorkspace,
     }),
-    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend],
+    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

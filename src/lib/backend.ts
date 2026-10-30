@@ -250,6 +250,42 @@ export async function fetchProfile(): Promise<RemoteProfile | null> {
   return (data as RemoteProfile | null) ?? null;
 }
 
+export interface WorkspaceSummary {
+  id: string;
+  name: string;
+  role: string;
+  plan: string;
+  members: number;
+}
+
+/** Every workspace this person belongs to, newest last. Empty for the local demo account. */
+export async function fetchWorkspaces(): Promise<WorkspaceSummary[]> {
+  const db = await client();
+  const { data, error } = await db.rpc('my_workspaces');
+  if (error) throw new Error(error.message);
+
+  type Row = { id: string; name: string | null; role: string | null; plan: string | null; members: number | null };
+
+  return ((data ?? []) as Row[]).map((row) => ({
+    id: row.id,
+    name: row.name || 'Workspace',
+    role: (row.role as string) || 'member',
+    plan: (row.plan as string) || 'growth',
+    members: (row.members as number) ?? 1,
+  }));
+}
+
+/**
+ * Moves the signed-in person to another workspace. The id is persisted on their profile, so the
+ * choice survives a reload, and the cached id is dropped so the next fetch reads the new one.
+ */
+export async function switchWorkspace(workspaceId: string): Promise<void> {
+  const db = await client();
+  const { error } = await db.rpc('switch_workspace', { p_workspace: workspaceId });
+  if (error) throw new Error(error.message);
+  resetWorkspaceCache();
+}
+
 export async function fetchMembers(): Promise<WorkspaceMember[]> {
   const db = await client();
   const ws = await getWorkspaceId();

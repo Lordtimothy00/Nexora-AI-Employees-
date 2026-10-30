@@ -51,8 +51,10 @@ const pageTitles: Record<string, string> = {
 
 export function DashboardLayout() {
   const { user, logout } = useAuth();
-  const { hires, activities } = useWorkspace();
+  const { hires, activities, workspaces, activeWorkspace, switching, switchWorkspace } =
+    useWorkspace();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showWorkspaces, setShowWorkspaces] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const location = useLocation();
@@ -62,11 +64,17 @@ export function DashboardLayout() {
     setMobileOpen(false);
     setShowNotifications(false);
     setShowProfile(false);
+    setShowWorkspaces(false);
   }, [location.pathname]);
 
   const title = pageTitles[location.pathname] ?? 'Workspace';
   const seatsUsed = hires.length;
   const seatsTotal = 5;
+
+  // The switcher only earns its chevron when there is somewhere else to go.
+  const canSwitch = workspaces.length > 1;
+  const workspaceName = activeWorkspace?.name ?? user?.company ?? 'Workspace';
+  const planLabel = `${activeWorkspace?.plan ?? user?.plan ?? 'growth'} plan`;
 
   const sidebar = (
     <div className="flex h-full flex-col border-r border-white/12 bg-[#071b1e]/55 backdrop-blur-2xl">
@@ -82,17 +90,89 @@ export function DashboardLayout() {
         </button>
       </div>
 
-      <div className="px-3">
-        <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.03] p-2.5">
+      <div className="relative px-3">
+        <button
+          type="button"
+          onClick={() => canSwitch && setShowWorkspaces((open) => !open)}
+          disabled={!canSwitch || switching}
+          aria-haspopup={canSwitch ? 'menu' : undefined}
+          aria-expanded={canSwitch ? showWorkspaces : undefined}
+          aria-label={canSwitch ? 'Switch workspace' : undefined}
+          className={cn(
+            'flex w-full items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.03] p-2.5 text-left transition',
+            canSwitch && 'hover:border-white/20 hover:bg-white/[0.05]',
+            switching && 'opacity-60',
+          )}
+        >
           <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#eef7f5] font-display text-[12px] font-bold text-[#05130f]">
-            {initialsOf(user?.company ?? 'Nexora')}
+            {initialsOf(workspaceName)}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[12px] font-medium text-white">{user?.company ?? 'Workspace'}</p>
-            <p className="text-[10px] capitalize text-[#a7b7be]">Growth plan · {seatsUsed} seats</p>
+            <p className="truncate text-[12px] font-medium text-white">{workspaceName}</p>
+            <p className="text-[10px] capitalize text-[#a7b7be]">
+              {planLabel} · {seatsUsed} {seatsUsed === 1 ? 'seat' : 'seats'}
+            </p>
           </div>
-          <ChevronDown className="size-3.5 shrink-0 text-[#8d9ea7]" />
-        </div>
+          {canSwitch && (
+            <ChevronDown
+              className={cn(
+                'size-3.5 shrink-0 text-[#8d9ea7] transition-transform',
+                showWorkspaces && 'rotate-180',
+              )}
+            />
+          )}
+        </button>
+
+        {showWorkspaces && canSwitch && (
+          <>
+            <button
+              type="button"
+              aria-label="Close workspace menu"
+              className="fixed inset-0 z-30 cursor-default"
+              onClick={() => setShowWorkspaces(false)}
+            />
+            <div
+              role="menu"
+              aria-label="Your workspaces"
+              className="absolute inset-x-3 z-40 mt-1.5 overflow-hidden rounded-xl border border-white/12 bg-[#0a1e21]/95 p-1 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.75)] backdrop-blur-xl"
+            >
+              <p className="px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9ea7]">
+                Your workspaces
+              </p>
+              {workspaces.map((workspace) => {
+                const active = workspace.id === activeWorkspace?.id;
+                return (
+                  <button
+                    key={workspace.id}
+                    type="button"
+                    role="menuitem"
+                    aria-current={active ? 'true' : undefined}
+                    onClick={() => {
+                      setShowWorkspaces(false);
+                      if (!active) void switchWorkspace(workspace.id);
+                    }}
+                    className={cn(
+                      'flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left transition',
+                      active ? 'bg-white/[0.07]' : 'hover:bg-white/[0.05]',
+                    )}
+                  >
+                    <span className="grid size-6 shrink-0 place-items-center rounded-md bg-white/[0.08] font-display text-[10px] font-bold text-[#d8e6e3]">
+                      {initialsOf(workspace.name)}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[11.5px] text-white">{workspace.name}</span>
+                      <span className="block text-[9.5px] capitalize text-[#8d9ea7]">
+                        {workspace.role} · {workspace.members}{' '}
+                        {workspace.members === 1 ? 'member' : 'members'}
+                      </span>
+                    </span>
+                    {active && <Check className="size-3.5 shrink-0 text-[#9df7c2]" />}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="px-3 pt-2.5">

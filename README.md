@@ -158,6 +158,13 @@ A workspace is a first-class thing now, not just one person's row.
   with that exact email can redeem it (`accept_invite(token)`), and redeeming switches the
   workspace to the one they were invited to. Nothing is emailed — wire an SMTP provider before
   calling this production-ready.
+- **Switching workspaces.** `my_workspaces()` lists every membership (name, role, plan, member
+  count) and the sidebar's workspace card becomes a menu when you belong to more than one;
+  picking one calls `switch_workspace(id)`, which validates membership, stores the choice on
+  `profiles.active_workspace_id` and refetches the workspace. Half of this already existed and
+  was unreachable from the UI — you could be in two workspaces and only ever see one.
+- A user can only gain a second workspace by redeeming someone else's invite; there is no
+  "create another workspace" action yet. That is the next natural piece.
 
 ### Demo access
 

@@ -253,6 +253,16 @@ describe('empty workspace', () => {
     expect(screen.getByText('Scripted')).toBeInTheDocument();
   });
 
+  it('hides the workspace switcher when there is nowhere else to go', async () => {
+    seedSession();
+    renderAt('/dashboard');
+
+    // A single-workspace account (and the local demo) must not offer a menu of one.
+    expect((await screen.findAllByText('Northwind Labs')).length).toBeGreaterThan(0);
+    expect(screen.queryByRole('button', { name: /switch workspace/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+  });
+
   it('shows no receipts for a brand-new account', async () => {
     renderAt('/dashboard/billing');
     expect(await screen.findByText(/No invoices yet/i)).toBeInTheDocument();
