@@ -201,7 +201,7 @@ export function Home() {
                 <div className="flex justify-center">
                   <span className="eyebrow">
                     <span className="status-dot" />
-                    Nexora AI OS · 8 employees online
+                    Nexora · {employees.length} employees online
                     <Sparkles className="size-3 text-[#9df7c2]" />
                   </span>
                 </div>

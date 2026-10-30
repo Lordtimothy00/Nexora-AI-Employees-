@@ -5,7 +5,7 @@
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* Nexora AI OS — deep space glass, emerald primary, teal secondary */
+  /* Nexora — deep space glass, emerald primary, teal secondary */
   --color-white: #eef7f5;
   --color-cream: #eef7f5;
   --color-blue: #0bd39a;
@@ -461,7 +461,7 @@
     height: 6px;
   }
 
-  /* ---- AI OS ambience ------------------------------------------------ */
+  /* ---- Ambience ------------------------------------------------------- */
 
   .aurora {
     position: absolute;
@@ -562,20 +562,20 @@
     }
   }
 
-  .aurora-blue {
+  .aurora-mint {
     background: radial-gradient(circle, rgba(11,211,154, 0.3), rgba(6,168,122, 0.09) 48%, transparent 72%);
   }
 
-  .aurora-violet {
+  .aurora-teal {
     background: radial-gradient(circle, rgba(18,227,192, 0.26), rgba(10,141,134, 0.08) 48%, transparent 72%);
   }
 
   @media (max-width: 767px) {
-    .aurora-blue {
+    .aurora-mint {
       background: radial-gradient(circle, rgba(11,211,154, 0.18), rgba(6,168,122, 0.05) 48%, transparent 72%);
     }
 
-    .aurora-violet {
+    .aurora-teal {
       background: radial-gradient(circle, rgba(18,227,192, 0.15), rgba(10,141,134, 0.05) 48%, transparent 72%);
     }
   }

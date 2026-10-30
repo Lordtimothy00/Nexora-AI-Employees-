@@ -28,6 +28,24 @@ function startOfDay(date: Date) {
  * charts comes through here, so the numbers on screen are the numbers in the workspace
  * rather than a hard-coded trend.
  */
+/**
+ * Stat cards need a signed change, and `null` when the prior window was empty — in that
+ * case the card shows a hint instead of inventing a trend.
+ */
+export function changeLabel(changePct: number | null): string | null {
+  if (changePct === null || !Number.isFinite(changePct)) return null;
+  const rounded = Math.round(changePct);
+  if (rounded === 0) return 'No change';
+  return `${rounded > 0 ? '+' : '-'}${Math.abs(rounded)}%`;
+}
+
+export function changeDirection(changePct: number | null): 'up' | 'down' | 'flat' | null {
+  if (changePct === null || !Number.isFinite(changePct) || Math.round(changePct) === 0) {
+    return changePct === null ? null : 'flat';
+  }
+  return changePct > 0 ? 'up' : 'down';
+}
+
 export function activitySeries(
   activities: Activity[],
   days: SeriesRange,

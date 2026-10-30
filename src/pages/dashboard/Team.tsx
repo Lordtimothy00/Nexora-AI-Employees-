@@ -61,7 +61,7 @@ export function Team() {
             <StatCard label="Team size" value={`${hires.length}`} hint="of 5 seats" icon={<Users className="size-4" />} />
             <StatCard label="Active now" value={`${active}`} hint="online" tone="mint" icon={<Sparkles className="size-4" />} />
             <StatCard label="Tasks delivered" value={totalTasks.toLocaleString()} hint="lifetime" tone="sky" icon={<Clock className="size-4" />} />
-            <StatCard label="Avg utilisation" value={`${utilization}%`} hint="this week" tone="amber" delta="Healthy" />
+            <StatCard label="Avg utilisation" value={`${utilization}%`} hint="this week" tone="amber" />
           </div>
 
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

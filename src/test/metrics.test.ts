@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { activitySeries } from '@/lib/metrics';
+import { activitySeries, changeDirection, changeLabel } from '@/lib/metrics';
 import type { Activity } from '@/context/WorkspaceContext';
 
 const NOW = new Date('2026-10-30T12:00:00Z');
@@ -65,5 +65,24 @@ describe('activitySeries', () => {
     };
 
     expect(activitySeries([future], 7, { now: NOW }).total).toBe(0);
+  });
+});
+
+describe('change labels', () => {
+  it('signs a change and rounds it', () => {
+    expect(changeLabel(18.4)).toBe('+18%');
+    expect(changeLabel(-6.2)).toBe('-6%');
+    expect(changeLabel(0.4)).toBe('No change');
+  });
+
+  it('reports nothing when the prior window was empty', () => {
+    expect(changeLabel(null)).toBeNull();
+    expect(changeDirection(null)).toBeNull();
+  });
+
+  it('separates a decline from a rise', () => {
+    expect(changeDirection(12)).toBe('up');
+    expect(changeDirection(-3)).toBe('down');
+    expect(changeDirection(0)).toBe('flat');
   });
 });

@@ -7,7 +7,7 @@ export interface FloatingMetric {
 }
 
 /**
- * A floating glass employee card used around the hero — the "AI OS" product moment.
+ * A floating glass employee card used around the hero — the product moment.
  * Presentational only; the surrounding hero copy carries the accessible information.
  */
 export function FloatingEmployeeCard({

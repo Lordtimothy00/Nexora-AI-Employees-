@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ArrowUpRight, CheckCircle2, TrendingUp, X } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, TrendingDown, TrendingUp, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function PageHeader({
@@ -33,27 +33,30 @@ export function StatCard({
   label,
   value,
   delta,
+  trend,
   hint,
   icon,
-  tone = 'violet',
+  tone = 'primary',
   spark,
 }: {
   label: string;
   value: string;
   delta?: string;
+  /** Direction of `delta`, so a decline never renders behind an up arrow. */
+  trend?: 'up' | 'down' | 'flat';
   hint?: string;
   icon?: ReactNode;
-  tone?: 'violet' | 'mint' | 'sky' | 'amber';
+  tone?: 'primary' | 'mint' | 'sky' | 'amber';
   spark?: number[];
 }) {
   const tones = {
-    violet: 'from-[#0bd39a]/25 to-transparent text-[#9df7c2]',
+    primary: 'from-[#0bd39a]/25 to-transparent text-[#9df7c2]',
     mint: 'from-[#0bd39a]/20 to-transparent text-[#9df7c2]',
     sky: 'from-[#b8c7ca]/20 to-transparent text-[#dae6e6]',
     amber: 'from-[#dbe7e8]/20 to-transparent text-[#e6efec]',
   };
   const stroke = {
-    violet: '#2fe3b0',
+    primary: '#2fe3b0',
     mint: '#0bd39a',
     sky: '#b8c7ca',
     amber: '#dbe7e8',
@@ -70,8 +73,19 @@ export function StatCard({
       <div className="relative mt-2.5 flex items-end justify-between gap-2">
         <div className="flex items-center gap-1.5 text-[10.5px]">
           {delta && (
-            <span className="inline-flex items-center gap-0.5 rounded-full bg-mint/10 px-1.5 py-0.5 text-[#9df7c2]">
-              <TrendingUp className="size-2.5" /> {delta}
+            <span
+              className={cn(
+                'inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5',
+                trend === 'down'
+                  ? 'bg-[#f3c26b]/10 text-[#f6d59b]'
+                  : trend === 'flat' || !trend
+                    ? 'bg-white/8 text-[#dae6e6]'
+                    : 'bg-mint/10 text-[#9df7c2]',
+              )}
+            >
+              {trend === 'up' && <TrendingUp className="size-2.5" />}
+              {trend === 'down' && <TrendingDown className="size-2.5" />}
+              {delta}
             </span>
           )}
           {hint && <span className="text-[#9aaab3]">{hint}</span>}

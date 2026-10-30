@@ -22,17 +22,17 @@ export function AmbientBackground() {
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <div className="absolute inset-0 bg-[#051718]" />
 
-      <div className="aurora aurora-blue animate-aurora left-1/2 top-[-22%] size-[760px] -translate-x-1/2 opacity-55" />
+      <div className="aurora aurora-mint animate-aurora left-1/2 top-[-22%] size-[760px] -translate-x-1/2 opacity-55" />
       <div
-        className="aurora aurora-violet animate-aurora right-[-16%] top-[10%] size-[620px] opacity-45"
+        className="aurora aurora-teal animate-aurora right-[-16%] top-[10%] size-[620px] opacity-45"
         style={{ animationDelay: '-7s' }}
       />
       <div
-        className="aurora aurora-blue animate-aurora bottom-[2%] left-[-18%] size-[680px] opacity-35"
+        className="aurora aurora-mint animate-aurora bottom-[2%] left-[-18%] size-[680px] opacity-35"
         style={{ animationDelay: '-12s' }}
       />
       <div
-        className="aurora aurora-violet animate-aurora bottom-[-24%] left-1/2 size-[600px] -translate-x-1/2 opacity-30"
+        className="aurora aurora-teal animate-aurora bottom-[-24%] left-1/2 size-[600px] -translate-x-1/2 opacity-30"
         style={{ animationDelay: '-4s' }}
       />
 

@@ -21,7 +21,7 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
-import { activitySeries } from '@/lib/metrics';
+import { activitySeries, changeDirection, changeLabel } from '@/lib/metrics';
 import { cn, greeting } from '@/lib/utils';
 
 export function Overview() {
@@ -92,37 +92,38 @@ export function Overview() {
             <StatCard
               label="Active employees"
               value={`${activeHires.length}`}
-              delta={activeHires.length === hires.length ? 'All online' : '1 paused'}
-              hint="of 5 seats"
+              delta={
+                activeHires.length === hires.length
+                  ? 'All online'
+                  : `${hires.length - activeHires.length} paused`
+              }
+              trend={activeHires.length === hires.length ? 'up' : 'flat'}
+              hint={`${hires.length} hired`}
               icon={<Users className="size-4" />}
-              spark={[2, 2, 2, 3, 3, 3, hires.length || 3]}
             />
             <StatCard
               label="Tasks this month"
               value={completedThisMonth.toLocaleString()}
-              delta="+18%"
-              hint="vs. last month"
+              delta={changeLabel(chart.changePct) ?? undefined}
+              trend={changeDirection(chart.changePct) ?? undefined}
+              hint={chart.changePct === null ? 'this month' : 'vs. previous period'}
               tone="mint"
               icon={<CheckCircle2 className="size-4" />}
-              spark={[22, 30, 26, 38, 44, 40, 52]}
+              spark={chart.data}
             />
             <StatCard
               label="Hours saved"
               value={`${hoursSaved}h`}
-              delta="+12h"
               hint="this month"
               tone="sky"
               icon={<Clock className="size-4" />}
-              spark={[18, 24, 30, 28, 36, 42, 48]}
             />
             <StatCard
               label="Utilisation"
               value={`${utilization}%`}
-              delta="Healthy"
               hint="team average"
               tone="amber"
               icon={<Sparkles className="size-4" />}
-              spark={[54, 58, 62, 60, 68, 72, utilization || 70]}
             />
           </div>
 

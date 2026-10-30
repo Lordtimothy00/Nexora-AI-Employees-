@@ -1,13 +1,23 @@
 import { useMemo, useState } from 'react';
-import { Download, Sparkles, TrendingDown, TrendingUp, Users, Clock, Target } from 'lucide-react';
-import { PageHeader, Panel, StatCard, Toast, MiniBar } from '@/components/dashboard/ui';
+import {
+  ArrowRight,
+  BarChart3,
+  Clock,
+  Download,
+  Sparkles,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from 'lucide-react';
+import { EmptyState, PageHeader, Panel, StatCard, Toast, MiniBar } from '@/components/dashboard/ui';
 import { DonutChart, TaskChart } from '@/components/dashboard/TaskChart';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
 import { csvEscape, downloadFile } from '@/lib/download';
-import { activitySeries } from '@/lib/metrics';
+import { activitySeries, changeDirection, changeLabel } from '@/lib/metrics';
 import { cn } from '@/lib/utils';
 
 const deptColors: Record<string, string> = {
@@ -109,25 +119,32 @@ export function Analytics() {
       />
 
       {hires.length === 0 ? (
-        <Panel>
-          <div className="flex flex-col items-center py-14 text-center">
-            <Users className="size-6 text-[#8d9ea7]" />
-            <p className="mt-3 font-display text-[15px] font-semibold text-white">No data to analyse yet</p>
-            <p className="mt-1.5 max-w-sm text-[12.5px] text-[#aabbc2]">
-              Hire your first employee and analytics begin populating within the hour.
-            </p>
-            <ButtonLink to="/employees" className="mt-5" size="sm">
+        <EmptyState
+          icon={<BarChart3 className="size-5" />}
+          title="No data to analyse yet"
+          description="Hire your first employee and this page fills in as they deliver work — every number here is read from your workspace."
+          action={
+            <ButtonLink to="/employees" iconRight={<ArrowRight className="size-4" />}>
               Browse employees
             </ButtonLink>
-          </div>
-        </Panel>
+          }
+        />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <StatCard label="Tasks delivered" value={totalDelivered.toLocaleString()} delta="+18.4%" hint="all time" tone="mint" icon={<TrendingUp className="size-4" />} spark={[20, 30, 28, 42, 38, 54, 62]} />
-            <StatCard label="Hours returned" value={`${hoursSaved}h`} delta="+12h" hint="this month" tone="sky" icon={<Clock className="size-4" />} spark={[16, 22, 28, 26, 34, 40, 46]} />
-            <StatCard label="Cost per task" value={`$${costPerTask.toFixed(2)}`} delta="-6%" hint="vs. last month" tone="amber" icon={<Target className="size-4" />} spark={[1.4, 1.2, 1.1, 0.9, 0.85, 0.8, 0.72]} />
-            <StatCard label="Utilisation" value={`${utilization}%`} hint="team average" delta="Healthy" icon={<Users className="size-4" />} spark={[52, 58, 56, 64, 68, 66, 72]} />
+            <StatCard
+              label="Tasks delivered"
+              value={totalDelivered.toLocaleString()}
+              delta={changeLabel(chart.changePct) ?? undefined}
+              trend={changeDirection(chart.changePct) ?? undefined}
+              hint={chart.changePct === null ? 'all time' : 'vs. previous period'}
+              tone="mint"
+              icon={<TrendingUp className="size-4" />}
+              spark={chart.data}
+            />
+            <StatCard label="Hours returned" value={`${hoursSaved}h`} hint="this month" tone="sky" icon={<Clock className="size-4" />} />
+            <StatCard label="Cost per task" value={`$${costPerTask.toFixed(2)}`} hint="this month" tone="amber" icon={<Target className="size-4" />} />
+            <StatCard label="Utilisation" value={`${utilization}%`} hint="team average" icon={<Users className="size-4" />} />
           </div>
 
           <div className="grid gap-3 lg:grid-cols-[1.55fr_1fr]">

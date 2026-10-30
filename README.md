@@ -5,7 +5,8 @@ sales, support, marketing, operations, finance, and people. Built as a complete 
 experience: marketing site, catalogue, employee profiles, pricing, auth, and an authenticated
 workspace with a working demo of the product.
 
-> Design direction: **Nexora AI OS** — Apple Vision Pro meets a futuristic SaaS command center.
+> Design direction: **deep-space glass** — Apple Vision Pro meets a futuristic SaaS command center,
+> on a teal-black canvas with emerald CTAs.
 > Deep-space canvas (`#051718`) with emerald (`#0bd39a`) and teal (`#12e3c0`) aurora layers,
 > drifting particles and a hairline grid. Surfaces are frosted glass (24–40px backdrop blur, subtle
 > blue-white edges, 20–28px corners), the navbar floats above the page, and the hero is ringed by
