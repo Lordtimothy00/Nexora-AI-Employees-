@@ -41,7 +41,7 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-[#05070d] via-[#05070d]/75 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-20 bg-gradient-to-b from-[#05070d]/85 via-[#05070d]/40 to-transparent"
       />
 
       <div className="mx-auto max-w-[1200px] px-3 pt-3 md:px-6">
