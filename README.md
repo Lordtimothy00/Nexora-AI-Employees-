@@ -120,6 +120,20 @@ Use **Settings → Reset demo workspace** to restore the seeded team.
 
 ---
 
+## Deploying
+
+Live on Vercel as `nexora-ai-employees` → **https://nexora-ai-employees.vercel.app**.
+
+- Framework preset Vite, build `npm run build`, output `dist`; `vercel.json` carries the SPA
+  rewrite plus immutable caching for `/assets` and a week for `/team`.
+- Set `VITE_SUPABASE_URL` and either `VITE_SUPABASE_ANON_KEY` or
+  `VITE_SUPABASE_PUBLISHABLE_KEY` in the project (the second is what Vercel's Supabase
+  integration creates).
+- `VITE_SITE_URL` sets the host used for `sitemap.xml`, `robots.txt`, canonical and social tags.
+  It defaults to the production alias above — set it once a custom domain exists.
+- `sitemap.xml` and `robots.txt` are generated at build time from the route list in
+  `vite.config.ts`; `/dashboard` is excluded and disallowed.
+
 ## Project structure
 
 ```
