@@ -28,7 +28,7 @@ export function FloatingEmployeeCard({
       aria-hidden="true"
       className={cn(
         'glass-strong relative w-full overflow-hidden rounded-[24px] p-4',
-        'shadow-[0_40px_120px_-50px_rgba(0,0,0,0.95),0_0_60px_-24px_rgba(77,141,255,0.5)]',
+        'shadow-[0_40px_120px_-50px_rgba(0,0,0,0.95),0_0_60px_-24px_rgba(77,141,255,0.5),inset_0_1px_0_rgba(255,255,255,0.42),inset_0_0_0_1px_rgba(5,9,18,0.2),inset_0_28px_56px_-32px_rgba(0,0,0,0.55),inset_0_0_88px_-18px_rgba(0,0,0,0.36)]',
         className,
       )}
       style={{ animationDelay: `${delay}s` }}
