@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
 import { WorkspaceProvider } from '@/context/WorkspaceContext';
@@ -7,23 +7,27 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { RequireAuth } from '@/components/dashboard/RequireAuth';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { BackButton } from '@/components/ui/BackButton';
+import { RouteFallback } from '@/components/ui/RouteFallback';
 import { Home } from '@/pages/Home';
-import { Employees } from '@/pages/Employees';
-import { EmployeeDetail } from '@/pages/EmployeeDetail';
-import { HowItWorks } from '@/pages/HowItWorks';
-import { Pricing } from '@/pages/Pricing';
-import { Resources } from '@/pages/Resources';
-import { ResourceArticle } from '@/pages/ResourceArticle';
-import { Login } from '@/pages/Login';
-import { Signup } from '@/pages/Signup';
-import { NotFound } from '@/pages/NotFound';
-import { Overview } from '@/pages/dashboard/Overview';
-import { Team } from '@/pages/dashboard/Team';
-import { Tasks } from '@/pages/dashboard/Tasks';
-import { Conversations } from '@/pages/dashboard/Conversations';
-import { Analytics } from '@/pages/dashboard/Analytics';
-import { Billing } from '@/pages/dashboard/Billing';
-import { Settings } from '@/pages/dashboard/Settings';
+
+const Employees = lazy(() => import('@/pages/Employees').then((m) => ({ default: m.Employees })));
+const EmployeeDetail = lazy(() => import('@/pages/EmployeeDetail').then((m) => ({ default: m.EmployeeDetail })));
+const HowItWorks = lazy(() => import('@/pages/HowItWorks').then((m) => ({ default: m.HowItWorks })));
+const Pricing = lazy(() => import('@/pages/Pricing').then((m) => ({ default: m.Pricing })));
+const Resources = lazy(() => import('@/pages/Resources').then((m) => ({ default: m.Resources })));
+const ResourceArticle = lazy(() => import('@/pages/ResourceArticle').then((m) => ({ default: m.ResourceArticle })));
+const Login = lazy(() => import('@/pages/Login').then((m) => ({ default: m.Login })));
+const Signup = lazy(() => import('@/pages/Signup').then((m) => ({ default: m.Signup })));
+const NotFound = lazy(() => import('@/pages/NotFound').then((m) => ({ default: m.NotFound })));
+
+
+const Overview = lazy(() => import('@/pages/dashboard/Overview').then((m) => ({ default: m.Overview })));
+const Team = lazy(() => import('@/pages/dashboard/Team').then((m) => ({ default: m.Team })));
+const Tasks = lazy(() => import('@/pages/dashboard/Tasks').then((m) => ({ default: m.Tasks })));
+const Conversations = lazy(() => import('@/pages/dashboard/Conversations').then((m) => ({ default: m.Conversations })));
+const Analytics = lazy(() => import('@/pages/dashboard/Analytics').then((m) => ({ default: m.Analytics })));
+const Billing = lazy(() => import('@/pages/dashboard/Billing').then((m) => ({ default: m.Billing })));
+const Settings = lazy(() => import('@/pages/dashboard/Settings').then((m) => ({ default: m.Settings })));
 
 const routeTitles: { match: RegExp; title: string }[] = [
   { match: /^\/$/, title: 'Your AI employees, always working' },
@@ -64,6 +68,7 @@ export default function App() {
           <RouteMeta />
           <BackButton />
           <ErrorBoundary>
+            <Suspense fallback={<RouteFallback />}>
             <Routes>
             <Route element={<MarketingLayout />}>
               <Route index element={<Home />} />
@@ -92,6 +97,7 @@ export default function App() {
 
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
           </ErrorBoundary>
         </BrowserRouter>
       </WorkspaceProvider>

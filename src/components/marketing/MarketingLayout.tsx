@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { AmbientBackground } from './AmbientBackground';
 import { Footer } from './Footer';
+import { RouteFallback } from '@/components/ui/RouteFallback';
 
 export function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -25,7 +26,9 @@ export function MarketingLayout() {
       <AmbientBackground />
       <Navbar />
       <main className="relative">
-        <Outlet />
+        <Suspense fallback={<RouteFallback />}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
     </div>

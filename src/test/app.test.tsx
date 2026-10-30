@@ -41,16 +41,16 @@ describe('marketing pages', () => {
 
   it('renders the resources library and its guides', async () => {
     renderAt('/resources');
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/run an AI team/i);
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/run an AI team/i);
     expect(
-      screen.getByText(/The first-week onboarding checklist/i),
+      await screen.findByText(/The first-week onboarding checklist/i),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Documentation/i })).toBeInTheDocument();
   });
 
   it('opens a resource article from the index', async () => {
     renderAt('/resources/writing-a-brief');
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/write a brief/i);
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/write a brief/i);
     expect(screen.getByRole('heading', { name: /Four lines every brief needs/i })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /All resources/i }).length).toBeGreaterThan(0);
   });
@@ -59,7 +59,7 @@ describe('marketing pages', () => {
     const user = userEvent.setup();
     renderAt('/employees');
 
-    expect(screen.getByText(`${employees.length} employees`)).toBeInTheDocument();
+    expect(await screen.findByText(`${employees.length} employees`)).toBeInTheDocument();
     for (const person of employees) {
       expect(screen.getAllByText(person.name).length).toBeGreaterThan(0);
     }
@@ -78,7 +78,7 @@ describe('marketing pages', () => {
     const nav = screen.getByRole('navigation', { name: 'Main' });
     await user.click(within(nav).getByRole('link', { name: 'Pricing' }));
 
-    expect(screen.getByRole('heading', { name: /Hire a department/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Hire a department/i })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Back to Home/i }));
 
     await waitFor(() =>
@@ -90,7 +90,7 @@ describe('marketing pages', () => {
     const user = userEvent.setup();
     renderAt('/pricing');
 
-    expect(screen.getByRole('heading', { name: /Hire a department/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Hire a department/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Growth' })).toBeInTheDocument();
     expect(screen.getByText('$149')).toBeInTheDocument();
 
@@ -98,9 +98,11 @@ describe('marketing pages', () => {
     expect(screen.getAllByText('$119').length).toBeGreaterThan(0);
   });
 
-  it('shows a 404 page for unknown routes', () => {
+  it('shows a 404 page for unknown routes', async () => {
     renderAt('/does-not-exist');
-    expect(screen.getByRole('heading', { name: /never got hired/i })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /never got hired/i }),
+    ).toBeInTheDocument();
   });
 });
 
@@ -109,7 +111,7 @@ describe('employee detail and hiring', () => {
     const user = userEvent.setup();
     renderAt('/employees/ava-sales-development');
 
-    expect(screen.getByRole('heading', { name: 'Ava' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Ava' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Start free and hire/i }));
 
     expect(
@@ -188,7 +190,7 @@ describe('authentication and dashboard', () => {
     const user = userEvent.setup();
     renderAt('/signup');
 
-    await user.click(screen.getByRole('button', { name: /Create workspace/i }));
+    await user.click(await screen.findByRole('button', { name: /Create workspace/i }));
     expect(screen.getByText(/Tell us your name/i)).toBeInTheDocument();
 
     await user.type(screen.getByLabelText('Full name'), 'Jamie Rivers');

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -24,6 +24,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
 import { cn, initialsOf } from '@/lib/utils';
+import { PanelFallback } from '@/components/ui/RouteFallback';
 
 const workspaceNav = [
   { label: 'Overview', to: '/dashboard', icon: LayoutDashboard, end: true },
@@ -349,7 +350,9 @@ export function DashboardLayout() {
         </header>
 
         <div className="mx-auto max-w-[1280px] px-4 py-6 md:px-6 md:py-8">
-          <Outlet />
+          <Suspense fallback={<PanelFallback />}>
+            <Outlet />
+          </Suspense>
         </div>
       </div>
 
