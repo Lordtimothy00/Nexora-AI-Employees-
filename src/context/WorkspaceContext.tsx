@@ -8,6 +8,17 @@ import {
   type ReactNode,
 } from 'react';
 import { employees, getEmployeeById } from '@/data/employees';
+import { useAuth } from '@/context/AuthContext';
+import {
+  createHire as createRemoteHire,
+  createMessage as createRemoteMessage,
+  createTask as createRemoteTask,
+  deleteHire as deleteRemoteHire,
+  fetchWorkspace,
+  setHireStatus,
+  setTaskStatus,
+} from '@/lib/backend';
+import { backendConfigured } from '@/lib/supabase';
 
 export type TaskStatus = 'backlog' | 'in_progress' | 'review' | 'done';
 export type Priority = 'Low' | 'Medium' | 'High';
@@ -265,26 +276,67 @@ const readState = (): WorkspaceState => {
 };
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
+  const { user, isReady: authReady } = useAuth();
+  // Supabase accounts get Postgres-backed state; the demo account and guests keep the
+  // localStorage workspace so the product still works with no backend configured.
+  const remote = backendConfigured && !!user && !user.id.startsWith('usr_');
+
   const [state, setState] = useState<WorkspaceState>(seedState);
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    setState(readState());
-    setHydrated(true);
+  const refresh = useCallback(async () => {
+    try {
+      setState(await fetchWorkspace());
+    } catch {
+      /* keep the optimistic state; the next mutation retries */
+    }
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    // Wait for the session check, otherwise a signed-in user briefly sees demo data.
+    if (!authReady) return;
+
+    if (!remote) {
+      setState(readState());
+      setHydrated(true);
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const snapshot = await fetchWorkspace();
+        if (!cancelled) setState(snapshot);
+      } catch {
+        if (!cancelled) setState({ hires: [], tasks: [], messages: [], activities: [] });
+      } finally {
+        if (!cancelled) setHydrated(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authReady, remote, user?.id]);
+
+  useEffect(() => {
+    if (!hydrated || remote || !authReady) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
       /* ignore */
     }
-  }, [state, hydrated]);
+  }, [state, hydrated, remote, authReady]);
 
   const hire = useCallback((employeeId: string) => {
     const person = getEmployeeById(employeeId);
     if (!person) return;
+    if (remote) {
+      void createRemoteHire(employeeId, `${person.name} joined your workspace as ${person.role}`)
+        .then(refresh)
+        .catch(() => null);
+    }
     setState((current) => {
       if (current.hires.some((h) => h.employeeId === employeeId)) return current;
       return {
@@ -305,26 +357,36 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         ],
       };
     });
-  }, []);
+  }, [remote, refresh]);
 
   const release = useCallback((employeeId: string) => {
+    if (remote) void deleteRemoteHire(employeeId).then(refresh).catch(() => null);
     setState((current) => ({
       ...current,
       hires: current.hires.filter((h) => h.employeeId !== employeeId),
       tasks: current.tasks.filter((t) => t.employeeId !== employeeId),
     }));
-  }, []);
+  }, [remote, refresh]);
 
   const togglePause = useCallback((employeeId: string) => {
+    if (remote) {
+      const target = state.hires.find((entry) => entry.employeeId === employeeId);
+      if (target) {
+        void setHireStatus(employeeId, target.status === 'active' ? 'paused' : 'active')
+          .then(refresh)
+          .catch(() => null);
+      }
+    }
     setState((current) => ({
       ...current,
       hires: current.hires.map((h) =>
         h.employeeId === employeeId ? { ...h, status: h.status === 'active' ? 'paused' : 'active' } : h,
       ),
     }));
-  }, []);
+  }, [remote, state.hires, refresh]);
 
   const addTask = useCallback<WorkspaceContextValue['addTask']>((input) => {
+    if (remote) void createRemoteTask(input).then(refresh).catch(() => null);
     setState((current) => ({
       ...current,
       tasks: [
@@ -340,17 +402,22 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         ...current.tasks,
       ],
     }));
-  }, []);
+  }, [remote, refresh]);
 
   const moveTask = useCallback((taskId: string, status: TaskStatus) => {
+    // Optimistic ids are not database ids; only sync rows that came from Postgres.
+    if (remote && /^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(taskId)) {
+      void setTaskStatus(taskId, status).then(refresh).catch(() => null);
+    }
     setState((current) => ({
       ...current,
       tasks: current.tasks.map((task) => (task.id === taskId ? { ...task, status } : task)),
     }));
-  }, []);
+  }, [remote, refresh]);
 
   const appendMessage = useCallback(
     (employeeId: string, text: string, from: 'human' | 'employee' = 'human') => {
+      if (remote) void createRemoteMessage(employeeId, text, from).then(refresh).catch(() => null);
       setState((current) => ({
         ...current,
         messages: [
@@ -365,7 +432,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         ],
       }));
     },
-    [],
+    [remote, refresh],
   );
 
   const completedThisMonth = useMemo(

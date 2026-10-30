@@ -65,18 +65,47 @@ Other scripts:
 npm run build      # typecheck + production build
 npm run preview    # preview the production build
 npm run typecheck  # tsc project build
-npm test           # Vitest + Testing Library (10 tests)
+npm test           # Vitest + Testing Library (23 tests)
 npm run test:watch
 ```
 
 Requirements: Node 20+ (developed on Node 22).
 
+### Backend (Supabase)
+
+Auth and workspace data run on Supabase, with a local fallback so the app still works offline.
+
+```bash
+cp .env.example .env    # then fill in your project URL + publishable key
+```
+
+| Variable | Where to find it |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Project Settings → Data API |
+| `VITE_SUPABASE_ANON_KEY` | Project Settings → API Keys (**publishable** key only) |
+
+Schema (already applied to the project, kept as a migration record):
+
+- `profiles` — one row per `auth.users` row, created by the `handle_new_user` trigger from the
+  signup metadata (`name`, `company`). Holds `role` and `plan`.
+- `hires` — which employee someone has hired, their status, tasks completed, utilisation.
+- `tasks`, `messages`, `activities` — the task board, conversations, and the activity feed.
+
+Every table carries `user_id uuid default auth.uid()`, has RLS enabled, and a single
+`for all` policy scoped to `auth.uid() = user_id` — so a signed-in user can only ever read or
+write their own rows. The browser uses the publishable key; no service-role key is ever shipped.
+
+If the env vars are absent (or `MODE === 'test'`), `getSupabase()` returns `null` and the app falls
+back to the localStorage workspace below — `npm run dev` and `npm test` work with no backend at all.
+
 ### Demo access
 
-This build ships with a fully local demo workspace — no backend, no real accounts.
+A fully local demo workspace ships with the build, so you can look around without creating an account.
 
 - **Sign in:** `demo@nexora.ai` / `demo1234`, or press **“Continue with the demo workspace.”**
-- **Sign up:** any valid email + an 8-character password creates a local workspace.
+  This account always uses the seeded local workspace, even when Supabase is configured.
+- **Sign up:** any valid email + an 8-character password creates a real Supabase account with an
+  empty workspace (honest empty states), or a local one when no backend is configured.
 - Hiring from a profile while signed out carries the intent through signup, so the employee lands
   on your team immediately after account creation.
 
@@ -151,19 +180,19 @@ text on the dark canvas.
 
 ## Production notes
 
-- **Auth and AI responses are simulated.** `AuthContext`, `WorkspaceContext`, and `replyFor()` are
-  the seams to replace with a real API (Supabase is a natural fit: auth + tables for hires/tasks/
-  messages, plus an edge function for employee replies).
-- **No secrets or network calls** are required to run the app.
+- **Auth and persistence are real** (`supabase.auth` + five RLS-protected tables). Employee replies
+  from `replyFor()` are still canned — that is the remaining seam for an LLM/edge function.
+- **Only the publishable key ships.** It is safe in a browser bundle; RLS is what protects the data.
+- **No secrets or network calls** are required to run the app — without env vars it is fully local.
 - **Vercel:** `vercel.json` is included with SPA rewrites and asset caching; `npm run build` outputs
   a static `dist/`.
-- **Performance:** single JS bundle (~123 kB gzipped), self-hosted portrait assets, lazy-loaded
-  images, and no runtime CSS-in-JS.
+- **Performance:** ~102 kB gzipped for the app shell; the Supabase SDK (~59 kB gzipped) is a
+  separate chunk that only loads on an auth action, every route below Home is lazy, and likely
+  routes are prefetched on hover/idle. Portraits are self-hosted and lazy-loaded.
 
 ### Sensible next steps
 
-1. Replace mock auth with Supabase Auth and add org/role tables.
-2. Plumb `WorkspaceContext` to Postgres with optimistic updates.
-3. Stream real employee responses (SSE) into Conversations.
-4. Add Stripe Checkout for the three plans.
-5. Add per-route Open Graph images and a sitemap once a production domain is chosen.
+1. Stream real employee responses (SSE) into Conversations.
+2. Add Stripe Checkout for the three plans.
+3. Add per-route Open Graph images and a sitemap once a production domain is chosen.
+4. Add team/seat sharing (multi-member orgs) on top of the current per-user RLS model.

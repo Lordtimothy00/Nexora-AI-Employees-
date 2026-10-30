@@ -1,4 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { fetchProfile, updateProfile as updateRemoteProfile } from '@/lib/backend';
+import { backendConfigured, getSupabase } from '@/lib/supabase';
 
 export interface User {
   id: string;
@@ -57,13 +60,83 @@ const readStoredUser = (): User | null => {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/** Supabase errors are accurate but blunt; these are the ones a person will actually hit. */
+function friendlyAuthError(message: string) {
+  if (/invalid login credentials/i.test(message)) return 'That email and password don’t match.';
+  if (/already registered|already exists/i.test(message)) {
+    return 'That email already has a workspace. Try signing in instead.';
+  }
+  if (/email not confirmed/i.test(message)) return 'Confirm your email first — we sent you a link.';
+  if (/password should be at least/i.test(message)) {
+    return 'Use at least 8 characters for your password.';
+  }
+  return message;
+}
+
+function mapRemoteUser(authUser: SupabaseUser, profile: Awaited<ReturnType<typeof fetchProfile>>): User {
+  const meta = (authUser.user_metadata ?? {}) as { name?: string; company?: string };
+
+  return {
+    id: authUser.id,
+    name: profile?.name || meta.name || nameFromEmail(authUser.email ?? ''),
+    email: authUser.email ?? '',
+    company: profile?.company || meta.company || 'New workspace',
+    role: profile?.role || 'Workspace owner',
+    plan: profile?.plan ?? 'growth',
+    createdAt: profile?.created_at ?? authUser.created_at ?? new Date().toISOString(),
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    setUser(readStoredUser());
-    setIsReady(true);
+    const pending = getSupabase();
+
+    if (!pending) {
+      setUser(readStoredUser());
+      setIsReady(true);
+      return;
+    }
+
+    let cancelled = false;
+    let unsubscribe: (() => void) | null = null;
+
+    void (async () => {
+      const db = await pending;
+      const { data } = await db.auth.getSession();
+      const sessionUser = data.session?.user;
+
+      if (!sessionUser) {
+        if (!cancelled) {
+          setUser(readStoredUser());
+          setIsReady(true);
+        }
+      } else {
+        const profile = await fetchProfile().catch(() => null);
+        if (!cancelled) {
+          setUser(mapRemoteUser(sessionUser, profile));
+          setIsReady(true);
+        }
+      }
+
+      if (cancelled) return;
+
+      const { data: subscription } = db.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT' || !session?.user) return;
+        void fetchProfile()
+          .catch(() => null)
+          .then((profile) => setUser(mapRemoteUser(session.user, profile)));
+      });
+
+      unsubscribe = () => subscription.subscription.unsubscribe();
+    })();
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, []);
 
   const persist = useCallback((next: User | null) => {
@@ -78,6 +151,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string) => {
+      const db = backendConfigured ? await getSupabase() : null;
+
+      if (db && email.toLowerCase() !== demoUser.email) {
+        const { data, error } = await db.auth.signInWithPassword({ email, password });
+        if (error) throw new Error(friendlyAuthError(error.message));
+
+        const profile = await fetchProfile().catch(() => null);
+        const next = mapRemoteUser(data.user, profile);
+        // Remote sessions live in Supabase's own storage; only the demo account is mirrored here.
+        setUser(next);
+        return next;
+      }
+
       await wait(520);
       if (!email.includes('@')) throw new Error('Enter a valid email address.');
       if (password.length < 6) throw new Error('Password must be at least 6 characters.');
@@ -103,6 +189,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = useCallback(
     async ({ name, email, company, password }: SignupInput) => {
+      const db = backendConfigured ? await getSupabase() : null;
+
+      if (db) {
+        const { data, error } = await db.auth.signUp({
+          email,
+          password,
+          options: { data: { name: name.trim(), company: company.trim() || 'New workspace' } },
+        });
+        if (error) throw new Error(friendlyAuthError(error.message));
+        if (!data.session || !data.user) {
+          throw new Error('Check your inbox to confirm your email, then sign in.');
+        }
+
+        const profile = await fetchProfile().catch(() => null);
+        const next = mapRemoteUser(data.user, profile);
+        setUser(next);
+        return next;
+      }
+
       await wait(720);
       if (!email.includes('@')) throw new Error('Enter a valid email address.');
       if (password.length < 8) throw new Error('Use at least 8 characters for your password.');
@@ -121,12 +226,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [persist],
   );
 
-  const logout = useCallback(() => persist(null), [persist]);
+  const logout = useCallback(() => {
+    const pending = getSupabase();
+    if (pending && user && !user.id.startsWith('usr_')) {
+      void pending.then((db) => db.auth.signOut()).catch(() => null);
+    }
+    persist(null);
+  }, [persist, user]);
 
   const updateProfile = useCallback(
     (patch: Partial<Pick<User, 'name' | 'email' | 'company' | 'role'>>) => {
       setUser((current) => {
         if (!current) return current;
+        if (backendConfigured && !current.id.startsWith('usr_')) {
+          void updateRemoteProfile(patch).catch(() => null);
+        }
         const next = { ...current, ...patch };
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: next }));
