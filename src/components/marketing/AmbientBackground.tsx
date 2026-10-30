@@ -14,7 +14,7 @@ const particles = [
 ];
 
 /**
- * The AI operating environment: layered blue/violet aurora, a hairline grid and slow drifting
+ * The AI operating environment: layered emerald/teal aurora, a hairline grid and slow drifting
  * particles painted behind every page. Purely decorative.
  */
 export function AmbientBackground() {

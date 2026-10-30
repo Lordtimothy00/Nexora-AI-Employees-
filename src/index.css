@@ -288,10 +288,11 @@
     border-radius: 1.5rem;
   }
 
-  /* Every page section sits on the same translucent white wash so the glass has depth.
-     Glows, grids and particles are children of the section, so they draw on top of it. */
+  /* Every page section sits on the same faint wash so the glass has depth without
+     lifting the canvas off the reference's near-black. Glows, grids and particles are
+     children of the section, so they draw on top of it. */
   .page-section {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.03);
   }
 
   .panel-hover {
