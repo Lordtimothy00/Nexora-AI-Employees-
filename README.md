@@ -104,14 +104,19 @@ back to the localStorage workspace below — `npm run dev` and `npm test` work w
 Employee answers come from the `employee-reply` edge function (`supabase/functions/employee-reply`),
 deployed with JWT verification on.
 
-- Set **one** secret on the project: `OPENAI_API_KEY` (uses `gpt-4o-mini`) or `ANTHROPIC_API_KEY`
-  (uses `claude-3-5-haiku-latest`).
+- Set at least one secret on the project: `GEMINI_API_KEY` (uses `gemini-2.5-flash`, whose Google
+  AI Studio free tier needs no card — the best default for a demo), `OPENAI_API_KEY` (uses
+  `gpt-4o-mini`) or `ANTHROPIC_API_KEY` (uses `claude-3-5-haiku-latest`).
+- Providers are tried cheapest-first and the function falls through to the next one when one
+  refuses, so an account with no credit left does not break chat. A provider returning
+  429/401/403 is skipped for five minutes so a dead account does not slow every reply.
 - The browser sends the employee's persona plus the last eight turns; the function builds the system
   prompt server-side and calls the provider directly — no SDK, no key in the bundle.
 - No key, or any failure, returns a non-2xx response. `requestEmployeeReply()` returns a failure
   with its reason and the app falls back to the scripted `replyFor()` templates, so chat always
   answers.
-- The channel header says which mode it is in — `Live · openai` or `Scripted` — and a scripted
+- The channel header says which mode it is in — `Live · gemini` / `Live · openai` or `Scripted` —
+  and a scripted
   channel prints the reason above the composer (501 = no key, 401 = no session, 502 = provider
   refused). A silent fallback looked like the model answering, which cost an hour of debugging.
 - Replies are written back through the normal `messages` table, so they are workspace-scoped and

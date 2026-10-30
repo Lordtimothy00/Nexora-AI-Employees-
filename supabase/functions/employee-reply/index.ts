@@ -3,11 +3,15 @@
 // Gives the AI employees a real voice. The browser sends the employee's persona, the last few
 // turns of the thread and the new message; this function asks the configured model for the reply.
 //
-// Configure one secret on the project (Settings → Edge Functions → Secrets):
-//   OPENAI_API_KEY      → uses gpt-4o-mini
-//   ANTHROPIC_API_KEY   → uses claude-3-5-haiku-latest
+// Configure one (or more) secrets on the project (Settings -> Edge Functions -> Secrets):
+//   GEMINI_API_KEY      -> uses gemini-2.5-flash, Google's free tier covers a demo
+//   OPENAI_API_KEY      -> uses gpt-4o-mini
+//   ANTHROPIC_API_KEY   -> uses claude-3-5-haiku-latest
 //
-// With neither set, the function answers 501 and the app falls back to its scripted replies.
+// Providers are tried in that order (cheapest first for a demo), and one that recently
+// refused on quota or auth is skipped for a few minutes so a dead account does not add a
+// failed round trip to every reply. With none set, the function answers 501 and the app
+// falls back to its scripted replies.
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -111,13 +115,49 @@ async function askAnthropic(key: string, body: Body): Promise<string> {
   return (data?.content?.[0]?.text ?? '').toString().trim();
 }
 
+async function askGemini(key: string, body: Body): Promise<string> {
+  const response = await fetch(
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt(body.employee) }] },
+        contents: [
+          ...turns(body.history).map((turn) => ({
+            role: turn.from === 'human' ? 'user' : 'model',
+            parts: [{ text: turn.text }],
+          })),
+          { role: 'user', parts: [{ text: body.message }] },
+        ],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 320 },
+      }),
+    },
+  );
+
+  if (!response.ok) throw new Error(`gemini ${response.status}: ${await response.text()}`);
+  const data = await response.json();
+  const parts: { text?: string; thought?: boolean }[] = data?.candidates?.[0]?.content?.parts ?? [];
+  return parts
+    .filter((part) => !part?.thought && typeof part?.text === 'string')
+    .map((part) => part.text ?? '')
+    .join('')
+    .trim();
+}
+
+// Best effort across the lifetime of an isolate: a provider that just ran out of credit
+// should not add a failed round trip to every reply.
+const COOLDOWN_MS = 5 * 60 * 1000;
+const cooling = new Map<string, number>();
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405);
 
+  const geminiKey = Deno.env.get('GEMINI_API_KEY');
   const openaiKey = Deno.env.get('OPENAI_API_KEY');
   const anthropicKey = Deno.env.get('ANTHROPIC_API_KEY');
-  if (!openaiKey && !anthropicKey) return json({ error: 'not_configured' }, 501);
+  if (!geminiKey && !openaiKey && !anthropicKey) return json({ error: 'not_configured' }, 501);
 
   let body: Body;
   try {
@@ -131,6 +171,7 @@ Deno.serve(async (request) => {
   // Try every configured provider, not just the first one. An account with no credits
   // left is a billing problem, not a code problem, and the other provider may be fine.
   const attempts = [
+    geminiKey ? { provider: 'gemini', key: geminiKey, ask: askGemini } : null,
     openaiKey ? { provider: 'openai', key: openaiKey, ask: askOpenAI } : null,
     anthropicKey ? { provider: 'anthropic', key: anthropicKey, ask: askAnthropic } : null,
   ].filter((attempt): attempt is { provider: string; key: string; ask: typeof askOpenAI } =>
@@ -139,12 +180,22 @@ Deno.serve(async (request) => {
 
   const failures: string[] = [];
   for (const attempt of attempts) {
+    if ((cooling.get(attempt.provider) ?? 0) > Date.now()) {
+      failures.push(`${attempt.provider}: skipped, cooling down after a recent failure`);
+      continue;
+    }
+
     try {
       const reply = await attempt.ask(attempt.key, body);
       if (reply) return json({ reply, provider: attempt.provider });
       failures.push(`${attempt.provider}: empty reply`);
     } catch (error) {
-      failures.push(String(error).slice(0, 240));
+      const message = String(error);
+      failures.push(message.slice(0, 240));
+      // 429/401/403 mean the account, not the request, is the problem.
+      if (/\b(429|401|403)\b|quota/i.test(message)) {
+        cooling.set(attempt.provider, Date.now() + COOLDOWN_MS);
+      }
     }
   }
 
