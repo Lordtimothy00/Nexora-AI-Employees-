@@ -93,10 +93,10 @@ describe('marketing pages', () => {
 
     expect(await screen.findByRole('heading', { name: /Hire a department/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Growth' })).toBeInTheDocument();
-    expect(screen.getByText('$149')).toBeInTheDocument();
+    expect(screen.getByText('$55')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /Annual/i }));
-    expect(screen.getAllByText('$119').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('$44').length).toBeGreaterThan(0);
   });
 
   it('shows a 404 page for unknown routes', async () => {

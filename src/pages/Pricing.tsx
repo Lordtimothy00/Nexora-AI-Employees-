@@ -7,10 +7,12 @@ import { ButtonLink } from '@/components/ui/Button';
 import { Reveal } from '@/components/ui/Reveal';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { comparisonRows, faqs, plans, testimonials } from '@/data/site';
+import { employees } from '@/data/employees';
 import { TestimonialCard } from '@/components/marketing/TestimonialCard';
 import { cn } from '@/lib/utils';
 
 const groups = Array.from(new Set(comparisonRows.map((row) => row.group ?? '')));
+const seatPrice = Math.min(...employees.map((employee) => employee.priceMonthly));
 
 function CellValue({ value }: { value: string | boolean }) {
   if (value === true) {
@@ -176,7 +178,7 @@ export function Pricing() {
                 </span>
                 <p className="text-[12.5px] text-[#b9c9cf]">
                   Need an extra seat mid-cycle? Add another AI employee for{' '}
-                  <span className="text-white">$39/month</span> on any plan.
+                  <span className="text-white">${seatPrice}/month</span> on any plan.
                 </p>
               </div>
               <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9aaab3]">
