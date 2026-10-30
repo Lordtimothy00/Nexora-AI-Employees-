@@ -68,7 +68,7 @@ export function Employees() {
 
   return (
     <>
-      <section className="relative overflow-hidden pb-12 pt-24 md:pt-32">
+      <section className="page-section relative overflow-hidden pb-12 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell">
           <div className="mx-auto max-w-3xl text-center">
@@ -177,7 +177,7 @@ export function Employees() {
         </div>
       </section>
 
-      <section className="relative pb-16">
+      <section className="page-section relative pb-16">
         <div className="shell">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/12 pb-4">
             <div>

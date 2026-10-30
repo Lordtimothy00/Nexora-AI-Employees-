@@ -49,7 +49,7 @@ const toneStyles = {
 
 export function RewardsBand() {
   return (
-    <section id="rewards" className="relative py-6 md:py-10">
+    <section id="rewards" className="page-section relative py-6 md:py-10">
       <div className="shell">
         <Reveal>
           <div className="noise glass-strong relative overflow-hidden rounded-[30px] p-6 md:p-10">

@@ -73,7 +73,7 @@ export function EmployeeDetail() {
 
   if (!employee) {
     return (
-      <section className="shell flex min-h-[70vh] flex-col items-center justify-center py-32 text-center">
+      <section className="page-section shell flex min-h-[70vh] flex-col items-center justify-center py-32 text-center">
         <span className="eyebrow">404 · Role not found</span>
         <h1 className="mt-6 text-3xl font-semibold">That employee is not on the roster.</h1>
         <p className="mt-3 max-w-md text-[14px] text-[#acb3bc]">
@@ -105,7 +105,7 @@ export function EmployeeDetail() {
 
   return (
     <>
-      <section className="relative overflow-hidden pb-10 pt-24 md:pt-32">
+      <section className="page-section relative overflow-hidden pb-10 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[12px] text-[#9ba2ab]">
@@ -328,7 +328,7 @@ export function EmployeeDetail() {
       </section>
 
       {/* Tabs */}
-      <section className="relative border-y border-white/10 bg-[#080b12]/60">
+      <section className="page-section relative border-y border-white/10 ">
         <div className="shell">
           <div className="scroll-thin flex gap-1 overflow-x-auto">
             {tabs.map((item) => (
@@ -352,7 +352,7 @@ export function EmployeeDetail() {
         </div>
       </section>
 
-      <section className="py-12 md:py-16">
+      <section className="page-section py-12 md:py-16">
         <div className="shell">
           {tab === 'overview' && (
             <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr]">
@@ -645,7 +645,7 @@ export function EmployeeDetail() {
       </section>
 
       {/* Related */}
-      <section className="border-t border-white/10 bg-[#080b12]/60 py-14">
+      <section className="page-section border-t border-white/10 py-14">
         <div className="shell">
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>

@@ -31,7 +31,7 @@ export function Pricing() {
 
   return (
     <>
-      <section className="relative overflow-hidden pb-14 pt-24 md:pt-32">
+      <section className="page-section relative overflow-hidden pb-14 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
           <div className="mx-auto max-w-2xl text-center">
@@ -188,7 +188,7 @@ export function Pricing() {
       </section>
 
       {/* comparison */}
-      <section className="border-y border-white/10 bg-[#080b12]/60 py-16 md:py-24">
+      <section className="page-section border-y border-white/10 py-16 md:py-24">
         <div className="shell">
           <SectionHeading
             eyebrow="Compare"
@@ -266,7 +266,7 @@ export function Pricing() {
       </section>
 
       {/* testimonial strip */}
-      <section className="py-16 md:py-20">
+      <section className="page-section py-16 md:py-20">
         <div className="shell">
           <div className="grid gap-4 md:grid-cols-3">
             {testimonials.slice(0, 3).map((testimonial, index) => (
@@ -279,7 +279,7 @@ export function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-white/10 py-16 md:py-24">
+      <section className="page-section border-t border-white/10 py-16 md:py-24">
         <div className="shell">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>

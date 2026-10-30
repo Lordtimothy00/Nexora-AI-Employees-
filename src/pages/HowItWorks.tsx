@@ -266,7 +266,7 @@ function PhaseVisual({ kind }: { kind: string }) {
 export function HowItWorks() {
   return (
     <>
-      <section className="relative overflow-hidden pb-16 pt-24 md:pt-32">
+      <section className="page-section relative overflow-hidden pb-16 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
           <div className="mx-auto max-w-3xl text-center">
@@ -322,7 +322,7 @@ export function HowItWorks() {
       </section>
 
       {/* phases */}
-      <section className="relative py-10 md:py-16">
+      <section className="page-section relative py-10 md:py-16">
         <div className="shell">
           <div className="relative space-y-4">
             {phases.map((phase, index) => (
@@ -358,7 +358,7 @@ export function HowItWorks() {
       </section>
 
       {/* day in the life */}
-      <section className="relative overflow-hidden border-y border-white/10 bg-[#090c13] py-20 md:py-28">
+      <section className="page-section relative overflow-hidden border-y border-white/10 py-20 md:py-28">
         <div className="absolute -right-40 top-10 -z-10">
           <SectionGlow tone="clay" />
         </div>
@@ -430,7 +430,7 @@ export function HowItWorks() {
       </section>
 
       {/* integrations */}
-      <section className="relative py-20 md:py-28">
+      <section className="page-section relative py-20 md:py-28">
         <div className="shell">
           <SectionHeading
             eyebrow="Integrations"
@@ -467,7 +467,7 @@ export function HowItWorks() {
       </section>
 
       {/* security */}
-      <section id="security" className="relative overflow-hidden border-y border-white/10 bg-[#090c13] py-20 md:py-28">
+      <section id="security" className="page-section relative overflow-hidden border-y border-white/10 py-20 md:py-28">
         <div className="shell relative">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <div>
@@ -515,7 +515,7 @@ export function HowItWorks() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 md:py-28">
+      <section className="page-section py-20 md:py-28">
         <div className="shell">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>

@@ -7,7 +7,7 @@ export function FinalCta() {
   const { user } = useAuth();
 
   return (
-    <section className="relative overflow-hidden py-20 md:py-28">
+    <section className="page-section relative overflow-hidden py-20 md:py-28">
       <div className="shell">
         <Reveal>
           <div className="noise glass-strong relative overflow-hidden rounded-[28px] px-6 py-14 text-center md:px-16 md:py-20">

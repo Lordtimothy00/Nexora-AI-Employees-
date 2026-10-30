@@ -186,13 +186,13 @@
     background:
       linear-gradient(
         152deg,
-        rgba(255,255,255,0.11) 0%,
-        rgba(214,231,247,0.055) 20%,
-        rgba(148,178,206,0.03) 46%,
-        rgba(255,255,255,0.025) 72%,
-        rgba(198,219,240,0.05) 100%
+        rgba(255,255,255,0.14) 0%,
+        rgba(214,231,247,0.07) 20%,
+        rgba(148,178,206,0.04) 46%,
+        rgba(255,255,255,0.035) 72%,
+        rgba(198,219,240,0.06) 100%
       ),
-      rgba(12,17,23,0.52);
+      rgba(18,24,32,0.46);
     border: 1px solid rgba(226,236,247,0.2);
     backdrop-filter: blur(34px) saturate(185%) brightness(1.04);
     -webkit-backdrop-filter: blur(34px) saturate(185%) brightness(1.04);
@@ -228,6 +228,11 @@
 
   .panel {
     border-radius: 1.35rem;
+  }
+
+  /* Every page section sits on the same translucent white wash so the glass has depth. */
+  .page-section {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   .panel-hover {

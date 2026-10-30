@@ -131,7 +131,7 @@ export function Home() {
   return (
     <>
       {/* ---------------- HERO ---------------- */}
-      <section className="relative overflow-hidden pb-10 pt-24 md:pt-32">
+      <section className="page-section relative overflow-hidden pb-10 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
           <div className="mx-auto max-w-3xl text-center">
@@ -238,7 +238,7 @@ export function Home() {
       </section>
 
       {/* ---------------- LOGOS ---------------- */}
-      <section className="relative border-y border-white/10 bg-[#080b12]/60 py-8">
+      <section className="page-section relative border-y border-white/10 py-8">
         <div className="shell">
           <div className="flex flex-col items-center gap-6 md:flex-row md:gap-10">
             <p className="shrink-0 font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#8a919a] md:max-w-[140px]">
@@ -252,7 +252,7 @@ export function Home() {
       </section>
 
       {/* ---------------- PILLARS ---------------- */}
-      <section className="relative py-20 md:py-28">
+      <section className="page-section relative py-20 md:py-28">
         <div className="shell relative">
           <SectionHeading
             eyebrow="Not another chatbot"
@@ -354,7 +354,7 @@ export function Home() {
       </section>
 
       {/* ---------------- TEAM ---------------- */}
-      <section className="relative overflow-hidden py-4 md:py-10" id="team">
+      <section className="page-section relative overflow-hidden py-4 md:py-10" id="team">
         <div className="pointer-events-none absolute left-1/2 top-0 -z-10 -translate-x-1/2">
           <SectionGlow tone="ember" />
         </div>
@@ -401,7 +401,7 @@ export function Home() {
       </section>
 
       {/* ---------------- HOW IT WORKS ---------------- */}
-      <section className="relative py-20 md:py-28" id="how-it-works">
+      <section className="page-section relative py-20 md:py-28" id="how-it-works">
         <div className="shell">
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <div>
@@ -486,7 +486,7 @@ export function Home() {
       {/* ---------------- MOBILE ---------------- */}
       <section
         id="mobile"
-        className="relative overflow-hidden border-y border-white/10 bg-[#080b12] py-20 md:py-28"
+        className="page-section relative overflow-hidden border-y border-white/10 py-20 md:py-28"
       >
         <div className="pointer-events-none absolute -left-40 top-10">
           <SectionGlow tone="clay" />
@@ -584,7 +584,7 @@ export function Home() {
       </section>
 
       {/* ---------------- CAPABILITIES ---------------- */}
-      <section className="relative overflow-hidden border-y border-white/10 bg-[#090c13] py-20 md:py-28">
+      <section className="page-section relative overflow-hidden border-y border-white/10 py-20 md:py-28">
         <div className="absolute -left-40 top-20 -z-10">
           <SectionGlow tone="olive" />
         </div>
@@ -631,7 +631,7 @@ export function Home() {
       </section>
 
       {/* ---------------- TESTIMONIALS ---------------- */}
-      <section className="relative py-20 md:py-28" id="customers">
+      <section className="page-section relative py-20 md:py-28" id="customers">
         <div className="shell">
           <SectionHeading
             eyebrow="Customers"
@@ -658,7 +658,7 @@ export function Home() {
       <RewardsBand />
 
       {/* ---------------- PRICING TEASER ---------------- */}
-      <section className="relative pb-4">
+      <section className="page-section relative pb-4">
         <div className="shell">
           <Reveal>
             <div className="panel-accent relative overflow-hidden p-6 md:p-10">
