@@ -101,7 +101,7 @@ src/
   index.css               # Tailwind v4 theme tokens + primitives (panel, buttons, reveal…)
   components/
     ui/                   # Button, Logo, Avatar, Field, Accordion, Reveal, SectionHeading
-    marketing/            # Navbar, Footer, layout, hero preview, employee card, CTA, auth shell
+    marketing/            # Navbar, Footer, layout, hero preview, phone showcase, perks band, cards, CTA, auth shell
     dashboard/            # dashboard layout, protected route, charts, assign-task modal, primitives
     ErrorBoundary.tsx
   context/

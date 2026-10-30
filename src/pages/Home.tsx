@@ -3,6 +3,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
+  BellRing,
   BrainCircuit,
   CalendarCheck,
   Check,
@@ -16,6 +17,7 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
+  Sunrise,
   Target,
   Users,
   Workflow,
@@ -26,6 +28,8 @@ import { AppPreview } from '@/components/marketing/AppPreview';
 import { EmployeeCard } from '@/components/marketing/EmployeeCard';
 import { LogoMarquee } from '@/components/marketing/LogoMarquee';
 import { FinalCta } from '@/components/marketing/FinalCta';
+import { PhoneMockups } from '@/components/marketing/PhoneMockups';
+import { RewardsBand } from '@/components/marketing/RewardsBand';
 import { TestimonialCard } from '@/components/marketing/TestimonialCard';
 import { ButtonLink } from '@/components/ui/Button';
 import { Reveal } from '@/components/ui/Reveal';
@@ -34,6 +38,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { featuredEmployees, employees } from '@/data/employees';
 import { stats, testimonials } from '@/data/site';
 import { useAuth } from '@/context/AuthContext';
+import { cn } from '@/lib/utils';
 
 const proofPeople = [
   { name: 'Sofia Marchetti', src: '/team/nova.jpg', initials: 'SM', accent: 'lilac' as const },
@@ -478,6 +483,106 @@ export function Home() {
         </div>
       </section>
 
+      {/* ---------------- MOBILE ---------------- */}
+      <section
+        id="mobile"
+        className="relative overflow-hidden border-y border-white/6 bg-[#0f0604] py-20 md:py-28"
+      >
+        <div className="pointer-events-none absolute -left-40 top-10">
+          <SectionGlow tone="clay" />
+        </div>
+        <div className="pointer-events-none absolute -right-52 bottom-0 opacity-70">
+          <SectionGlow tone="olive" />
+        </div>
+        <div
+          aria-hidden="true"
+          className="bg-dots pointer-events-none absolute inset-0 opacity-[0.16] [mask-image:radial-gradient(ellipse_at_70%_50%,black,transparent_68%)]"
+        />
+
+        <div className="shell relative">
+          <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
+            <div>
+              <Reveal>
+                <span className="eyebrow">
+                  <span className="size-1.5 rounded-full bg-[#b5b56f] shadow-[0_0_10px_2px_rgba(181,181,111,0.55)]" />
+                  Desktop · iOS · Android
+                </span>
+                <h2 className="mt-5 text-[clamp(1.9rem,3.8vw,3rem)] font-semibold leading-[1.05]">
+                  Your team is
+                  <br />
+                  <span className="text-gradient">wherever you are.</span>
+                </h2>
+                <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[#b7a296]">
+                  Approve a launch between meetings, read the overnight digest with coffee, or message
+                  an employee from the back of a cab. The whole workspace fits in your pocket.
+                </p>
+              </Reveal>
+
+              <Reveal delay={80}>
+                <div className="mt-7 space-y-3">
+                  {[
+                    {
+                      icon: BellRing,
+                      title: 'Push-to-approve',
+                      body: 'Decisions land on your lock screen. Approve or redirect in two taps.',
+                      tone: 'text-[#d9d9a0] bg-[#b5b56f]/12 ring-[#b5b56f]/25',
+                    },
+                    {
+                      icon: Sunrise,
+                      title: 'Overnight digest',
+                      body: 'A single 7:00am summary of everything your team shipped while you slept.',
+                      tone: 'text-[#ffc08e] bg-[#dd6816]/12 ring-[#dd6816]/25',
+                    },
+                    {
+                      icon: MessageSquare,
+                      title: 'DM any employee',
+                      body: 'The same conversation as desktop, synced across every device instantly.',
+                      tone: 'text-[#f8dfb4] bg-[#e9b45f]/12 ring-[#e9b45f]/25',
+                    },
+                  ].map((feature) => (
+                    <div key={feature.title} className="flex items-start gap-3">
+                      <span className={cn('grid size-8 shrink-0 place-items-center rounded-lg ring-1 ring-inset', feature.tone)}>
+                        <feature.icon className="size-3.5" />
+                      </span>
+                      <div>
+                        <p className="text-[13px] font-medium text-white">{feature.title}</p>
+                        <p className="mt-0.5 max-w-sm text-[12px] leading-relaxed text-[#917b6e]">{feature.body}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+
+              <Reveal delay={140}>
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <ButtonLink to="/signup" size="lg" iconRight={<ArrowRight className="size-4" />}>
+                    Get the workspace
+                  </ButtonLink>
+                  <ButtonLink to="/login" variant="secondary" size="lg">
+                    Try the demo
+                  </ButtonLink>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  {['iOS', 'Android', 'Web'].map((platform) => (
+                    <span
+                      key={platform}
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-[0.12em] text-[#a68e80]"
+                    >
+                      {platform}
+                    </span>
+                  ))}
+                  <span className="text-[11px] text-[#6f5548]">One workspace, every screen.</span>
+                </div>
+              </Reveal>
+            </div>
+
+            <Reveal delay={60}>
+              <PhoneMockups />
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       {/* ---------------- CAPABILITIES ---------------- */}
       <section className="relative overflow-hidden border-y border-white/6 bg-[#100604] py-20 md:py-28">
         <div className="absolute -left-40 top-20 -z-10">
@@ -549,6 +654,8 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      <RewardsBand />
 
       {/* ---------------- PRICING TEASER ---------------- */}
       <section className="relative pb-4">
