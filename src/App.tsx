@@ -6,6 +6,7 @@ import { MarketingLayout, ScrollToTop } from '@/components/marketing/MarketingLa
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { RequireAuth } from '@/components/dashboard/RequireAuth';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { BackButton } from '@/components/ui/BackButton';
 import { Home } from '@/pages/Home';
 import { Employees } from '@/pages/Employees';
 import { EmployeeDetail } from '@/pages/EmployeeDetail';
@@ -57,6 +58,7 @@ export default function App() {
         <BrowserRouter>
           <ScrollToTop />
           <RouteMeta />
+          <BackButton />
           <ErrorBoundary>
             <Routes>
             <Route element={<MarketingLayout />}>

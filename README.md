@@ -100,7 +100,7 @@ src/
   App.tsx                 # routes, route metadata, error boundary
   index.css               # Tailwind v4 theme tokens + primitives (panel, buttons, reveal…)
   components/
-    ui/                   # Button, Logo, Avatar, Field, Accordion, Reveal, SectionHeading
+    ui/                   # Button, Logo, Avatar, Field, Accordion, Reveal, SectionHeading, BackButton
     marketing/            # Navbar, Footer, layout, hero preview, phone showcase, perks band, cards, CTA, auth shell
     dashboard/            # dashboard layout, protected route, charts, assign-task modal, primitives
     ErrorBoundary.tsx

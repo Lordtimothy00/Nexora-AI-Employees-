@@ -1,0 +1,68 @@
+import { useLayoutEffect, useState } from 'react';
+import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { pageLabel, previousPage, recordPage, type PageEntry } from '@/lib/backStack';
+
+/**
+ * Global "back to the last page" control. Mounted once inside the router so it appears on every
+ * route — marketing, auth, dashboard and 404. It remembers the previous page label, and falls back
+ * to a sensible destination when the visitor landed directly on a deep link.
+ */
+export function BackButton() {
+  const location = useLocation();
+  const navigationType = useNavigationType();
+  const navigate = useNavigate();
+  const [previous, setPrevious] = useState<PageEntry | null>(null);
+
+  useLayoutEffect(() => {
+    recordPage(
+      { path: `${location.pathname}${location.search}`, label: pageLabel(location.pathname) },
+      navigationType,
+    );
+    setPrevious(previousPage());
+  }, [location.pathname, location.search, navigationType]);
+
+  const isHome = location.pathname === '/';
+
+  // Nothing to go back to on the landing page.
+  if (isHome && !previous) return null;
+
+  const destination = previous?.path ?? '/';
+  const label = previous ? `Back to ${previous.label}` : 'Back to home';
+  const onDashboard = location.pathname.startsWith('/dashboard');
+
+  const goBack = () => {
+    const historyIndex =
+      typeof window !== 'undefined'
+        ? ((window.history.state as { idx?: number } | null)?.idx ?? 0)
+        : 0;
+
+    if (historyIndex > 0) navigate(-1);
+    else navigate(destination);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={goBack}
+      aria-label={label}
+      title={label}
+      className={cn(
+        'group fixed bottom-4 left-4 z-40 inline-flex max-w-[min(70vw,320px)] items-center gap-2 rounded-full border border-white/12',
+        'bg-[#0d0e0f]/70 py-1.5 pl-1.5 pr-3 text-[12.5px] font-medium text-[#cecfcb]',
+        'shadow-[0_18px_50px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(245,245,243,0.14)] backdrop-blur-xl backdrop-saturate-150',
+        'transition duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.08] hover:text-white',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8f060]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#08090a]',
+        'md:bottom-6 md:left-6 print:hidden',
+        // keep clear of the fixed dashboard sidebar on large screens
+        onDashboard && 'lg:left-[264px]',
+      )}
+    >
+      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-white/[0.08] ring-1 ring-inset ring-white/12">
+        <ArrowLeft className="size-3.5 transition-transform duration-200 group-hover:-translate-x-px" />
+      </span>
+      <span className="truncate">{label}</span>
+    </button>
+  );
+}

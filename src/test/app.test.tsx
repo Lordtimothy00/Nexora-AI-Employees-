@@ -1,8 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '@/App';
 import { employees } from '@/data/employees';
+import { resetBackStack } from '@/lib/backStack';
+
+beforeEach(() => {
+  resetBackStack();
+});
 
 const renderAt = (path: string) => {
   window.history.pushState({}, '', path);
@@ -48,6 +53,21 @@ describe('marketing pages', () => {
     expect(screen.queryByRole('heading', { name: 'Ava' })).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Kai' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^Support/ })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('returns to the last page from the back button', async () => {
+    const user = userEvent.setup();
+    renderAt('/');
+
+    const nav = screen.getByRole('navigation', { name: 'Main' });
+    await user.click(within(nav).getByRole('link', { name: 'Pricing' }));
+
+    expect(screen.getByRole('heading', { name: /Hire a department/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Back to Home/i }));
+
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Hire AI employees/i),
+    );
   });
 
   it('renders pricing tiers and toggles annual billing', async () => {
