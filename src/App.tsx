@@ -20,6 +20,7 @@ const ResourceArticle = lazy(() => import('@/pages/ResourceArticle').then((m) =>
 const Login = lazy(() => import('@/pages/Login').then((m) => ({ default: m.Login })));
 const Signup = lazy(() => import('@/pages/Signup').then((m) => ({ default: m.Signup })));
 const NotFound = lazy(() => import('@/pages/NotFound').then((m) => ({ default: m.NotFound })));
+const Invite = lazy(() => import('@/pages/Invite').then((m) => ({ default: m.Invite })));
 
 
 const Overview = lazy(() => import('@/pages/dashboard/Overview').then((m) => ({ default: m.Overview })));
@@ -72,6 +73,11 @@ const routes: { match: RegExp; title: string; description: string }[] = [
   },
   { match: /^\/login$/, title: 'Sign in', description: 'Sign in to your Nexora workspace.' },
   {
+    match: /^\/invite\/[^/]+$/,
+    title: 'Join a workspace',
+    description: 'Accept an invite to a Nexora workspace.',
+  },
+  {
     match: /^\/signup$/,
     title: 'Create your workspace',
     description: 'Create a Nexora workspace and hire your first AI employee in minutes.',
@@ -118,7 +124,7 @@ function RouteMeta() {
     const description = entry?.description ?? DEFAULT_DESCRIPTION;
     const origin = (import.meta.env.VITE_SITE_URL ?? window.location.origin).replace(/\/+$/, '');
     const url = `${origin}${pathname === '/' ? '/' : pathname.replace(/\/+$/, '')}`;
-    const isPrivate = pathname.startsWith('/dashboard');
+    const isPrivate = pathname.startsWith('/dashboard') || pathname.startsWith('/invite');
 
     document.title = title;
     setMeta('name', 'description', description);
@@ -163,6 +169,7 @@ export default function App() {
             <Route path="signup" element={<Signup />} />
 
             <Route element={<RequireAuth />}>
+              <Route path="invite/:token" element={<Invite />} />
               <Route path="dashboard" element={<DashboardLayout />}>
                 <Route index element={<Overview />} />
                 <Route path="team" element={<Team />} />

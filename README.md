@@ -99,6 +99,24 @@ write their own rows. The browser uses the publishable key; no service-role key 
 If the env vars are absent (or `MODE === 'test'`), `getSupabase()` returns `null` and the app falls
 back to the localStorage workspace below — `npm run dev` and `npm test` work with no backend at all.
 
+### Team seats
+
+A workspace is a first-class thing now, not just one person's row.
+
+- `workspaces` — name, owner, plan. `workspace_members` — who is in it and with what role
+  (`owner` / `admin` / `member`). `workspace_invites` — pending invite links.
+- `hires`, `tasks`, `messages` and `activities` carry a `workspace_id`; RLS is membership-based
+  (`is_workspace_member(workspace_id)`), so everyone in a workspace sees the same AI workforce and
+  the same queue. `profiles` additionally allows reading teammates in your workspace.
+- `my_workspace()` returns the workspace you are currently looking at (`profiles.active_workspace_id`,
+  falling back to your first membership). `ensure_workspace()` creates one on first sign-in, and the
+  `handle_new_user` trigger does the same for every new account.
+- **Invites are links, not emails.** An admin types an address in *Team → People with access*,
+  the app creates an invite row and copies `…/invite/<token>` to the clipboard. Only the account
+  with that exact email can redeem it (`accept_invite(token)`), and redeeming switches the
+  workspace to the one they were invited to. Nothing is emailed — wire an SMTP provider before
+  calling this production-ready.
+
 ### Demo access
 
 A fully local demo workspace ships with the build, so you can look around without creating an account.

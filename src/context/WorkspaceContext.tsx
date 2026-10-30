@@ -14,6 +14,7 @@ import {
   createMessage as createRemoteMessage,
   createTask as createRemoteTask,
   deleteHire as deleteRemoteHire,
+  ensureWorkspace,
   fetchWorkspace,
   setHireStatus,
   setTaskStatus,
@@ -308,6 +309,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
     void (async () => {
       try {
+        // A fresh account has no workspace until this runs; existing ones just get their id back.
+        await ensureWorkspace(user?.company);
         const snapshot = await fetchWorkspace();
         if (!cancelled) setState(snapshot);
       } catch {
@@ -320,7 +323,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [authReady, remote, user?.id]);
+  }, [authReady, remote, user?.id, user?.company]);
 
   useEffect(() => {
     if (!hydrated || remote || !authReady) return;

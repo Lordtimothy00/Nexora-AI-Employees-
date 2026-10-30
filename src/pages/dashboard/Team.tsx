@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -9,19 +9,102 @@ import {
   Play,
   Plus,
   Sparkles,
+  UserPlus,
   Users,
+  X,
 } from 'lucide-react';
 import { EmptyState, PageHeader, Panel, StatCard, Toast } from '@/components/dashboard/ui';
 import { Avatar } from '@/components/ui/Avatar';
-import { ButtonLink } from '@/components/ui/Button';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { useWorkspace } from '@/context/WorkspaceContext';
+import { useAuth } from '@/context/AuthContext';
 import { getEmployeeById } from '@/data/employees';
+import {
+  createInvite,
+  fetchInvites,
+  fetchMembers,
+  revokeInvite,
+  type WorkspaceInvite,
+  type WorkspaceMember,
+} from '@/lib/backend';
+import { backendConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
+
+const inviteUrl = (token: string) => `${window.location.origin}/invite/${token}`;
 
 export function Team() {
   const { hires, togglePause, release, utilization, hoursSaved, monthlySpend } = useWorkspace();
+  const { user } = useAuth();
   const [confirming, setConfirming] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(() => null);
+
+  const remote = backendConfigured && !!user && !user.id.startsWith('usr_');
+  const [members, setMembers] = useState<WorkspaceMember[]>([]);
+  const [invites, setInvites] = useState<WorkspaceInvite[]>([]);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviting, setInviting] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const loadPeople = useCallback(async () => {
+    if (!remote) return;
+    try {
+      const [nextMembers, nextInvites] = await Promise.all([fetchMembers(), fetchInvites()]);
+      setMembers(nextMembers);
+      setInvites(nextInvites);
+    } catch {
+      /* leave the panel as it is rather than blocking the page */
+    }
+  }, [remote]);
+
+  useEffect(() => {
+    void loadPeople();
+  }, [loadPeople]);
+
+  const copyLink = async (token: string) => {
+    try {
+      await navigator.clipboard?.writeText(inviteUrl(token));
+      setCopied(token);
+      setTimeout(() => setCopied(null), 2200);
+    } catch {
+      /* clipboard can be blocked; the link is still visible in the field */
+    }
+  };
+
+  const sendInvite = async (event: FormEvent) => {
+    event.preventDefault();
+    const address = inviteEmail.trim();
+    if (!address) return;
+
+    setInviting(true);
+    try {
+      const token = await createInvite(address);
+      await copyLink(token);
+      await loadPeople();
+      setInviteEmail('');
+      showToast(`Invite for ${address} created — the link is on your clipboard.`);
+    } catch (caught) {
+      showToast(caught instanceof Error ? caught.message : 'Could not create that invite.');
+    } finally {
+      setInviting(false);
+    }
+  };
+
+  const removeInvite = async (id: string) => {
+    try {
+      await revokeInvite(id);
+      await loadPeople();
+    } catch {
+      showToast('Could not revoke that invite.');
+    }
+  };
 
   const showToast = (message: string) => {
     setToast(message);
@@ -240,6 +323,102 @@ export function Team() {
                 </div>
               ))}
             </div>
+          </Panel>
+
+          <Panel
+            title="People with access"
+            subtitle={remote ? 'Humans who share this workspace' : 'This browser only'}
+          >
+            {!remote ? (
+              <p className="max-w-xl text-[12.5px] leading-relaxed text-[#aabbc2]">
+                The demo workspace lives in this browser, so there is nobody else to invite. Create a real
+                account and this panel lists everyone who shares the workspace, with roles and invite links.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <ul className="space-y-2">
+                  {members.map((member) => (
+                    <li
+                      key={member.userId}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
+                    >
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#0bd39a]/12 text-[11px] font-semibold text-[#9df7c2]">
+                          {initials(member.name)}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate text-[12.5px] font-medium text-white">
+                            {member.name}
+                            {member.userId === user?.id && (
+                              <span className="ml-1.5 text-[10px] text-[#8d9ea7]">you</span>
+                            )}
+                          </p>
+                          <p className="truncate text-[10.5px] text-[#8d9ea7]">
+                            {member.company || 'Workspace member'}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-[#b2c2c8]">
+                        {member.role}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {invites.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-[#9aaab3]">
+                      Pending invites
+                    </p>
+                    {invites.map((invite) => (
+                      <div
+                        key={invite.id}
+                        className="flex items-center justify-between gap-2 rounded-xl border border-dashed border-white/12 bg-white/[0.015] px-3 py-2"
+                      >
+                        <p className="min-w-0 truncate text-[12px] text-[#cfdcde]">{invite.email}</p>
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => copyLink(invite.token)}
+                            className="rounded-lg border border-white/10 px-2 py-1 text-[10px] text-[#cfdcde] transition hover:border-[#0bd39a]/40 hover:text-white"
+                          >
+                            {copied === invite.token ? 'Copied' : 'Copy link'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeInvite(invite.id)}
+                            aria-label={`Revoke invite for ${invite.email}`}
+                            className="grid size-6 place-items-center rounded-lg text-[#8d9ea7] transition hover:bg-white/10 hover:text-white"
+                          >
+                            <X className="size-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <form onSubmit={sendInvite} className="flex flex-col gap-2 sm:flex-row">
+                  <input
+                    type="email"
+                    required
+                    value={inviteEmail}
+                    onChange={(event) => setInviteEmail(event.target.value)}
+                    placeholder="teammate@company.com"
+                    aria-label="Teammate email address"
+                    className="h-9 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-[12.5px] text-white placeholder:text-[#7d8f96] focus:border-[#0bd39a]/50 focus:outline-none"
+                  />
+                  <Button type="submit" size="sm" loading={inviting} iconLeft={<UserPlus className="size-3.5" />}>
+                    Create invite
+                  </Button>
+                </form>
+
+                <p className="text-[10.5px] leading-relaxed text-[#8d9ea7]">
+                  Invites are links you copy and send yourself — no email is sent. The person must sign in
+                  with that exact address to join.
+                </p>
+              </div>
+            )}
           </Panel>
         </>
       )}

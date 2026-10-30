@@ -8,6 +8,22 @@ export interface WorkspaceSnapshot {
   activities: Activity[];
 }
 
+export interface WorkspaceMember {
+  userId: string;
+  name: string;
+  company: string;
+  role: 'owner' | 'admin' | 'member';
+  joinedAt: string;
+}
+
+export interface WorkspaceInvite {
+  id: string;
+  email: string;
+  role: 'admin' | 'member';
+  token: string;
+  createdAt: string;
+}
+
 type HireRow = {
   employee_id: string;
   hired_at: string;
@@ -42,22 +58,51 @@ type ActivityRow = {
   created_at: string;
 };
 
+export const EMPTY_WORKSPACE: WorkspaceSnapshot = { hires: [], tasks: [], messages: [], activities: [] };
+
 async function client() {
   const pending = getSupabase();
   if (!pending) throw new Error('Supabase is not configured.');
   return pending;
 }
 
-export const EMPTY_WORKSPACE: WorkspaceSnapshot = { hires: [], tasks: [], messages: [], activities: [] };
+/** Cached so a screen with five queries does not make five round trips for the id. */
+let activeWorkspaceId: string | null = null;
 
-/** Everything the signed-in user owns, newest activity first. */
+export function resetWorkspaceCache() {
+  activeWorkspaceId = null;
+}
+
+export async function ensureWorkspace(name?: string): Promise<string> {
+  const db = await client();
+  const { data, error } = await db.rpc('ensure_workspace', { p_name: name ?? null });
+  if (error) throw new Error(error.message);
+  activeWorkspaceId = data as string;
+  return activeWorkspaceId;
+}
+
+export async function getWorkspaceId(): Promise<string> {
+  if (activeWorkspaceId) return activeWorkspaceId;
+
+  const db = await client();
+  const { data, error } = await db.rpc('my_workspace');
+  if (error) throw new Error(error.message);
+  if (!data) return ensureWorkspace();
+
+  activeWorkspaceId = data as string;
+  return activeWorkspaceId;
+}
+
+/** Everything in the workspace the signed-in person is currently looking at. */
 export async function fetchWorkspace(): Promise<WorkspaceSnapshot> {
   const db = await client();
+  const ws = await getWorkspaceId();
+
   const [hires, tasks, messages, activities] = await Promise.all([
-    db.from('hires').select('employee_id, hired_at, status, tasks_completed, utilization').order('hired_at', { ascending: true }),
-    db.from('tasks').select('id, employee_id, title, status, priority, due, detail').order('created_at', { ascending: true }),
-    db.from('messages').select('id, employee_id, sender, body, created_at').order('created_at', { ascending: true }),
-    db.from('activities').select('id, employee_id, body, kind, created_at').order('created_at', { ascending: false }).limit(120),
+    db.from('hires').select('employee_id, hired_at, status, tasks_completed, utilization').eq('workspace_id', ws).order('hired_at', { ascending: true }),
+    db.from('tasks').select('id, employee_id, title, status, priority, due, detail').eq('workspace_id', ws).order('created_at', { ascending: true }),
+    db.from('messages').select('id, employee_id, sender, body, created_at').eq('workspace_id', ws).order('created_at', { ascending: true }),
+    db.from('activities').select('id, employee_id, body, kind, created_at').eq('workspace_id', ws).order('created_at', { ascending: false }).limit(120),
   ]);
 
   const failure = hires.error ?? tasks.error ?? messages.error ?? activities.error;
@@ -99,28 +144,36 @@ export async function fetchWorkspace(): Promise<WorkspaceSnapshot> {
 
 export async function createHire(employeeId: string, activityText: string) {
   const db = await client();
+  const ws = await getWorkspaceId();
+
   const { error } = await db
     .from('hires')
-    .upsert({ employee_id: employeeId }, { onConflict: 'user_id,employee_id', ignoreDuplicates: true });
+    .upsert(
+      { workspace_id: ws, employee_id: employeeId },
+      { onConflict: 'workspace_id,employee_id', ignoreDuplicates: true },
+    );
   if (error) throw new Error(error.message);
 
-  await db.from('activities').insert({ employee_id: employeeId, body: activityText, kind: 'hire' });
+  await db.from('activities').insert({ workspace_id: ws, employee_id: employeeId, body: activityText, kind: 'hire' });
 }
 
 export async function deleteHire(employeeId: string) {
   const db = await client();
-  const { error } = await db.from('hires').delete().eq('employee_id', employeeId);
+  const ws = await getWorkspaceId();
+
+  const { error } = await db.from('hires').delete().eq('workspace_id', ws).eq('employee_id', employeeId);
   if (error) throw new Error(error.message);
 
   await Promise.all([
-    db.from('tasks').delete().eq('employee_id', employeeId),
-    db.from('messages').delete().eq('employee_id', employeeId),
+    db.from('tasks').delete().eq('workspace_id', ws).eq('employee_id', employeeId),
+    db.from('messages').delete().eq('workspace_id', ws).eq('employee_id', employeeId),
   ]);
 }
 
 export async function setHireStatus(employeeId: string, status: Hire['status']) {
   const db = await client();
-  const { error } = await db.from('hires').update({ status }).eq('employee_id', employeeId);
+  const ws = await getWorkspaceId();
+  const { error } = await db.from('hires').update({ status }).eq('workspace_id', ws).eq('employee_id', employeeId);
   if (error) throw new Error(error.message);
 }
 
@@ -132,7 +185,9 @@ export async function createTask(input: {
   detail?: string;
 }) {
   const db = await client();
+  const ws = await getWorkspaceId();
   const { error } = await db.from('tasks').insert({
+    workspace_id: ws,
     title: input.title,
     employee_id: input.employeeId,
     priority: input.priority,
@@ -151,7 +206,9 @@ export async function setTaskStatus(taskId: string, status: TaskStatus) {
 
 export async function createMessage(employeeId: string, body: string, from: 'human' | 'employee') {
   const db = await client();
+  const ws = await getWorkspaceId();
   const { error } = await db.from('messages').insert({
+    workspace_id: ws,
     employee_id: employeeId,
     body,
     sender: from,
@@ -191,4 +248,83 @@ export async function fetchProfile(): Promise<RemoteProfile | null> {
 
   if (error) throw new Error(error.message);
   return (data as RemoteProfile | null) ?? null;
+}
+
+export async function fetchMembers(): Promise<WorkspaceMember[]> {
+  const db = await client();
+  const ws = await getWorkspaceId();
+
+  const { data, error } = await db
+    .from('workspace_members')
+    .select('user_id, role, created_at')
+    .eq('workspace_id', ws)
+    .order('created_at', { ascending: true });
+
+  if (error) throw new Error(error.message);
+
+  const ids = (data ?? []).map((row) => row.user_id as string);
+  if (!ids.length) return [];
+
+  const { data: profiles } = await db.from('profiles').select('id, name, company').in('id', ids);
+  const byId = new Map((profiles ?? []).map((profile) => [profile.id as string, profile]));
+
+  return (data ?? []).map((row) => ({
+    userId: row.user_id as string,
+    role: row.role as WorkspaceMember['role'],
+    joinedAt: row.created_at as string,
+    name: (byId.get(row.user_id as string)?.name as string) || 'Teammate',
+    company: (byId.get(row.user_id as string)?.company as string) || '',
+  }));
+}
+
+export async function fetchInvites(): Promise<WorkspaceInvite[]> {
+  const db = await client();
+  const ws = await getWorkspaceId();
+
+  const { data, error } = await db
+    .from('workspace_invites')
+    .select('id, email, role, token, created_at')
+    .eq('workspace_id', ws)
+    .is('accepted_at', null)
+    .order('created_at', { ascending: false });
+
+  // Only admins can read invites; anyone else simply sees none.
+  if (error) return [];
+
+  return (data ?? []).map((row) => ({
+    id: row.id as string,
+    email: row.email as string,
+    role: row.role as WorkspaceInvite['role'],
+    token: row.token as string,
+    createdAt: row.created_at as string,
+  }));
+}
+
+export async function createInvite(email: string, role: WorkspaceInvite['role'] = 'member') {
+  const db = await client();
+  const ws = await getWorkspaceId();
+
+  const { data, error } = await db
+    .from('workspace_invites')
+    .insert({ workspace_id: ws, email: email.trim().toLowerCase(), role })
+    .select('token')
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data.token as string;
+}
+
+export async function revokeInvite(id: string) {
+  const db = await client();
+  const { error } = await db.from('workspace_invites').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function acceptInvite(token: string) {
+  const db = await client();
+  const { data, error } = await db.rpc('accept_invite', { p_token: token });
+  if (error) throw new Error(error.message);
+  resetWorkspaceCache();
+  activeWorkspaceId = data as string;
+  return activeWorkspaceId;
 }
