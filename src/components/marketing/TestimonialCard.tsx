@@ -32,11 +32,11 @@ export function TestimonialCard({ testimonial, className }: { testimonial: Testi
         </svg>
       </div>
 
-      <blockquote className="mt-4 flex-1 text-[14.5px] leading-relaxed text-[#d8d9d5]">
+      <blockquote className="mt-4 flex-1 text-[14.5px] leading-relaxed text-[#d6d9db]">
         “{testimonial.quote}”
       </blockquote>
 
-      <figcaption className="mt-6 flex items-center gap-3 border-t border-white/8 pt-4">
+      <figcaption className="mt-6 flex items-center gap-3 border-t border-white/12 pt-4">
         <Avatar
           name={testimonial.name}
           initials={testimonial.initials}
@@ -45,7 +45,7 @@ export function TestimonialCard({ testimonial, className }: { testimonial: Testi
         />
         <div className="min-w-0">
           <p className="truncate text-[13px] font-medium text-white">{testimonial.name}</p>
-          <p className="truncate text-[11.5px] text-[#9d9e9a]">
+          <p className="truncate text-[11.5px] text-[#a9b0b9]">
             {testimonial.role} · {testimonial.company}
           </p>
         </div>

@@ -5,8 +5,8 @@ sales, support, marketing, operations, finance, and people. Built as a complete 
 experience: marketing site, catalogue, employee profiles, pricing, auth, and an authenticated
 workspace with a working demo of the product.
 
-> Design direction: monochrome premium fintech. Near-black graphite canvas (`#08090a`), silver
-> hairlines and a near-white type ramp, with a single restrained lime accent (`#c8f060`) used for
+> Design direction: monochrome premium fintech. Near-black, slightly cool canvas (`#060910`), silver
+> hairlines and a cool near-white type ramp, with a single restrained lime accent (`#c8f060`) used for
 > state, data and one highlight per section. Cinematic lighting, Sora display type, Inter UI type,
 > and full-colour editorial portraits for the AI roster. Inspired by premium dark banking interfaces.
 
@@ -122,9 +122,9 @@ src/
 
 Tokens live in the `@theme` block of `src/index.css`:
 
-- **Canvas** near-black `#08090a` → **surface** `#111213` → **panel** `#141516`
-- **Monochrome** graphite surfaces, silver borders (`rgba(245,245,243,0.09)`) and a near-white text
-  ramp from `#f6f6f4` down to `#5e5f5c`
+- **Canvas** cool near-black `#060910` → **surface** `#0f1219` → **panel** `#12151c`
+- **Monochrome** cool-slate surfaces, silver borders (`rgba(226,236,247,0.10)`) and a near-white
+  text ramp from `#f6f8fa` down to `#5f666d`
 - **Single accent** lime `#c8f060` (soft `#e2fa9e`, deep `#8fae2f`), used sparingly: live dots,
   active states, chart marks, one highlighted phrase per section. Primary buttons are near-white
   with ink text rather than an accent fill.
@@ -133,7 +133,7 @@ Tokens live in the `@theme` block of `src/index.css`:
 - **Type** Sora (display) / Inter (UI) / JetBrains Mono (labels & data)
 - **Primitives** `.glass` / `.glass-strong` (translucent, blurred surfaces), `.panel`, `.panel-hover`,
   `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`, `.reveal`, `.text-gradient`
-- Depth comes from frosted translucency (22–34px backdrop blur with saturation), 1px inset
+- Depth comes from frosted, iPhone-style translucency (34–44px backdrop blur with 185–195% saturation, a bright specular top edge and a cool slate cast), 1px inset
   highlights, layered gradients, conic light rings, and low-opacity white borders rather than heavy
   shadows. Signature surfaces: `.panel-accent` (graphite card with a
   lime hairline), `.ring-glow`, and `.neon-line`. The marketing header is a compact 52–56px floating

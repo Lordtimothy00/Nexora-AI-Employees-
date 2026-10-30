@@ -63,12 +63,12 @@ export function Billing() {
                   Active
                 </span>
               </div>
-              <p className="mt-1 text-[12px] text-[#a0a19d]">{currentPlan.description}</p>
+              <p className="mt-1 text-[12px] text-[#acb3bc]">{currentPlan.description}</p>
               <p className="mt-3 flex items-baseline gap-1.5">
                 <span className="font-display text-[30px] font-semibold leading-none text-white">
                   ${currentPlan.monthly}
                 </span>
-                <span className="text-[12px] text-[#a0a19d]">/ month</span>
+                <span className="text-[12px] text-[#acb3bc]">/ month</span>
               </p>
             </div>
             <div className="flex flex-col gap-2">
@@ -78,7 +78,7 @@ export function Billing() {
               <Button
                 size="sm"
                 variant="ghost"
-                className="text-[#9d9e9a] hover:text-rose-300"
+                className="text-[#a9b0b9] hover:text-rose-300"
                 onClick={() => showToast('Cancel flow is disabled in this preview — no charges are real.')}
               >
                 Cancel subscription
@@ -86,11 +86,11 @@ export function Billing() {
             </div>
           </div>
 
-          <div className="mt-5 space-y-4 border-t border-white/8 pt-4">
+          <div className="mt-5 space-y-4 border-t border-white/12 pt-4">
             <div>
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#b2b3af]">Tasks delivered this cycle</span>
-                <span className="font-mono text-[#d8d9d5]">
+                <span className="text-[#bbc2cb]">Tasks delivered this cycle</span>
+                <span className="font-mono text-[#d6d9db]">
                   {tasksUsed.toLocaleString()} / {tasksIncluded >= 100000 ? '∞' : tasksIncluded.toLocaleString()}
                 </span>
               </div>
@@ -103,19 +103,19 @@ export function Billing() {
             </div>
             <div>
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#b2b3af]">Employee seats</span>
-                <span className="font-mono text-[#d8d9d5]">
+                <span className="text-[#bbc2cb]">Employee seats</span>
+                <span className="font-mono text-[#d6d9db]">
                   {hires.length} / {seatsIncluded >= 999 ? '∞' : seatsIncluded}
                 </span>
               </div>
               <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/8">
                 <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#c8f060,#b9bcb4)]"
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#c8f060,#b7bcba)]"
                   style={{ width: `${Math.min(100, (hires.length / Math.max(seatsIncluded, 1)) * 100)}%` }}
                 />
               </div>
             </div>
-            <p className="text-[10px] text-[#7c7d79]">
+            <p className="text-[10px] text-[#8a919a]">
               Unused tasks roll over for 30 days. Overage is billed at $0.04 per task, never automatically.
             </p>
           </div>
@@ -123,15 +123,15 @@ export function Billing() {
 
         <div className="space-y-3">
           <Panel title="Payment method">
-            <div className="relative overflow-hidden rounded-xl border border-white/12 bg-[linear-gradient(140deg,#2b2e31,#1a1c1e_60%,#111213)] p-4">
+            <div className="relative overflow-hidden rounded-xl border border-white/12 bg-[linear-gradient(140deg,#292e37,#181c24_60%,#0f1219)] p-4">
               <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-12 size-32 rounded-full bg-[radial-gradient(circle,rgba(200,240,96,0.16),transparent_70%)] blur-xl" />
               <div aria-hidden="true" className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-[#ddf89e] to-transparent" />
               <div className="relative flex items-center justify-between">
                 <CreditCard className="size-5 text-[#e2fa9e]" />
-                <span className="font-display text-[11px] uppercase tracking-[0.16em] text-[#cfd0cc]">Visa</span>
+                <span className="font-display text-[11px] uppercase tracking-[0.16em] text-[#d4dbe4]">Visa</span>
               </div>
               <p className="relative mt-5 font-mono text-[13px] tracking-[0.14em] text-white">•••• •••• •••• 4242</p>
-              <div className="relative mt-1.5 flex items-center justify-between text-[9.5px] text-[#a4a5a1]">
+              <div className="relative mt-1.5 flex items-center justify-between text-[9.5px] text-[#a2a5a7]">
                 <span>{user?.name ?? 'Cardholder'}</span>
                 <span>09 / 29</span>
               </div>
@@ -151,7 +151,7 @@ export function Billing() {
               <Sparkles className="size-4 text-[#e2fa9e]" />
               <p className="text-[12px] font-medium text-white">Save with annual billing</p>
             </div>
-            <p className="mt-1.5 text-[11px] leading-relaxed text-[#cfd0cc]">
+            <p className="mt-1.5 text-[11px] leading-relaxed text-[#d4dbe4]">
               Switch to annual and save ${(currentPlan.monthly - currentPlan.annual) * 12} per year on {currentPlan.name}.
             </p>
             <ButtonLink to="/pricing" size="sm" variant="subtle" className="mt-3 w-full" iconRight={<ArrowUpRight className="size-3" />}>
@@ -165,7 +165,7 @@ export function Billing() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] text-left">
             <thead>
-              <tr className="border-b border-white/6 text-[9.5px] uppercase tracking-[0.1em] text-[#7c7d79]">
+              <tr className="border-b border-white/10 text-[9.5px] uppercase tracking-[0.1em] text-[#8a919a]">
                 <th className="px-4 py-2.5 font-medium">Invoice</th>
                 <th className="px-3 py-2.5 font-medium">Date</th>
                 <th className="px-3 py-2.5 font-medium">Plan</th>
@@ -178,8 +178,8 @@ export function Billing() {
               {invoices.map((invoice) => (
                 <tr key={invoice.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.015]">
                   <td className="px-4 py-3 font-mono text-[11px] text-white">{invoice.id}</td>
-                  <td className="px-3 py-3 text-[11px] text-[#b2b3af]">{invoice.date}</td>
-                  <td className="px-3 py-3 text-[11px] text-[#b2b3af]">{currentPlan.name} · monthly</td>
+                  <td className="px-3 py-3 text-[11px] text-[#bbc2cb]">{invoice.date}</td>
+                  <td className="px-3 py-3 text-[11px] text-[#bbc2cb]">{currentPlan.name} · monthly</td>
                   <td className="px-3 py-3 text-right font-mono text-[11px] text-white">{currency(invoice.amount)}</td>
                   <td className="px-3 py-3">
                     <span className="inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-0.5 text-[9.5px] text-[#e2fa9e]">
@@ -213,7 +213,7 @@ export function Billing() {
                   'rounded-xl border p-4',
                   isCurrent
                     ? 'border-[#c8f060]/40 bg-[#c8f060]/[0.07]'
-                    : 'border-white/8 bg-white/[0.045] backdrop-blur-xl',
+                    : 'border-white/12 bg-white/[0.045] backdrop-blur-xl',
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -226,9 +226,9 @@ export function Billing() {
                 </div>
                 <p className="mt-2 font-display text-[20px] font-semibold text-white">
                   ${plan.monthly}
-                  <span className="ml-1 text-[10px] font-normal text-[#8e8f8b]">/mo</span>
+                  <span className="ml-1 text-[10px] font-normal text-[#9ba2ab]">/mo</span>
                 </p>
-                <p className="mt-1 text-[10px] text-[#9d9e9a]">{plan.employeeLimit}</p>
+                <p className="mt-1 text-[10px] text-[#a9b0b9]">{plan.employeeLimit}</p>
                 <Button
                   variant={isCurrent ? 'ghost' : 'secondary'}
                   size="sm"
@@ -242,9 +242,9 @@ export function Billing() {
             );
           })}
         </div>
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-white/8 bg-white/[0.045] backdrop-blur-xl px-3 py-2">
-          <ReceiptText className="size-3.5 shrink-0 text-[#9d9e9a]" />
-          <p className="text-[10px] text-[#8e8f8b]">
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-white/12 bg-white/[0.045] backdrop-blur-xl px-3 py-2">
+          <ReceiptText className="size-3.5 shrink-0 text-[#a9b0b9]" />
+          <p className="text-[10px] text-[#9ba2ab]">
             Billing is illustrative in this preview. No payment is collected and no real invoices are issued.
           </p>
         </div>

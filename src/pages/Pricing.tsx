@@ -21,9 +21,9 @@ function CellValue({ value }: { value: string | boolean }) {
     );
   }
   if (value === false) {
-    return <Minus className="size-3.5 text-[#33363a]" aria-label="Not included" />;
+    return <Minus className="size-3.5 text-[#313640]" aria-label="Not included" />;
   }
-  return <span className="text-[12px] text-[#c3c4c0]">{value}</span>;
+  return <span className="text-[12px] text-[#ccd3dc]">{value}</span>;
 }
 
 export function Pricing() {
@@ -48,7 +48,7 @@ export function Pricing() {
               </h1>
             </Reveal>
             <Reveal delay={130}>
-              <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#adaeaa] md:text-base">
+              <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#b6bdc6] md:text-base">
                 Flat monthly pricing. Every plan includes playbooks, integrations, approvals, and
                 unlimited human seats. Start with 14 days free — no card required.
               </p>
@@ -67,7 +67,7 @@ export function Pricing() {
                     aria-pressed={!annual}
                     className={cn(
                       'rounded-full px-4 py-1.5 text-[12.5px] font-medium transition-all',
-                      !annual ? 'bg-white/[0.1] text-white shadow-sm' : 'text-[#a0a19d] hover:text-white',
+                      !annual ? 'bg-white/[0.1] text-white shadow-sm' : 'text-[#acb3bc] hover:text-white',
                     )}
                   >
                     Monthly
@@ -78,7 +78,7 @@ export function Pricing() {
                     aria-pressed={annual}
                     className={cn(
                       'inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12.5px] font-medium transition-all',
-                      annual ? 'bg-white/[0.1] text-white shadow-sm' : 'text-[#a0a19d] hover:text-white',
+                      annual ? 'bg-white/[0.1] text-white shadow-sm' : 'text-[#acb3bc] hover:text-white',
                     )}
                   >
                     Annual
@@ -87,7 +87,7 @@ export function Pricing() {
                     </span>
                   </button>
                 </div>
-                <p className="text-[11.5px] text-[#8e8f8b]">
+                <p className="text-[11.5px] text-[#9ba2ab]">
                   {annual ? 'Billed annually. Cancel or upgrade anytime, prorated.' : 'Billed monthly. Cancel in one click.'}
                 </p>
               </div>
@@ -112,7 +112,7 @@ export function Pricing() {
                       <>
                         <div className="pointer-events-none absolute inset-x-10 -top-px h-px bg-gradient-to-r from-transparent via-[#d7f68c] to-transparent" />
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-[#c8f060] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-[#0a0b0c] shadow-[0_8px_24px_-8px_rgba(200,240,96,0.9)]">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#c8f060] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-[#080b12] shadow-[0_8px_24px_-8px_rgba(200,240,96,0.9)]">
                             <Star className="size-2.5 fill-white" /> Most teams pick this
                           </span>
                         </div>
@@ -121,11 +121,11 @@ export function Pricing() {
 
                     <div className="flex items-center justify-between">
                       <h2 className="font-display text-[17px] font-semibold">{plan.name}</h2>
-                      <span className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-[#8e8f8b]">
+                      <span className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-[#9ba2ab]">
                         {plan.employeeLimit}
                       </span>
                     </div>
-                    <p className="mt-2 min-h-[40px] text-[12.5px] leading-relaxed text-[#a0a19d]">
+                    <p className="mt-2 min-h-[40px] text-[12.5px] leading-relaxed text-[#acb3bc]">
                       {plan.description}
                     </p>
 
@@ -133,9 +133,9 @@ export function Pricing() {
                       <span className="font-display text-[40px] font-semibold leading-none tracking-[-0.03em] text-white">
                         ${price}
                       </span>
-                      <span className="text-[12.5px] text-[#a0a19d]">/ month</span>
+                      <span className="text-[12.5px] text-[#acb3bc]">/ month</span>
                     </div>
-                    <p className="mt-1.5 text-[11px] text-[#8e8f8b]">
+                    <p className="mt-1.5 text-[11px] text-[#9ba2ab]">
                       {annual ? `$${price * 12} billed yearly` : 'Billed monthly'} · {plan.taskLimit}
                     </p>
 
@@ -151,12 +151,12 @@ export function Pricing() {
 
                     <div className="my-5 h-px w-full bg-white/8" />
 
-                    <p className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-[#8e8f8b]">
+                    <p className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-[#9ba2ab]">
                       Includes
                     </p>
                     <ul className="mt-3 space-y-2.5">
                       {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-[#c3c4c0]">
+                        <li key={feature} className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-[#ccd3dc]">
                           <Check className="mt-0.5 size-3.5 shrink-0 text-mint" />
                           {feature}
                         </li>
@@ -169,17 +169,17 @@ export function Pricing() {
           </div>
 
           <Reveal delay={100}>
-            <div className="mx-auto mt-6 flex max-w-5xl flex-col items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-5 py-4 sm:flex-row">
+            <div className="mx-auto mt-6 flex max-w-5xl flex-col items-center justify-between gap-3 rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-5 py-4 sm:flex-row">
               <div className="flex items-center gap-3">
                 <span className="grid size-8 place-items-center rounded-lg bg-[#c8f060]/12 ring-1 ring-inset ring-[#c8f060]/25">
                   <Sparkles className="size-3.5 text-[#e2fa9e]" />
                 </span>
-                <p className="text-[12.5px] text-[#b2b3af]">
+                <p className="text-[12.5px] text-[#bbc2cb]">
                   Need an extra seat mid-cycle? Add another AI employee for{' '}
                   <span className="text-white">$39/month</span> on any plan.
                 </p>
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#8e8f8b]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#9ba2ab]">
                 Prorated automatically
               </span>
             </div>
@@ -188,7 +188,7 @@ export function Pricing() {
       </section>
 
       {/* comparison */}
-      <section className="border-y border-white/6 bg-[#0a0b0c]/60 py-16 md:py-24">
+      <section className="border-y border-white/10 bg-[#080b12]/60 py-16 md:py-24">
         <div className="shell">
           <SectionHeading
             eyebrow="Compare"
@@ -198,19 +198,19 @@ export function Pricing() {
           />
 
           <Reveal delay={80}>
-            <div className="mt-10 overflow-x-auto rounded-2xl border border-white/8 bg-white/[0.03] backdrop-blur-xl">
+            <div className="mt-10 overflow-x-auto rounded-2xl border border-white/12 bg-white/[0.03] backdrop-blur-xl">
               <table className="w-full min-w-[720px] border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-white/8">
-                    <th scope="col" className="sticky left-0 z-10 bg-[#0e0f10] px-5 py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#8e8f8b]">
+                  <tr className="border-b border-white/12">
+                    <th scope="col" className="sticky left-0 z-10 bg-[#0c0f16] px-5 py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#9ba2ab]">
                       Feature
                     </th>
                     {plans.map((plan) => (
                       <th key={plan.id} scope="col" className="px-4 py-4 text-center">
-                        <span className={cn('text-[12.5px] font-medium', plan.popular ? 'text-white' : 'text-[#d8d9d5]')}>
+                        <span className={cn('text-[12.5px] font-medium', plan.popular ? 'text-white' : 'text-[#d6d9db]')}>
                           {plan.name}
                         </span>
-                        <span className="mt-0.5 block text-[10.5px] text-[#8e8f8b]">
+                        <span className="mt-0.5 block text-[10.5px] text-[#9ba2ab]">
                           ${annual ? plan.annual : plan.monthly}/mo
                         </span>
                       </th>
@@ -224,7 +224,7 @@ export function Pricing() {
                         <th
                           scope="colgroup"
                           colSpan={4}
-                          className="sticky left-0 px-5 py-2 text-left font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#9d9e9a]"
+                          className="sticky left-0 px-5 py-2 text-left font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#a9b0b9]"
                         >
                           {group}
                         </th>
@@ -232,8 +232,8 @@ export function Pricing() {
                       {comparisonRows
                         .filter((row) => (row.group ?? '') === group)
                         .map((row) => (
-                          <tr key={row.label} className="border-t border-white/6 transition-colors hover:bg-white/[0.015]">
-                            <th scope="row" className="sticky left-0 z-10 bg-[#0e0f10] px-5 py-3 text-left text-[12.5px] font-normal text-[#b2b3af]">
+                          <tr key={row.label} className="border-t border-white/10 transition-colors hover:bg-white/[0.015]">
+                            <th scope="row" className="sticky left-0 z-10 bg-[#0c0f16] px-5 py-3 text-left text-[12.5px] font-normal text-[#bbc2cb]">
                               {row.label}
                             </th>
                             {row.values.map((value, index) => (
@@ -254,7 +254,7 @@ export function Pricing() {
 
           <Reveal delay={100}>
             <div className="mt-5 flex flex-col items-center justify-between gap-3 sm:flex-row">
-              <p className="text-[11.5px] text-[#8e8f8b]">
+              <p className="text-[11.5px] text-[#9ba2ab]">
                 All prices in USD. Taxes calculated at checkout. Annual plans renew at the same rate.
               </p>
               <ButtonLink to="/signup" size="sm" variant="secondary" iconRight={<ArrowRight className="size-3.5" />}>
@@ -279,7 +279,7 @@ export function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-white/6 py-16 md:py-24">
+      <section className="border-t border-white/10 py-16 md:py-24">
         <div className="shell">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
@@ -290,11 +290,11 @@ export function Pricing() {
               />
               <Reveal delay={100}>
                 <div className="mt-6 rounded-2xl border border-[#c8f060]/25 bg-[linear-gradient(160deg,rgba(200,240,96,0.14),rgba(200,240,96,0.02))] p-5">
-                  <p className="text-[12.5px] leading-relaxed text-[#e6e7e3]">
+                  <p className="text-[12.5px] leading-relaxed text-[#e4e7e9]">
                     “We replaced a $7k/month agency with two Nexora employees. The savings paid for the
                     whole team in the first month.”
                   </p>
-                  <p className="mt-3 text-[11px] text-[#a0a19d]">Daniel Okonkwo · CEO, Northwind Pay</p>
+                  <p className="mt-3 text-[11px] text-[#acb3bc]">Daniel Okonkwo · CEO, Northwind Pay</p>
                 </div>
               </Reveal>
             </div>

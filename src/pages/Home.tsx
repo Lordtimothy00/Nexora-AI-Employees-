@@ -64,7 +64,7 @@ const pillars = [
     icon: Fingerprint,
     title: 'They remember your business',
     body: 'Brand voice, past decisions, customer history, and your standards are part of every task. No re-explaining your company every morning.',
-    accent: 'text-[#dadbd7]',
+    accent: 'text-[#d8dbdd]',
   },
 ];
 
@@ -143,7 +143,7 @@ export function Home() {
                     <span className="relative inline-flex size-1.5 rounded-full bg-mint" />
                   </span>
                   Hiring now · 8 AI employees available
-                  <ArrowUpRight className="size-3 text-[#9d9e9a] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="size-3 text-[#a9b0b9] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </div>
             </Reveal>
@@ -168,7 +168,7 @@ export function Home() {
             </Reveal>
 
             <Reveal delay={130}>
-              <p className="mx-auto mt-7 max-w-xl text-[15.5px] leading-relaxed text-[#adaeaa] md:text-[17px]">
+              <p className="mx-auto mt-7 max-w-xl text-[15.5px] leading-relaxed text-[#b6bdc6] md:text-[17px]">
                 Nexora gives you a team of AI teammates for sales, support, marketing, and operations.
                 Onboard in minutes, delegate real work, and get{' '}
                 <span className="text-[#e2fa9e]">finished output</span> — not another chat transcript.
@@ -209,22 +209,22 @@ export function Home() {
                         initials={person.initials}
                         accent={person.accent}
                         size="xs"
-                        className="ring-2 ring-[#08090a]"
+                        className="ring-2 ring-[#060910]"
                       />
                     ))}
                   </div>
                   <div className="text-left">
                     <div className="flex items-center gap-1">
                       {[0, 1, 2, 3, 4].map((star) => (
-                        <Star key={star} className="size-3 fill-[#d3d5cd] text-[#d3d5cd]" />
+                        <Star key={star} className="size-3 fill-[#d8dfe7] text-[#d8dfe7]" />
                       ))}
                       <span className="ml-1 text-[12px] font-medium text-white">4.9</span>
                     </div>
-                    <p className="text-[11.5px] text-[#9d9e9a]">from 2,400+ teams</p>
+                    <p className="text-[11.5px] text-[#a9b0b9]">from 2,400+ teams</p>
                   </div>
                 </div>
                 <span className="hidden h-8 w-px bg-white/10 sm:block" />
-                <p className="text-[12px] text-[#9d9e9a]">
+                <p className="text-[12px] text-[#a9b0b9]">
                   14-day free trial · No credit card
                 </p>
               </div>
@@ -238,10 +238,10 @@ export function Home() {
       </section>
 
       {/* ---------------- LOGOS ---------------- */}
-      <section className="relative border-y border-white/6 bg-[#0a0b0c]/60 py-8">
+      <section className="relative border-y border-white/10 bg-[#080b12]/60 py-8">
         <div className="shell">
           <div className="flex flex-col items-center gap-6 md:flex-row md:gap-10">
-            <p className="shrink-0 font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#7c7d79] md:max-w-[140px]">
+            <p className="shrink-0 font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#8a919a] md:max-w-[140px]">
               Trusted by teams who ship
             </p>
             <div className="w-full flex-1">
@@ -260,7 +260,7 @@ export function Home() {
               <>
                 An employee has a job.
                 <br />
-                <span className="text-[#a0a19d]">A chatbot has a window.</span>
+                <span className="text-[#acb3bc]">A chatbot has a window.</span>
               </>
             }
             description="Most AI tools wait for you to ask better questions. Nexora employees are hired into a role, given a playbook, and measured on the output."
@@ -274,7 +274,7 @@ export function Home() {
                     <pillar.icon className={`size-5 ${pillar.accent}`} strokeWidth={1.7} />
                   </div>
                   <h3 className="mt-5 font-display text-[17px] font-semibold leading-snug">{pillar.title}</h3>
-                  <p className="mt-2.5 text-[13.5px] leading-relaxed text-[#a0a19d]">{pillar.body}</p>
+                  <p className="mt-2.5 text-[13.5px] leading-relaxed text-[#acb3bc]">{pillar.body}</p>
                 </div>
               </Reveal>
             ))}
@@ -289,13 +289,13 @@ export function Home() {
                 <h3 className="mt-5 max-w-md text-[clamp(1.5rem,2.6vw,2.1rem)] font-semibold leading-[1.12]">
                   From “we should hire” to first delivery in under an hour.
                 </h3>
-                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[#a0a19d]">
+                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[#acb3bc]">
                   No implementation project. No six-week onboarding. Pick a role, connect tools,
                   answer five questions, and assign the first real piece of work.
                 </p>
                 <ul className="mt-6 space-y-2.5">
                   {miniChecks.map((check) => (
-                    <li key={check} className="flex items-center gap-2.5 text-[13px] text-[#cecfcb]">
+                    <li key={check} className="flex items-center gap-2.5 text-[13px] text-[#cccfd1]">
                       <span className="grid size-5 shrink-0 place-items-center rounded-full bg-mint/12 ring-1 ring-inset ring-mint/25">
                         <Check className="size-3 text-mint" />
                       </span>
@@ -316,14 +316,14 @@ export function Home() {
                 <div className="absolute inset-0 bg-dots opacity-40" />
                 <div className="relative">
                   <div className="flex items-center justify-between">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#8e8f8b]">Hire · step 3 of 3</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#9ba2ab]">Hire · step 3 of 3</p>
                     <span className="rounded-full bg-mint/12 px-2 py-0.5 text-[10px] text-[#e2fa9e]">Ready</span>
                   </div>
                   <div className="mt-4 flex items-center gap-3">
                     <Avatar name="Ava" src="/team/ava.jpg" initials="AV" accent="violet" size="lg" status="online" glow />
                     <div>
                       <p className="font-display text-[16px] font-semibold text-white">Ava · Sales Development Rep</p>
-                      <p className="text-[11.5px] text-[#a0a19d]">Calibrated on your voice and ICP</p>
+                      <p className="text-[11.5px] text-[#acb3bc]">Calibrated on your voice and ICP</p>
                     </div>
                   </div>
                   <div className="mt-5 space-y-2">
@@ -335,16 +335,16 @@ export function Home() {
                     ].map((row) => (
                       <div
                         key={row.label}
-                        className="flex items-center justify-between rounded-lg border border-white/8 bg-white/[0.025] px-3 py-2"
+                        className="flex items-center justify-between rounded-lg border border-white/12 bg-white/[0.025] px-3 py-2"
                       >
-                        <span className="text-[11.5px] text-[#9d9e9a]">{row.label}</span>
-                        <span className="text-[11.5px] font-medium text-[#d8d9d5]">{row.value}</span>
+                        <span className="text-[11.5px] text-[#a9b0b9]">{row.label}</span>
+                        <span className="text-[11.5px] font-medium text-[#d6d9db]">{row.value}</span>
                       </div>
                     ))}
                   </div>
                   <div className="mt-4 flex items-center gap-2 rounded-xl border border-[#c8f060]/25 bg-[#c8f060]/10 px-3 py-2.5">
                     <Sparkles className="size-3.5 text-[#e2fa9e]" />
-                    <p className="text-[11.5px] text-[#e7e8e4]">Ava started her first task 4 minutes ago.</p>
+                    <p className="text-[11.5px] text-[#e5e8ea]">Ava started her first task 4 minutes ago.</p>
                   </div>
                 </div>
               </div>
@@ -384,8 +384,8 @@ export function Home() {
           </div>
 
           <Reveal delay={100}>
-            <div className="mt-4 flex flex-col items-center justify-between gap-4 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-5 py-4 sm:flex-row">
-              <p className="text-[13px] text-[#a0a19d]">
+            <div className="mt-4 flex flex-col items-center justify-between gap-4 rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-5 py-4 sm:flex-row">
+              <p className="text-[13px] text-[#acb3bc]">
                 Plus specialists in content, talent, finance, and executive operations.
               </p>
               <Link
@@ -418,21 +418,21 @@ export function Home() {
               />
               <Reveal delay={100}>
                 <div className="panel mt-8 p-5">
-                  <div className="flex items-center gap-2 text-[11.5px] text-[#a0a19d]">
+                  <div className="flex items-center gap-2 text-[11.5px] text-[#acb3bc]">
                     <span className="flex size-6 items-center justify-center rounded-md bg-[#c8f060]/15 ring-1 ring-inset ring-[#c8f060]/25">
                       <MessageSquare className="size-3 text-[#e2fa9e]" />
                     </span>
                     Direct message · Ava
                   </div>
                   <div className="mt-3 space-y-2.5">
-                    <div className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-[#c8f060]/18 px-3.5 py-2 text-[12.5px] text-[#e7e8e4]">
+                    <div className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-[#c8f060]/18 px-3.5 py-2 text-[12.5px] text-[#e5e8ea]">
                       Need 12 qualified meetings by Nov 15. Mid-market fintech ops.
                     </div>
-                    <div className="w-fit max-w-[88%] rounded-2xl rounded-bl-md border border-white/8 bg-white/[0.04] px-3.5 py-2 text-[12.5px] text-[#cecfcb]">
+                    <div className="w-fit max-w-[88%] rounded-2xl rounded-bl-md border border-white/12 bg-white/[0.04] px-3.5 py-2 text-[12.5px] text-[#cccfd1]">
                       240 accounts matched, 61 already in CRM. Sequence drafted in your voice — 9.4%
                       reply rate on v1. First 20 send at 8:10am.
                     </div>
-                    <div className="flex items-center gap-1.5 pl-1 text-[10.5px] text-[#8e8f8b]">
+                    <div className="flex items-center gap-1.5 pl-1 text-[10.5px] text-[#9ba2ab]">
                       <span className="size-1.5 rounded-full bg-mint" /> Delivered · 3 meetings booked
                     </div>
                   </div>
@@ -445,17 +445,17 @@ export function Home() {
               <div className="space-y-3">
                 {steps.map((step, index) => (
                   <Reveal key={step.n} delay={index * 90}>
-                    <div className="group relative flex gap-5 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.035] sm:p-6">
-                      <div className="relative hidden size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.05] shadow-[inset_0_1px_0_rgba(245,245,243,0.08)] backdrop-blur-xl sm:grid">
+                    <div className="group relative flex gap-5 rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.035] sm:p-6">
+                      <div className="relative hidden size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.05] shadow-[inset_0_1px_0_rgba(226,236,247,0.08)] backdrop-blur-xl sm:grid">
                         <step.icon className="size-5 text-[#d7f68c]" strokeWidth={1.6} />
                       </div>
                       <div>
                         <div className="flex items-center gap-2.5">
-                          <span className="font-mono text-[10px] tracking-[0.18em] text-[#8e8f8b]">{step.n}</span>
+                          <span className="font-mono text-[10px] tracking-[0.18em] text-[#9ba2ab]">{step.n}</span>
                           <span className="h-px w-5 bg-white/15" />
                         </div>
                         <h3 className="mt-2 font-display text-[17px] font-semibold">{step.title}</h3>
-                        <p className="mt-2 text-[13.5px] leading-relaxed text-[#a0a19d]">{step.body}</p>
+                        <p className="mt-2 text-[13.5px] leading-relaxed text-[#acb3bc]">{step.body}</p>
                       </div>
                     </div>
                   </Reveal>
@@ -463,19 +463,19 @@ export function Home() {
               </div>
 
               <Reveal delay={200}>
-                <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/8 bg-white/[0.045] px-5 py-4 backdrop-blur-xl">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#8e8f8b]">
+                <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/12 bg-white/[0.045] px-5 py-4 backdrop-blur-xl">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#9ba2ab]">
                     Works with
                   </span>
                   {['Slack', 'HubSpot', 'Notion', 'Zendesk', 'Stripe', 'Snowflake'].map((tool) => (
                     <span
                       key={tool}
-                      className="rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1 text-[11px] text-[#b2b3af]"
+                      className="rounded-full border border-white/12 bg-white/[0.03] px-2.5 py-1 text-[11px] text-[#bbc2cb]"
                     >
                       {tool}
                     </span>
                   ))}
-                  <span className="text-[11px] text-[#7c7d79]">+ 40 more</span>
+                  <span className="text-[11px] text-[#8a919a]">+ 40 more</span>
                 </div>
               </Reveal>
             </div>
@@ -486,7 +486,7 @@ export function Home() {
       {/* ---------------- MOBILE ---------------- */}
       <section
         id="mobile"
-        className="relative overflow-hidden border-y border-white/6 bg-[#0a0b0c] py-20 md:py-28"
+        className="relative overflow-hidden border-y border-white/10 bg-[#080b12] py-20 md:py-28"
       >
         <div className="pointer-events-none absolute -left-40 top-10">
           <SectionGlow tone="clay" />
@@ -512,7 +512,7 @@ export function Home() {
                   <br />
                   <span className="text-gradient">wherever you are.</span>
                 </h2>
-                <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[#adaeaa]">
+                <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[#b6bdc6]">
                   Approve a launch between meetings, read the overnight digest with coffee, or message
                   an employee from the back of a cab. The whole workspace fits in your pocket.
                 </p>
@@ -537,7 +537,7 @@ export function Home() {
                       icon: MessageSquare,
                       title: 'DM any employee',
                       body: 'The same conversation as desktop, synced across every device instantly.',
-                      tone: 'text-[#e6e7e3] bg-[#d3d5cd]/12 ring-[#d3d5cd]/25',
+                      tone: 'text-[#e4e7e9] bg-[#d8dfe7]/12 ring-[#d8dfe7]/25',
                     },
                   ].map((feature) => (
                     <div key={feature.title} className="flex items-start gap-3">
@@ -546,7 +546,7 @@ export function Home() {
                       </span>
                       <div>
                         <p className="text-[13px] font-medium text-white">{feature.title}</p>
-                        <p className="mt-0.5 max-w-sm text-[12px] leading-relaxed text-[#888985]">{feature.body}</p>
+                        <p className="mt-0.5 max-w-sm text-[12px] leading-relaxed text-[#86898b]">{feature.body}</p>
                       </div>
                     </div>
                   ))}
@@ -566,12 +566,12 @@ export function Home() {
                   {['iOS', 'Android', 'Web'].map((platform) => (
                     <span
                       key={platform}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-[0.12em] text-[#9d9e9a]"
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-[0.12em] text-[#a9b0b9]"
                     >
                       {platform}
                     </span>
                   ))}
-                  <span className="text-[11px] text-[#5e5f5c]">One workspace, every screen.</span>
+                  <span className="text-[11px] text-[#5c5f62]">One workspace, every screen.</span>
                 </div>
               </Reveal>
             </div>
@@ -584,7 +584,7 @@ export function Home() {
       </section>
 
       {/* ---------------- CAPABILITIES ---------------- */}
-      <section className="relative overflow-hidden border-y border-white/6 bg-[#0b0c0d] py-20 md:py-28">
+      <section className="relative overflow-hidden border-y border-white/10 bg-[#090c13] py-20 md:py-28">
         <div className="absolute -left-40 top-20 -z-10">
           <SectionGlow tone="olive" />
         </div>
@@ -604,11 +604,11 @@ export function Home() {
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {capabilities.map((capability, index) => (
               <Reveal key={capability.title} delay={index * 60}>
-                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-5 transition-all duration-300 hover:border-[#c8f060]/30 hover:bg-white/[0.04]">
+                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5 transition-all duration-300 hover:border-[#c8f060]/30 hover:bg-white/[0.04]">
                   <div className="pointer-events-none absolute -right-10 -top-10 size-28 rounded-full bg-[#c8f060]/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
                   <capability.icon className="size-5 text-[#d7f68c]" strokeWidth={1.6} />
                   <h3 className="mt-4 font-display text-[15px] font-semibold">{capability.title}</h3>
-                  <p className="mt-2 text-[13px] leading-relaxed text-[#a0a19d]">{capability.body}</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-[#acb3bc]">{capability.body}</p>
                 </div>
               </Reveal>
             ))}
@@ -619,10 +619,10 @@ export function Home() {
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-2xl border border-white/8 bg-[linear-gradient(160deg,rgba(245,245,243,0.045),rgba(245,245,243,0.01))] px-5 py-6 text-center"
+                  className="rounded-2xl border border-white/12 bg-[linear-gradient(160deg,rgba(226,236,247,0.045),rgba(226,236,247,0.01))] px-5 py-6 text-center"
                 >
                   <p className="font-display text-[clamp(1.6rem,3vw,2.2rem)] font-semibold text-white">{stat.value}</p>
-                  <p className="mt-1 text-[11.5px] uppercase tracking-[0.08em] text-[#9d9e9a]">{stat.label}</p>
+                  <p className="mt-1 text-[11.5px] uppercase tracking-[0.08em] text-[#a9b0b9]">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -639,9 +639,9 @@ export function Home() {
             description="Real outcomes from teams who hired their first AI employee and never went back to the backlog."
             action={
               <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-2">
-                <Star className="size-3.5 fill-[#d3d5cd] text-[#d3d5cd]" />
+                <Star className="size-3.5 fill-[#d8dfe7] text-[#d8dfe7]" />
                 <span className="text-[12.5px] font-medium text-white">4.9 / 5</span>
-                <span className="text-[11.5px] text-[#9d9e9a]">2,400+ reviews</span>
+                <span className="text-[11.5px] text-[#a9b0b9]">2,400+ reviews</span>
               </div>
             }
           />
@@ -671,9 +671,9 @@ export function Home() {
                   <h2 className="mt-5 text-[clamp(1.7rem,3.4vw,2.5rem)] font-semibold leading-[1.08]">
                     A full-time hire costs $6,000 a month.
                     <br />
-                    <span className="text-[#a0a19d]">An AI employee starts at ${startingPrice}.</span>
+                    <span className="text-[#acb3bc]">An AI employee starts at ${startingPrice}.</span>
                   </h2>
-                  <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-[#a0a19d]">
+                  <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-[#acb3bc]">
                     No per-seat maths, no token roulette. Pick a plan, hire your team, and cancel any
                     time. Every plan includes playbooks, integrations, and human-in-the-loop approvals.
                   </p>
@@ -685,7 +685,7 @@ export function Home() {
                   <ButtonLink to="/signup" variant="secondary" size="lg" iconLeft={<Sparkles className="size-4" />}>
                     Start free for 14 days
                   </ButtonLink>
-                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1.5 text-[11.5px] text-[#9d9e9a]">
+                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1.5 text-[11.5px] text-[#a9b0b9]">
                     <span className="inline-flex items-center gap-1"><Check className="size-3 text-mint" /> No card required</span>
                     <span className="inline-flex items-center gap-1"><CalendarCheck className="size-3 text-mint" /> Cancel anytime</span>
                   </div>

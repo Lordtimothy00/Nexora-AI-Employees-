@@ -5,7 +5,7 @@ export function LogoMark({ className, size = 'md' }: { className?: string; size?
   return (
     <span
       className={cn(
-        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#17191b,#101112)] shadow-[inset_0_1px_0_rgba(245,245,243,0.16)]',
+        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#151921,#0e1118)] shadow-[inset_0_1px_0_rgba(226,236,247,0.16)]',
         size === 'sm' ? 'size-8 rounded-[9px]' : 'size-9 rounded-[11px]',
         className,
       )}
@@ -19,8 +19,8 @@ export function LogoMark({ className, size = 'md' }: { className?: string; size?
       <svg viewBox="0 0 64 64" className="relative size-[62%]" aria-hidden="true">
         <defs>
           <linearGradient id="nexora-mark" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#ffffff" />
-            <stop offset="0.55" stopColor="#d7d8d4" />
+            <stop offset="0" stopColor="#fdffff" />
+            <stop offset="0.55" stopColor="#dbe2ea" />
             <stop offset="1" stopColor="#c8f060" />
           </linearGradient>
         </defs>

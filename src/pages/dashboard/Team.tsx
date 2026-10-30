@@ -73,11 +73,11 @@ export function Team() {
                 <div
                   key={hire.employeeId}
                   className={cn(
-                    'relative overflow-hidden rounded-2xl border border-white/8 bg-[linear-gradient(160deg,rgba(245,245,243,0.04),rgba(245,245,243,0.01))] transition-colors hover:border-white/16',
+                    'relative overflow-hidden rounded-2xl border border-white/12 bg-[linear-gradient(160deg,rgba(226,236,247,0.04),rgba(226,236,247,0.01))] transition-colors hover:border-white/16',
                     isPaused && 'opacity-80',
                   )}
                 >
-                  <div className="flex items-start justify-between gap-3 border-b border-white/6 p-4">
+                  <div className="flex items-start justify-between gap-3 border-b border-white/10 p-4">
                     <div className="flex items-center gap-3">
                       <Avatar
                         name={person.name}
@@ -94,15 +94,15 @@ export function Team() {
                             className={cn(
                               'rounded-full px-1.5 py-0.5 text-[8.5px] uppercase tracking-wider ring-1 ring-inset',
                               isPaused
-                                ? 'bg-amber/10 text-[#e6e7e3] ring-amber/20'
+                                ? 'bg-amber/10 text-[#e4e7e9] ring-amber/20'
                                 : 'bg-mint/10 text-[#e2fa9e] ring-mint/20',
                             )}
                           >
                             {hire.status}
                           </span>
                         </div>
-                        <p className="mt-0.5 text-[11px] text-[#a0a19d]">{person.role}</p>
-                        <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-[#7c7d79]">
+                        <p className="mt-0.5 text-[11px] text-[#acb3bc]">{person.role}</p>
+                        <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-[#8a919a]">
                           {person.department}
                         </p>
                       </div>
@@ -110,13 +110,13 @@ export function Team() {
                     <Link
                       to={`/employees/${person.slug}`}
                       aria-label={`View ${person.name}'s profile`}
-                      className="grid size-7 place-items-center rounded-lg text-[#7c7d79] transition hover:bg-white/8 hover:text-white"
+                      className="grid size-7 place-items-center rounded-lg text-[#8a919a] transition hover:bg-white/8 hover:text-white"
                     >
                       <ArrowUpRight className="size-3.5" />
                     </Link>
                   </div>
 
-                  <div className="grid grid-cols-3 divide-x divide-white/6 border-b border-white/6">
+                  <div className="grid grid-cols-3 divide-x divide-white/6 border-b border-white/10">
                     {[
                       { label: 'Tasks', value: hire.tasksCompleted.toLocaleString() },
                       { label: 'Hours/wk', value: `${person.hoursSavedPerWeek}` },
@@ -124,13 +124,13 @@ export function Team() {
                     ].map((stat) => (
                       <div key={stat.label} className="px-3 py-2.5 text-center">
                         <p className="font-display text-[14px] font-semibold text-white">{stat.value}</p>
-                        <p className="text-[9px] uppercase tracking-[0.08em] text-[#7c7d79]">{stat.label}</p>
+                        <p className="text-[9px] uppercase tracking-[0.08em] text-[#8a919a]">{stat.label}</p>
                       </div>
                     ))}
                   </div>
 
                   <div className="p-4">
-                    <div className="flex items-center justify-between text-[10px] text-[#8e8f8b]">
+                    <div className="flex items-center justify-between text-[10px] text-[#9ba2ab]">
                       <span>Utilisation this week</span>
                       <span>{hire.utilization}%</span>
                     </div>
@@ -149,7 +149,7 @@ export function Team() {
                     <div className="mt-3 flex items-center gap-1.5">
                       <Link
                         to="/dashboard/conversations"
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] py-1.5 text-[11px] text-[#cecfcb] transition hover:border-white/20 hover:text-white"
+                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] py-1.5 text-[11px] text-[#cccfd1] transition hover:border-white/20 hover:text-white"
                       >
                         <MessageSquare className="size-3" /> Message
                       </Link>
@@ -163,7 +163,7 @@ export function Team() {
                               : `${person.name} is paused. Queued work will hold until resumed.`,
                           );
                         }}
-                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-[11px] text-[#cecfcb] transition hover:border-white/20 hover:text-white"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-[11px] text-[#cccfd1] transition hover:border-white/20 hover:text-white"
                       >
                         {isPaused ? <Play className="size-3" /> : <Pause className="size-3" />}
                         {isPaused ? 'Resume' : 'Pause'}
@@ -188,7 +188,7 @@ export function Team() {
                           <button
                             type="button"
                             onClick={() => setConfirming(null)}
-                            className="rounded-md px-2 py-0.5 text-[10px] text-[#b2b3af] hover:text-white"
+                            className="rounded-md px-2 py-0.5 text-[10px] text-[#bbc2cb] hover:text-white"
                           >
                             Cancel
                           </button>
@@ -198,7 +198,7 @@ export function Team() {
                       <button
                         type="button"
                         onClick={() => setConfirming(person.id)}
-                        className="mt-2 w-full text-center text-[9.5px] text-[#5e5f5c] transition hover:text-rose-300"
+                        className="mt-2 w-full text-center text-[9.5px] text-[#5c5f62] transition hover:text-rose-300"
                       >
                         Remove from team
                       </button>
@@ -216,7 +216,7 @@ export function Team() {
                 <Plus className="size-4" />
               </span>
               <p className="mt-3 text-[12.5px] font-medium text-white">Add another employee</p>
-              <p className="mt-1 max-w-[180px] text-[10.5px] leading-relaxed text-[#8e8f8b]">
+              <p className="mt-1 max-w-[180px] text-[10.5px] leading-relaxed text-[#9ba2ab]">
                 {5 - hires.length} seats remaining on Growth
               </p>
             </Link>
@@ -229,10 +229,10 @@ export function Team() {
                 { label: 'Your Nexora cost', value: `$${hires.length * 49}/mo`, hint: 'billed monthly' },
                 { label: 'Monthly saving', value: `$${(hires.length * 6151).toLocaleString()}`, hint: `${hoursSaved}h of work returned` },
               ].map((row) => (
-                <div key={row.label} className="rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-3.5">
-                  <p className="text-[10px] uppercase tracking-[0.08em] text-[#8e8f8b]">{row.label}</p>
+                <div key={row.label} className="rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-3.5">
+                  <p className="text-[10px] uppercase tracking-[0.08em] text-[#9ba2ab]">{row.label}</p>
                   <p className="mt-1 font-display text-[17px] font-semibold text-white">{row.value}</p>
-                  <p className="mt-0.5 text-[10px] text-[#7c7d79]">{row.hint}</p>
+                  <p className="mt-0.5 text-[10px] text-[#8a919a]">{row.hint}</p>
                 </div>
               ))}
             </div>

@@ -55,8 +55,8 @@ export function Avatar({
       )}
       <div
         className={cn(
-          'relative grid place-items-center overflow-hidden border border-white/12 shadow-[inset_0_1px_0_rgba(245,245,243,0.12),0_10px_30px_-14px_rgba(0,0,0,0.8)]',
-          'bg-[linear-gradient(160deg,rgba(245,245,243,0.09),rgba(245,245,243,0.02))]',
+          'relative grid place-items-center overflow-hidden border border-white/12 shadow-[inset_0_1px_0_rgba(226,236,247,0.12),0_10px_30px_-14px_rgba(0,0,0,0.8)]',
+          'bg-[linear-gradient(160deg,rgba(226,236,247,0.09),rgba(226,236,247,0.02))]',
           sizes[size],
         )}
       >
@@ -79,7 +79,7 @@ export function Avatar({
       {status && (
         <span
           className={cn(
-            'absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[#130805]',
+            'absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[#11080b]',
             statusColors[status],
           )}
           aria-label={status}

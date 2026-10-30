@@ -40,23 +40,23 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-[#08090a] via-[#08090a]/75 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-[#060910] via-[#060910]/75 to-transparent"
       />
 
       <div className="mx-auto max-w-[1200px] px-3 pt-3 md:px-6">
         <div
           className={cn(
-            'flex h-[52px] items-center justify-between gap-2 rounded-2xl border px-2 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 md:h-[56px] md:gap-4 md:px-3',
+            'flex h-[52px] items-center justify-between gap-2 rounded-2xl border px-2 backdrop-blur-2xl backdrop-saturate-200 transition-all duration-300 md:h-[56px] md:gap-4 md:px-3',
             scrolled
-              ? 'border-white/14 bg-[#0b0c0d]/72 shadow-[0_18px_50px_-32px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(245,245,243,0.12)]'
-              : 'border-white/10 bg-white/[0.045] shadow-[inset_0_1px_0_rgba(245,245,243,0.1)]',
+              ? 'border-white/22 bg-[#0b1017]/62 shadow-[0_18px_50px_-32px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.34)]'
+              : 'border-white/18 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]',
           )}
         >
           <Logo size="sm" className="pl-1" />
 
           <nav
             aria-label="Main"
-            className="hidden items-center gap-0.5 rounded-full border border-white/[0.07] bg-white/[0.035] p-0.5 md:flex"
+            className="hidden items-center gap-0.5 rounded-full border border-white/12 bg-white/[0.06] p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] md:flex"
           >
             {links.map((link) => (
               <NavLink
@@ -66,8 +66,8 @@ export function Navbar() {
                   cn(
                     'relative rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.1] text-white shadow-[inset_0_1px_0_rgba(245,245,243,0.14)]'
-                      : 'text-[#b2b3af] hover:bg-white/[0.05] hover:text-white',
+                      ? 'bg-white/[0.16] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
+                      : 'text-[#bbc2cb] hover:bg-white/[0.05] hover:text-white',
                   )
                 }
               >
@@ -90,7 +90,7 @@ export function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="rounded-full px-3 py-2 text-[12.5px] font-medium text-[#b2b3af] transition-colors hover:text-white"
+                  className="rounded-full px-3 py-2 text-[12.5px] font-medium text-[#bbc2cb] transition-colors hover:text-white"
                 >
                   Sign in
                 </Link>
@@ -109,7 +109,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="grid size-9 place-items-center rounded-xl border border-white/12 bg-white/[0.05] text-white backdrop-blur-md md:hidden"
+            className="grid size-9 place-items-center rounded-xl border border-white/16 bg-white/[0.08] text-white backdrop-blur-xl md:hidden"
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
           >
@@ -119,7 +119,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="fixed inset-x-3 top-[70px] z-40 max-h-[calc(100dvh-84px)] overflow-y-auto rounded-2xl border border-white/12 bg-[#0b0c0d]/85 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(245,245,243,0.12)] backdrop-blur-2xl backdrop-saturate-150 md:hidden">
+        <div className="fixed inset-x-3 top-[70px] z-40 max-h-[calc(100dvh-84px)] overflow-y-auto rounded-2xl border border-white/20 bg-[#0b1017]/72 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.32)] backdrop-blur-2xl backdrop-saturate-200 md:hidden">
           <nav aria-label="Mobile" className="flex flex-col gap-1">
             {links.map((link) => (
               <NavLink
@@ -128,7 +128,7 @@ export function Navbar() {
                 className={({ isActive }) =>
                   cn(
                     'flex items-center justify-between rounded-xl px-3.5 py-3 text-[14px] transition-colors',
-                    isActive ? 'bg-white/[0.07] text-white' : 'text-[#b8b9b5] hover:bg-white/[0.05]',
+                    isActive ? 'bg-white/[0.07] text-white' : 'text-[#c1c8d1] hover:bg-white/[0.05]',
                   )
                 }
               >
@@ -153,7 +153,7 @@ export function Navbar() {
               </>
             )}
           </div>
-          <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#7c7d79]">
+          <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#8a919a]">
             AI employees · 24/7
           </p>
         </div>

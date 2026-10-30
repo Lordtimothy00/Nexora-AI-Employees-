@@ -137,7 +137,7 @@ export function Overview() {
               title="Work delivered"
               subtitle="Completed tasks per day, across your team"
               action={
-                <div className="flex rounded-lg border border-white/8 bg-white/[0.045] backdrop-blur-xl p-0.5">
+                <div className="flex rounded-lg border border-white/12 bg-white/[0.045] backdrop-blur-xl p-0.5">
                   {(['7d', '30d'] as const).map((option) => (
                     <button
                       key={option}
@@ -145,7 +145,7 @@ export function Overview() {
                       onClick={() => setRange(option)}
                       className={cn(
                         'rounded-md px-2 py-1 text-[10.5px] transition',
-                        range === option ? 'bg-white/10 text-white' : 'text-[#9d9e9a] hover:text-white',
+                        range === option ? 'bg-white/10 text-white' : 'text-[#a9b0b9] hover:text-white',
                       )}
                     >
                       {option === '7d' ? '7 days' : '30 days'}
@@ -159,7 +159,7 @@ export function Overview() {
                   <p className="font-display text-[26px] font-semibold leading-none text-white">
                     {chart.data.reduce((sum, value) => sum + value, 0)}
                   </p>
-                  <p className="mt-1 text-[11px] text-[#8e8f8b]">tasks completed · last {range === '7d' ? '7' : '30'} days</p>
+                  <p className="mt-1 text-[11px] text-[#9ba2ab]">tasks completed · last {range === '7d' ? '7' : '30'} days</p>
                 </div>
                 <span className="inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-1 text-[10.5px] text-[#e2fa9e]">
                   <ArrowUpRight className="size-3" /> 18.4%
@@ -182,8 +182,8 @@ export function Overview() {
                         size="xs"
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11.5px] leading-relaxed text-[#cecfcb]">{activity.text}</p>
-                        <p className="mt-0.5 text-[9.5px] text-[#7c7d79]">
+                        <p className="text-[11.5px] leading-relaxed text-[#cccfd1]">{activity.text}</p>
+                        <p className="mt-0.5 text-[9.5px] text-[#8a919a]">
                           {person?.name} · {timeAgo(activity.at)}
                         </p>
                       </div>
@@ -233,13 +233,13 @@ export function Overview() {
                               'rounded-full px-1.5 py-0.5 text-[9px] uppercase tracking-wider ring-1 ring-inset',
                               hire.status === 'active'
                                 ? 'bg-mint/10 text-[#e2fa9e] ring-mint/20'
-                                : 'bg-amber/10 text-[#e6e7e3] ring-amber/20',
+                                : 'bg-amber/10 text-[#e4e7e9] ring-amber/20',
                             )}
                           >
                             {hire.status}
                           </span>
                         </div>
-                        <p className="truncate text-[10.5px] text-[#8e8f8b]">{person.role}</p>
+                        <p className="truncate text-[10.5px] text-[#9ba2ab]">{person.role}</p>
                         <div className="mt-1.5 flex items-center gap-2">
                           <div className="h-1 w-24 overflow-hidden rounded-full bg-white/8">
                             <div
@@ -247,16 +247,16 @@ export function Overview() {
                               style={{ width: `${hire.utilization}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[9px] text-[#8e8f8b]">{hire.utilization}%</span>
+                          <span className="font-mono text-[9px] text-[#9ba2ab]">{hire.utilization}%</span>
                         </div>
                       </div>
                       <div className="hidden text-right sm:block">
                         <p className="text-[12px] font-medium text-white">{hire.tasksCompleted.toLocaleString()}</p>
-                        <p className="text-[9.5px] text-[#8e8f8b]">tasks</p>
+                        <p className="text-[9.5px] text-[#9ba2ab]">tasks</p>
                       </div>
                       <Link
                         to="/dashboard/conversations"
-                        className="grid size-8 place-items-center rounded-lg border border-white/8 bg-white/[0.03] text-[#b2b3af] transition hover:border-white/20 hover:text-white"
+                        className="grid size-8 place-items-center rounded-lg border border-white/12 bg-white/[0.03] text-[#bbc2cb] transition hover:border-white/20 hover:text-white"
                         aria-label={`Message ${person.name}`}
                       >
                         <MessageSquare className="size-3.5" />
@@ -278,7 +278,7 @@ export function Overview() {
                     <Check className="size-4 text-mint" />
                   </span>
                   <p className="mt-3 text-[12.5px] font-medium text-white">Queue is clear</p>
-                  <p className="mt-1 max-w-[220px] text-[11px] leading-relaxed text-[#8e8f8b]">
+                  <p className="mt-1 max-w-[220px] text-[11px] leading-relaxed text-[#9ba2ab]">
                     Your team is operating inside policy. Anything new will appear here.
                   </p>
                 </div>
@@ -298,7 +298,7 @@ export function Overview() {
                           />
                           <div className="min-w-0 flex-1">
                             <p className="text-[11.5px] font-medium leading-snug text-white">{task.title}</p>
-                            <p className="mt-0.5 text-[9.5px] text-[#8e8f8b]">
+                            <p className="mt-0.5 text-[9.5px] text-[#9ba2ab]">
                               {person?.name} · due {task.due}
                             </p>
                           </div>
@@ -309,7 +309,7 @@ export function Overview() {
                           </Button>
                           <Link
                             to="/dashboard/tasks"
-                            className="rounded-full border border-white/10 px-3 py-1 text-[10.5px] text-[#b2b3af] transition hover:border-white/20 hover:text-white"
+                            className="rounded-full border border-white/10 px-3 py-1 text-[10.5px] text-[#bbc2cb] transition hover:border-white/20 hover:text-white"
                           >
                             Review
                           </Link>
@@ -338,14 +338,14 @@ export function Overview() {
                         initials={person.initials}
                         accent={person.accent}
                         size="sm"
-                        className="ring-2 ring-[#111213]"
+                        className="ring-2 ring-[#0f1219]"
                       />
                     );
                   })}
                 </div>
                 <div>
                   <p className="text-[12.5px] font-medium text-white">Give your team more leverage</p>
-                  <p className="text-[11px] text-[#8e8f8b]">
+                  <p className="text-[11px] text-[#9ba2ab]">
                     You have {5 - hires.length} seats left on the Growth plan.
                   </p>
                 </div>

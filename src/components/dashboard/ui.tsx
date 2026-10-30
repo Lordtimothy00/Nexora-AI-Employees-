@@ -17,12 +17,12 @@ export function PageHeader({
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {eyebrow && (
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#8e8f8b]">{eyebrow}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ba2ab]">{eyebrow}</p>
         )}
         <h1 className="mt-1.5 font-display text-[clamp(1.5rem,2.6vw,1.9rem)] font-semibold leading-tight text-white">
           {title}
         </h1>
-        {description && <p className="mt-1.5 max-w-xl text-[13px] text-[#a0a19d]">{description}</p>}
+        {description && <p className="mt-1.5 max-w-xl text-[13px] text-[#acb3bc]">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -49,21 +49,21 @@ export function StatCard({
   const tones = {
     violet: 'from-[#c8f060]/25 to-transparent text-[#e2fa9e]',
     mint: 'from-[#c8f060]/20 to-transparent text-[#e2fa9e]',
-    sky: 'from-[#b9bcb4]/20 to-transparent text-[#dadbd7]',
-    amber: 'from-[#d3d5cd]/20 to-transparent text-[#e6e7e3]',
+    sky: 'from-[#b7bcba]/20 to-transparent text-[#d8dbdd]',
+    amber: 'from-[#d8dfe7]/20 to-transparent text-[#e4e7e9]',
   };
   const stroke = {
     violet: '#d7f68c',
     mint: '#c8f060',
-    sky: '#b9bcb4',
-    amber: '#d3d5cd',
+    sky: '#b7bcba',
+    amber: '#d8dfe7',
   }[tone];
 
   return (
     <div className="relative overflow-hidden glass relative overflow-hidden rounded-2xl p-4">
       <div className={cn('pointer-events-none absolute -right-10 -top-10 size-28 rounded-full bg-gradient-to-br blur-2xl', tones[tone])} />
       <div className="relative flex items-start justify-between">
-        <p className="text-[11px] uppercase tracking-[0.08em] text-[#9d9e9a]">{label}</p>
+        <p className="text-[11px] uppercase tracking-[0.08em] text-[#a9b0b9]">{label}</p>
         {icon && <span className={cn('opacity-80', tones[tone].split(' ').pop())}>{icon}</span>}
       </div>
       <p className="relative mt-2 font-display text-[26px] font-semibold leading-none text-white">{value}</p>
@@ -74,7 +74,7 @@ export function StatCard({
               <TrendingUp className="size-2.5" /> {delta}
             </span>
           )}
-          {hint && <span className="text-[#8e8f8b]">{hint}</span>}
+          {hint && <span className="text-[#9ba2ab]">{hint}</span>}
         </div>
         {spark && <Sparkline data={spark} color={stroke} />}
       </div>
@@ -118,10 +118,10 @@ export function Panel({
   return (
     <section className={cn('glass rounded-2xl', className)}>
       {(title || action) && (
-        <div className="flex items-start justify-between gap-3 border-b border-white/6 px-4 py-3.5 md:px-5">
+        <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3.5 md:px-5">
           <div>
             {title && <h2 className="font-display text-[13.5px] font-medium text-white">{title}</h2>}
-            {subtitle && <p className="mt-0.5 text-[11px] text-[#8e8f8b]">{subtitle}</p>}
+            {subtitle && <p className="mt-0.5 text-[11px] text-[#9ba2ab]">{subtitle}</p>}
           </div>
           {action}
         </div>
@@ -148,7 +148,7 @@ export function EmptyState({
         {icon}
       </div>
       <h3 className="mt-4 font-display text-[15px] font-semibold text-white">{title}</h3>
-      <p className="mt-1.5 max-w-sm text-[12.5px] leading-relaxed text-[#a0a19d]">{description}</p>
+      <p className="mt-1.5 max-w-sm text-[12.5px] leading-relaxed text-[#acb3bc]">{description}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>
   );
@@ -165,10 +165,10 @@ export function Toast({
 }) {
   return (
     <div className="fixed bottom-5 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 animate-rise lg:left-auto lg:right-6 lg:translate-x-0">
-      <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-[#16181a]/95 px-4 py-3 shadow-[0_24px_60px_-24px_rgba(0,0,0,1)] backdrop-blur-xl">
-        <CheckCircle2 className={cn('size-4 shrink-0', tone === 'success' ? 'text-mint' : 'text-[#dadbd7]')} />
-        <p className="flex-1 text-[12.5px] text-[#d8d9d5]">{message}</p>
-        <button type="button" onClick={onClose} aria-label="Dismiss" className="grid size-5 place-items-center rounded-full text-[#8e8f8b] hover:bg-white/10 hover:text-white">
+      <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-[#141820]/95 px-4 py-3 shadow-[0_24px_60px_-24px_rgba(0,0,0,1)] backdrop-blur-xl">
+        <CheckCircle2 className={cn('size-4 shrink-0', tone === 'success' ? 'text-mint' : 'text-[#d8dbdd]')} />
+        <p className="flex-1 text-[12.5px] text-[#d6d9db]">{message}</p>
+        <button type="button" onClick={onClose} aria-label="Dismiss" className="grid size-5 place-items-center rounded-full text-[#9ba2ab] hover:bg-white/10 hover:text-white">
           <X className="size-3" />
         </button>
       </div>
@@ -192,7 +192,7 @@ export function MiniBar({
   return (
     <div>
       <div className="flex items-center justify-between text-[11.5px]">
-        <span className="text-[#b2b3af]">{label}</span>
+        <span className="text-[#bbc2cb]">{label}</span>
         <span className="font-medium text-white">
           {value.toLocaleString()}
           {suffix}
@@ -223,9 +223,9 @@ export function InlineLink({ children, onClick }: { children: ReactNode; onClick
 
 export const statusStyles: Record<string, string> = {
   active: 'bg-mint/12 text-[#e2fa9e] ring-mint/25',
-  paused: 'bg-amber/12 text-[#e6e7e3] ring-amber/25',
-  backlog: 'bg-white/[0.04] text-[#b2b3af] ring-white/10',
-  in_progress: 'bg-[#b9bcb4]/12 text-[#dadbd7] ring-[#b9bcb4]/25',
-  review: 'bg-[#d3d5cd]/12 text-[#e6e7e3] ring-[#d3d5cd]/25',
+  paused: 'bg-amber/12 text-[#e4e7e9] ring-amber/25',
+  backlog: 'bg-white/[0.04] text-[#bbc2cb] ring-white/10',
+  in_progress: 'bg-[#b7bcba]/12 text-[#d8dbdd] ring-[#b7bcba]/25',
+  review: 'bg-[#d8dfe7]/12 text-[#e4e7e9] ring-[#d8dfe7]/25',
   done: 'bg-mint/12 text-[#e2fa9e] ring-mint/25',
 };

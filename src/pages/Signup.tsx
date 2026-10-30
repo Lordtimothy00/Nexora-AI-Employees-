@@ -75,7 +75,7 @@ export function Signup() {
         </>
       }
       footer={
-        <span className="text-[#8e8f8b]">
+        <span className="text-[#9ba2ab]">
           By signing up you agree to our{' '}
           <Link to="/how-it-works#security" className="underline decoration-white/20 hover:text-white">
             Terms
@@ -90,7 +90,7 @@ export function Signup() {
     >
       <div className="mb-5 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.12em] text-[#8e8f8b]">Selected plan</p>
+          <p className="text-[10px] uppercase tracking-[0.12em] text-[#9ba2ab]">Selected plan</p>
           <p className="mt-0.5 text-[13px] font-medium text-white">
             {plan.name} · 14-day free trial
           </p>
@@ -150,18 +150,18 @@ export function Signup() {
                       index < strength
                         ? strength >= 3
                           ? 'bg-mint'
-                          : 'bg-[#d3d5cd]'
+                          : 'bg-[#d8dfe7]'
                         : 'bg-white/10',
                     )}
                   />
                 ))}
               </div>
-              <span className="w-20 text-right text-[10px] text-[#9d9e9a]">{strengthLabels[strength]}</span>
+              <span className="w-20 text-right text-[10px] text-[#a9b0b9]">{strengthLabels[strength]}</span>
             </div>
           )}
         </div>
 
-        <label className="flex cursor-pointer items-start gap-2.5 text-[11.5px] leading-relaxed text-[#a0a19d]">
+        <label className="flex cursor-pointer items-start gap-2.5 text-[11.5px] leading-relaxed text-[#acb3bc]">
           <input
             type="checkbox"
             checked={agreed}
@@ -185,7 +185,7 @@ export function Signup() {
           Create workspace
         </Button>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-1 text-[10.5px] text-[#8e8f8b]">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-1 text-[10.5px] text-[#9ba2ab]">
           {['No credit card', 'Cancel anytime', 'Keep your deliverables'].map((item) => (
             <span key={item} className="inline-flex items-center gap-1">
               <Check className="size-3 text-mint" /> {item}
@@ -193,7 +193,7 @@ export function Signup() {
           ))}
         </div>
 
-        <p className="text-center text-[11px] leading-relaxed text-[#7c7d79]">
+        <p className="text-center text-[11px] leading-relaxed text-[#8a919a]">
           This is a product preview — accounts are stored locally in your browser, never on a server.
         </p>
       </form>

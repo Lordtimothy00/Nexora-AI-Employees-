@@ -36,7 +36,7 @@ export function SectionHeading({
         )}
         <h2 className="text-[clamp(1.85rem,3.6vw,2.9rem)] font-semibold leading-[1.08]">{title}</h2>
         {description && (
-          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[#a0a19d] md:text-base">
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[#acb3bc] md:text-base">
             {description}
           </p>
         )}

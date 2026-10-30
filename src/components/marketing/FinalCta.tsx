@@ -16,7 +16,7 @@ export function FinalCta() {
             <div className="pointer-events-none absolute left-1/2 top-1/2 size-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d7f68c]/10" />
             <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.35] [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]" />
             <div className="pointer-events-none absolute -top-40 left-1/2 size-[620px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(200,240,96,0.14),transparent_62%)]" />
-            <div className="pointer-events-none absolute -bottom-48 right-0 size-[420px] rounded-full bg-[radial-gradient(circle,rgba(245,245,243,0.07),transparent_65%)]" />
+            <div className="pointer-events-none absolute -bottom-48 right-0 size-[420px] rounded-full bg-[radial-gradient(circle,rgba(226,236,247,0.07),transparent_65%)]" />
 
             <div className="relative mx-auto max-w-2xl">
               <div className="mb-5 flex justify-center">
@@ -30,7 +30,7 @@ export function FinalCta() {
                 <br />
                 <span className="text-gradient">It would like a team.</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#adaeaa] md:text-base">
+              <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#b6bdc6] md:text-base">
                 Hire your first AI employee in four minutes. Delegate the work you keep postponing.
                 See finished output before you decide to pay.
               </p>
@@ -48,7 +48,7 @@ export function FinalCta() {
                 </ButtonLink>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] text-[#9d9e9a]">
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] text-[#a9b0b9]">
                 {['No credit card', 'Cancel in one click', 'Keep every deliverable'].map((item) => (
                   <span key={item} className="inline-flex items-center gap-1.5">
                     <Check className="size-3 text-mint" />
