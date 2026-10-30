@@ -41,13 +41,13 @@ function TabBar({ active }: { active: number }) {
   ];
 
   return (
-    <div className="mt-auto flex items-center justify-around border-t border-white/8 bg-[#0f0604]/95 px-2 pb-2 pt-1.5">
+    <div className="mt-auto flex items-center justify-around border-t border-white/8 bg-[#0a0b0c]/95 px-2 pb-2 pt-1.5">
       {items.map((item, index) => (
         <div
           key={item.label}
           className={cn(
             'flex flex-col items-center gap-0.5 transition-colors',
-            index === active ? 'text-[#ffc08e]' : 'text-[#6e574b]',
+            index === active ? 'text-[#e2fa9e]' : 'text-[#575855]',
           )}
         >
           <item.icon className="size-3" />
@@ -70,20 +70,20 @@ function PhoneFrame({
   return (
     <div
       className={cn(
-        'relative rounded-[38px] border border-[#ffc08e]/25 bg-[linear-gradient(160deg,#3d160a,#180b06_55%,#200e08)] p-[6px]',
+        'relative rounded-[38px] border border-white/20 bg-[linear-gradient(160deg,#2f3336,#141516_55%,#101112)] p-[6px]',
         glow
-          ? 'shadow-[0_50px_120px_-40px_rgba(0,0,0,0.95),0_0_90px_-20px_rgba(221,104,22,0.65)]'
+          ? 'shadow-[0_50px_120px_-40px_rgba(0,0,0,0.95),0_0_90px_-30px_rgba(200,240,96,0.4)]'
           : 'shadow-[0_40px_90px_-40px_rgba(0,0,0,0.9)]',
         className,
       )}
     >
-      <span aria-hidden="true" className="absolute -left-[2px] top-24 h-8 w-[2px] rounded-full bg-[#3d160a]" />
-      <span aria-hidden="true" className="absolute -left-[2px] top-36 h-12 w-[2px] rounded-full bg-[#3d160a]" />
-      <span aria-hidden="true" className="absolute -right-[2px] top-28 h-14 w-[2px] rounded-full bg-[#3d160a]" />
-      <div className="relative overflow-hidden rounded-[33px] border border-white/10 bg-[#0b0402]">
+      <span aria-hidden="true" className="absolute -left-[2px] top-24 h-8 w-[2px] rounded-full bg-[#2a2d30]" />
+      <span aria-hidden="true" className="absolute -left-[2px] top-36 h-12 w-[2px] rounded-full bg-[#2a2d30]" />
+      <span aria-hidden="true" className="absolute -right-[2px] top-28 h-14 w-[2px] rounded-full bg-[#2a2d30]" />
+      <div className="relative overflow-hidden rounded-[33px] border border-white/10 bg-[#08090a]">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-30 rounded-[33px] bg-[linear-gradient(115deg,rgba(255,244,236,0.08)_0%,transparent_32%,transparent_70%,rgba(255,244,236,0.04)_100%)]"
+          className="pointer-events-none absolute inset-0 z-30 rounded-[33px] bg-[linear-gradient(115deg,rgba(245,245,243,0.08)_0%,transparent_32%,transparent_70%,rgba(245,245,243,0.04)_100%)]"
         />
         {children}
       </div>
@@ -100,8 +100,8 @@ function Bubble({ side, children }: { side: 'left' | 'right'; children: ReactNod
         className={cn(
           'max-w-[86%] rounded-xl px-2 py-1.5 text-[7.5px] leading-[1.55]',
           side === 'right'
-            ? 'rounded-br-sm bg-[linear-gradient(140deg,#dd6816,#a32b0b)] text-[#fff1e5]'
-            : 'rounded-bl-sm border border-white/8 bg-white/[0.045] text-[#d2c0b5]',
+            ? 'rounded-br-sm bg-[linear-gradient(140deg,#e2fa9e,#c8f060)] text-[#0a0b0c]'
+            : 'rounded-bl-sm border border-white/8 bg-white/[0.045] text-[#c3c4c0]',
         )}
       >
         {children}
@@ -115,19 +115,19 @@ function ChatScreen() {
     <div className="flex h-[520px] flex-col">
       <StatusBar />
       <div className="flex items-center gap-2 border-b border-white/8 px-3 pb-2.5 pt-1.5">
-        <ChevronLeft className="size-3.5 shrink-0 text-[#a68e80]" />
+        <ChevronLeft className="size-3.5 shrink-0 text-[#9d9e9a]" />
         <Avatar name="Ava" src="/team/ava.jpg" initials="AV" accent="violet" size="xs" status="online" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-[10px] font-medium text-white">Ava</p>
-          <p className="flex items-center gap-1 text-[7px] text-[#b5b56f]">
-            <span className="size-1 rounded-full bg-[#b5b56f]" /> online · replies in 2 min
+          <p className="flex items-center gap-1 text-[7px] text-[#c8f060]">
+            <span className="size-1 rounded-full bg-[#c8f060]" /> online · replies in 2 min
           </p>
         </div>
-        <MoreHorizontal className="size-3.5 shrink-0 text-[#8a7365]" />
+        <MoreHorizontal className="size-3.5 shrink-0 text-[#7c7d79]" />
       </div>
 
       <div className="flex-1 space-y-2 overflow-hidden px-2.5 pb-2 pt-2.5">
-        <p className="text-center font-mono text-[6px] uppercase tracking-[0.18em] text-[#8a7365]">
+        <p className="text-center font-mono text-[6px] uppercase tracking-[0.18em] text-[#7c7d79]">
           Today · 07:12
         </p>
         <Bubble side="left">
@@ -139,17 +139,17 @@ function ChatScreen() {
           9.4% on v1, above the 6% baseline. Draft v2 is ready:
           <div className="mt-1.5 rounded-lg border border-white/10 bg-white/[0.05] p-1.5">
             <div className="flex items-center gap-1.5">
-              <span className="grid size-5 place-items-center rounded-md bg-[#dd6816]/25">
-                <Sparkles className="size-2.5 text-[#ffc08e]" />
+              <span className="grid size-5 place-items-center rounded-md bg-[#c8f060]/25">
+                <Sparkles className="size-2.5 text-[#e2fa9e]" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[7.5px] font-medium text-white">Sequence v2</p>
-                <p className="truncate text-[6px] text-[#8a7365]">3 touches · reconciliation angle</p>
+                <p className="truncate text-[6px] text-[#7c7d79]">3 touches · reconciliation angle</p>
               </div>
-              <Check className="size-2.5 text-[#b5b56f]" />
+              <Check className="size-2.5 text-[#c8f060]" />
             </div>
           </div>
-          <div className="mt-1.5 rounded-md bg-[linear-gradient(100deg,#ff9a4d,#df5a12)] px-2 py-1 text-center text-[7.5px] font-medium text-white">
+          <div className="mt-1.5 rounded-md bg-[linear-gradient(100deg,#e2fa9e,#c8f060)] px-2 py-1 text-center text-[7.5px] font-semibold text-[#0a0b0c]">
             Approve &amp; launch
           </div>
         </Bubble>
@@ -159,7 +159,7 @@ function ChatScreen() {
             {[0, 1, 2].map((dot) => (
               <span
                 key={dot}
-                className="size-[3px] animate-bounce rounded-full bg-[#ffa15c]"
+                className="size-[3px] animate-bounce rounded-full bg-[#d7f68c]"
                 style={{ animationDelay: `${dot * 130}ms` }}
               />
             ))}
@@ -168,10 +168,10 @@ function ChatScreen() {
       </div>
 
       <div className="flex items-center gap-1.5 border-t border-white/8 px-2.5 py-2">
-        <div className="flex-1 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-[7.5px] text-[#8a7365]">
+        <div className="flex-1 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-[7.5px] text-[#7c7d79]">
           Message Ava…
         </div>
-        <span className="grid size-6 place-items-center rounded-full bg-[linear-gradient(140deg,#ff9a4d,#c02c0a)]">
+        <span className="grid size-6 place-items-center rounded-full bg-[linear-gradient(140deg,#e2fa9e,#8fae2f)]">
           <Send className="size-2.5 text-white" />
         </span>
       </div>
@@ -191,22 +191,22 @@ function TaskCard({
   pill?: string;
 }) {
   const priorityColor = {
-    High: 'text-[#ffb3a3]',
-    Medium: 'text-[#f8dfb4]',
-    Low: 'text-[#a68e80]',
+    High: 'text-[#f4f4f2]',
+    Medium: 'text-[#e6e7e3]',
+    Low: 'text-[#9d9e9a]',
   }[priority];
 
   return (
     <div className="rounded-lg border border-white/8 bg-white/[0.03] p-2">
       <div className="flex items-start justify-between gap-1.5">
         <p className="text-[7.5px] font-medium leading-snug text-white">{title}</p>
-        <span className="mt-0.5 size-1.5 shrink-0 rounded-full bg-[#dd6816]" />
+        <span className="mt-0.5 size-1.5 shrink-0 rounded-full bg-[#c8f060]" />
       </div>
       <div className="mt-1.5 flex items-center justify-between">
-        <span className="text-[6px] text-[#8a7365]">{meta}</span>
+        <span className="text-[6px] text-[#7c7d79]">{meta}</span>
         <div className="flex items-center gap-1">
           {pill && (
-            <span className="rounded-full bg-[#ffb86b]/12 px-1.5 py-0.5 text-[5.5px] text-[#f8dfb4]">{pill}</span>
+            <span className="rounded-full bg-[#e2fa9e]/12 px-1.5 py-0.5 text-[5.5px] text-[#e6e7e3]">{pill}</span>
           )}
           <span className={cn('text-[5.5px] uppercase tracking-wider', priorityColor)}>{priority}</span>
         </div>
@@ -221,7 +221,7 @@ function TasksScreen() {
       <StatusBar />
       <div className="flex items-center justify-between px-3 pt-1.5">
         <div>
-          <p className="font-mono text-[5.5px] uppercase tracking-[0.16em] text-[#8a7365]">Wednesday</p>
+          <p className="font-mono text-[5.5px] uppercase tracking-[0.16em] text-[#7c7d79]">Wednesday</p>
           <p className="text-[13px] font-semibold leading-tight text-white">Tasks</p>
         </div>
         <span className="grid size-6 place-items-center rounded-full border border-white/12 bg-white/[0.03]">
@@ -230,9 +230,9 @@ function TasksScreen() {
       </div>
 
       <div className="mt-2 flex gap-1 px-3">
-        <span className="rounded-full bg-[#dd6816] px-2 py-1 text-[6px] font-medium text-white">All · 9</span>
-        <span className="rounded-full border border-white/10 px-2 py-1 text-[6px] text-[#a68e80]">Review · 4</span>
-        <span className="rounded-full border border-white/10 px-2 py-1 text-[6px] text-[#a68e80]">Done</span>
+        <span className="rounded-full bg-[#c8f060] px-2 py-1 text-[6px] font-medium text-[#0a0b0c]">All · 9</span>
+        <span className="rounded-full border border-white/10 px-2 py-1 text-[6px] text-[#9d9e9a]">Review · 4</span>
+        <span className="rounded-full border border-white/10 px-2 py-1 text-[6px] text-[#9d9e9a]">Done</span>
       </div>
 
       <div className="mt-2 flex-1 space-y-1.5 overflow-hidden px-3">
@@ -253,40 +253,40 @@ function TeamScreen() {
       <StatusBar />
       <div className="flex items-center justify-between px-3 pt-1.5">
         <div>
-          <p className="font-mono text-[5.5px] uppercase tracking-[0.16em] text-[#8a7365]">Northwind Labs</p>
+          <p className="font-mono text-[5.5px] uppercase tracking-[0.16em] text-[#7c7d79]">Northwind Labs</p>
           <p className="text-[13px] font-semibold leading-tight text-white">Your team</p>
         </div>
-        <span className="rounded-full border border-[#ffc08e]/30 bg-[#dd6816]/15 px-2 py-1 text-[6px] text-[#ffc08e]">
+        <span className="rounded-full border border-[#e2fa9e]/30 bg-[#c8f060]/15 px-2 py-1 text-[6px] text-[#e2fa9e]">
           + Hire
         </span>
       </div>
 
       <div className="mt-2 px-3">
-        <div className="relative overflow-hidden rounded-xl border border-[#ffc08e]/25 bg-[linear-gradient(140deg,#43140a,#220c06_60%,#1c1208)] p-2.5">
+        <div className="relative overflow-hidden rounded-xl border border-[#c8f060]/25 bg-[linear-gradient(140deg,#262a2d,#17191b_60%,#111213)] p-2.5">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -right-6 -top-8 size-20 rounded-full bg-[radial-gradient(circle,rgba(255,138,61,0.5),transparent_70%)] blur-lg"
+            className="pointer-events-none absolute -right-6 -top-8 size-20 rounded-full bg-[radial-gradient(circle,rgba(200,240,96,0.5),transparent_70%)] blur-lg"
           />
           <div className="relative flex items-center justify-between">
-            <span className="font-mono text-[5px] uppercase tracking-[0.2em] text-[#ffc08e]/80">
+            <span className="font-mono text-[5px] uppercase tracking-[0.2em] text-[#e2fa9e]/80">
               Nexora · employee
             </span>
-            <Sparkles className="size-2.5 text-[#ffb27a]" />
+            <Sparkles className="size-2.5 text-[#ddf89e]" />
           </div>
           <div className="relative mt-2 flex items-center gap-2">
             <Avatar name="Ava" src="/team/ava.jpg" initials="AV" accent="violet" size="xs" status="online" />
             <div>
               <p className="text-[8px] font-medium text-white">Ava</p>
-              <p className="text-[6px] text-[#e8b78e]">Sales Development Rep</p>
+              <p className="text-[6px] text-[#d6d7d3]">Sales Development Rep</p>
             </div>
           </div>
           <div className="relative mt-2 flex items-center justify-between border-t border-white/10 pt-1.5">
-            <span className="font-mono text-[5.5px] text-[#dab99e]">96h SAVED</span>
+            <span className="font-mono text-[5.5px] text-[#cfd0cc]">96h SAVED</span>
             <div className="flex items-end gap-[2px]">
               {[6, 9, 7, 12, 14].map((height, index) => (
                 <span
                   key={index}
-                  className="w-[2px] rounded-sm bg-[linear-gradient(180deg,#ffc08e,rgba(221,104,22,0.4))]"
+                  className="w-[2px] rounded-sm bg-[linear-gradient(180deg,#e2fa9e,rgba(200,240,96,0.4))]"
                   style={{ height: `${height}px` }}
                 />
               ))}
@@ -306,12 +306,12 @@ function TeamScreen() {
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between">
                 <p className="text-[7.5px] font-medium text-white">{person.name}</p>
-                <span className="font-mono text-[5.5px] text-[#8a7365]">{person.bar}%</span>
+                <span className="font-mono text-[5.5px] text-[#7c7d79]">{person.bar}%</span>
               </div>
-              <p className="text-[5.5px] text-[#8a7365]">{person.role}</p>
+              <p className="text-[5.5px] text-[#7c7d79]">{person.role}</p>
               <div className="mt-1 h-[2px] overflow-hidden rounded-full bg-white/10">
                 <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#ffa15c,#dd6816)]"
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#d7f68c,#c8f060)]"
                   style={{ width: `${person.bar}%` }}
                 />
               </div>
@@ -333,8 +333,8 @@ export function PhoneMockups() {
       aria-hidden="true"
       className="relative mx-auto h-[548px] w-full max-w-[300px] select-none sm:h-[600px] sm:max-w-[540px] lg:max-w-[600px]"
     >
-      <div className="pointer-events-none absolute left-1/2 top-1/2 size-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(221,104,22,0.28),rgba(181,181,111,0.08)_55%,transparent_70%)] blur-3xl" />
-      <div className="pointer-events-none absolute left-1/2 top-6 h-[520px] w-[340px] -translate-x-1/2 rounded-full opacity-60 blur-[50px] [background:conic-gradient(from_160deg_at_50%_50%,transparent_0deg,rgba(255,138,61,0.3)_70deg,transparent_150deg,rgba(181,181,111,0.22)_230deg,transparent_320deg)]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 size-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(200,240,96,0.14),rgba(245,245,243,0.04)_55%,transparent_70%)] blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-6 h-[520px] w-[340px] -translate-x-1/2 rounded-full opacity-60 blur-[50px] [background:conic-gradient(from_160deg_at_50%_50%,transparent_0deg,rgba(245,245,243,0.18)_70deg,transparent_150deg,rgba(200,240,96,0.18)_230deg,transparent_320deg)]" />
 
       <div className="absolute left-0 top-24 z-10 hidden w-[196px] -rotate-[9deg] sm:block lg:left-1 lg:w-[208px]">
         <PhoneFrame>
@@ -354,23 +354,23 @@ export function PhoneMockups() {
         </PhoneFrame>
       </div>
 
-      <div className="absolute -left-1 bottom-6 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#1d0e08]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
-        <span className="grid size-6 place-items-center rounded-full bg-[#b5b56f]/15">
-          <Check className="size-3 text-[#d9d9a0]" />
+      <div className="absolute -left-1 bottom-6 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#16181a]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
+        <span className="grid size-6 place-items-center rounded-full bg-[#c8f060]/15">
+          <Check className="size-3 text-[#e2fa9e]" />
         </span>
         <div>
           <p className="text-[10px] font-medium text-white">Approved in 2 taps</p>
-          <p className="font-mono text-[7.5px] text-[#8a7365]">while queuing for coffee</p>
+          <p className="font-mono text-[7.5px] text-[#7c7d79]">while queuing for coffee</p>
         </div>
       </div>
 
-      <div className="absolute -right-2 bottom-24 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#1d0e08]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
-        <span className="grid size-6 place-items-center rounded-full bg-[#dd6816]/15">
-          <Sparkles className="size-3 text-[#ffc08e]" />
+      <div className="absolute -right-2 bottom-24 z-30 hidden items-center gap-2 rounded-xl border border-white/12 bg-[#16181a]/95 px-3 py-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl lg:flex">
+        <span className="grid size-6 place-items-center rounded-full bg-[#c8f060]/15">
+          <Sparkles className="size-3 text-[#e2fa9e]" />
         </span>
         <div>
           <p className="text-[10px] font-medium text-white">12 tasks overnight</p>
-          <p className="font-mono text-[7.5px] text-[#8a7365]">digest ready at 7:00am</p>
+          <p className="font-mono text-[7.5px] text-[#7c7d79]">digest ready at 7:00am</p>
         </div>
       </div>
     </div>

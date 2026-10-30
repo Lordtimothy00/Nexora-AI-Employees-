@@ -11,20 +11,20 @@ interface FieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const fieldShell =
-  'w-full rounded-xl border bg-white/[0.03] px-3.5 text-[14px] text-white placeholder:text-[#8a7365] transition-all duration-200 focus:bg-white/[0.05] focus:outline-none';
+  'w-full rounded-xl border bg-white/[0.03] px-3.5 text-[14px] text-white placeholder:text-[#7c7d79] transition-all duration-200 focus:bg-white/[0.05] focus:outline-none';
 
 export function Field({ label, hint, error, icon, trailing, className, id, ...props }: FieldProps) {
   const autoId = useId();
   const fieldId = id ?? autoId;
   return (
     <div className={cn('space-y-1.5', className)}>
-      <label htmlFor={fieldId} className="flex items-center justify-between text-[12.5px] font-medium text-[#c5b2a6]">
+      <label htmlFor={fieldId} className="flex items-center justify-between text-[12.5px] font-medium text-[#b8b9b5]">
         <span>{label}</span>
-        {hint && <span className="text-[11px] font-normal text-[#998173]">{hint}</span>}
+        {hint && <span className="text-[11px] font-normal text-[#8e8f8b]">{hint}</span>}
       </label>
       <div className="relative">
         {icon && (
-          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#998173]">
+          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8e8f8b]">
             {icon}
           </span>
         )}
@@ -37,7 +37,7 @@ export function Field({ label, hint, error, icon, trailing, className, id, ...pr
             trailing ? 'pr-11' : '',
             error
               ? 'border-rose-400/50 focus:border-rose-400/80'
-              : 'border-white/10 hover:border-white/20 focus:border-[#dd6816]/70 focus:ring-4 focus:ring-[#dd6816]/10',
+              : 'border-white/10 hover:border-white/20 focus:border-[#c8f060]/70 focus:ring-4 focus:ring-[#c8f060]/10',
           )}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${fieldId}-error` : undefined}
@@ -66,7 +66,7 @@ export function PasswordField(props: Omit<FieldProps, 'type'>) {
         <button
           type="button"
           onClick={() => setVisible((value) => !value)}
-          className="grid size-8 place-items-center rounded-lg text-[#998173] transition hover:bg-white/5 hover:text-white"
+          className="grid size-8 place-items-center rounded-lg text-[#8e8f8b] transition hover:bg-white/5 hover:text-white"
           aria-label={visible ? 'Hide password' : 'Show password'}
         >
           {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

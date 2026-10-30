@@ -24,7 +24,7 @@ function Toggle({
     <div className="flex items-start justify-between gap-6 py-3">
       <div>
         <p className="text-[12px] font-medium text-white">{label}</p>
-        <p className="mt-0.5 max-w-md text-[10.5px] leading-relaxed text-[#998173]">{description}</p>
+        <p className="mt-0.5 max-w-md text-[10.5px] leading-relaxed text-[#8e8f8b]">{description}</p>
       </div>
       <button
         type="button"
@@ -34,7 +34,7 @@ function Toggle({
         onClick={() => onChange(!checked)}
         className={cn(
           'relative mt-0.5 h-5 w-9 shrink-0 rounded-full border transition-colors',
-          checked ? 'border-[#dd6816]/50 bg-[#dd6816]' : 'border-white/12 bg-white/10',
+          checked ? 'border-[#c8f060]/50 bg-[#c8f060]' : 'border-white/12 bg-white/10',
         )}
       >
         <span
@@ -106,8 +106,8 @@ export function Settings() {
                 <Avatar name={name || 'You'} initials={initialsOf(name || 'You')} accent="violet" size="lg" status="online" />
                 <div>
                   <p className="text-[12px] font-medium text-white">{name || 'Your name'}</p>
-                  <p className="text-[10.5px] text-[#998173]">{email}</p>
-                  <p className="mt-0.5 text-[9.5px] text-[#6f5548]">Avatar initials update automatically</p>
+                  <p className="text-[10.5px] text-[#8e8f8b]">{email}</p>
+                  <p className="mt-0.5 text-[9.5px] text-[#5e5f5c]">Avatar initials update automatically</p>
                 </div>
               </div>
 
@@ -174,17 +174,17 @@ export function Settings() {
                 <PasswordField label="Confirm password" placeholder="Repeat password" required />
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-[10px] text-[#8a7365]">Demo preview — passwords are never stored.</p>
+                <p className="text-[10px] text-[#7c7d79]">Demo preview — passwords are never stored.</p>
                 <Button type="submit" size="sm" variant="secondary">
                   Update password
                 </Button>
               </div>
             </form>
             <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-white/8 bg-white/[0.02] p-3">
-              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[#d9d9a0]" />
+              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[#e2fa9e]" />
               <div>
                 <p className="text-[11.5px] font-medium text-white">Two-factor authentication</p>
-                <p className="mt-0.5 text-[10.5px] leading-relaxed text-[#998173]">
+                <p className="mt-0.5 text-[10.5px] leading-relaxed text-[#8e8f8b]">
                   Required on Scale workspaces. Available now for your team and enforced at org level.
                 </p>
               </div>
@@ -202,15 +202,15 @@ export function Settings() {
                 { label: 'Member since', value: user ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '—' },
               ].map((row) => (
                 <div key={row.label} className="flex items-center justify-between border-b border-white/5 pb-2.5 last:border-0 last:pb-0">
-                  <span className="text-[11px] text-[#998173]">{row.label}</span>
-                  <span className="text-[11px] font-medium text-[#e9d8ce]">{row.value}</span>
+                  <span className="text-[11px] text-[#8e8f8b]">{row.label}</span>
+                  <span className="text-[11px] font-medium text-[#d8d9d5]">{row.value}</span>
                 </div>
               ))}
             </div>
           </Panel>
 
           <Panel title="Session">
-            <p className="text-[11px] leading-relaxed text-[#a28c80]">
+            <p className="text-[11px] leading-relaxed text-[#a0a19d]">
               You are signed in as <span className="text-white">{user?.email}</span>. Sessions are stored
               locally in this preview build.
             </p>
@@ -232,17 +232,17 @@ export function Settings() {
 
           <div className="rounded-2xl border border-rose-400/20 bg-rose-500/[0.04] p-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="size-4 text-[#f2a48d]" />
+              <AlertTriangle className="size-4 text-[#d7d8d4]" />
               <p className="text-[12px] font-medium text-white">Danger zone</p>
             </div>
-            <p className="mt-1.5 text-[10.5px] leading-relaxed text-[#c58f80]">
+            <p className="mt-1.5 text-[10.5px] leading-relaxed text-[#b2b3af]">
               Reset the demo workspace to its original hires, tasks, and conversations. This clears
               local data for this browser only.
             </p>
             <Button
               variant="ghost"
               size="sm"
-              className="mt-3 w-full border border-rose-400/20 text-[#f2a48d] hover:bg-rose-500/10 hover:text-white"
+              className="mt-3 w-full border border-rose-400/20 text-[#d7d8d4] hover:bg-rose-500/10 hover:text-white"
               onClick={resetDemo}
               iconLeft={<RotateCcw className="size-3.5" />}
             >

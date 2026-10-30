@@ -34,13 +34,13 @@ const columns = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/8 bg-[#0f0604]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#dd6816]/40 to-transparent" />
+    <footer className="relative border-t border-white/8 bg-[#0a0b0c]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c8f060]/40 to-transparent" />
       <div className="shell py-16">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_2fr]">
           <div>
             <Logo />
-            <p className="mt-5 max-w-xs text-[14px] leading-relaxed text-[#a28c80]">
+            <p className="mt-5 max-w-xs text-[14px] leading-relaxed text-[#a0a19d]">
               AI employees that plug into your stack, learn your playbook, and ship real work — not
               another chat window.
             </p>
@@ -49,7 +49,7 @@ export function Footer() {
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-mint opacity-75" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-mint" />
               </span>
-              <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-[#e2e2b0]">
+              <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-[#e2fa9e]">
                 All systems operational
               </span>
             </div>
@@ -63,7 +63,7 @@ export function Footer() {
                   key={label}
                   href="https://example.com"
                   aria-label={label}
-                  className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-[#b7a296] transition hover:border-white/20 hover:text-white"
+                  className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-[#adaeaa] transition hover:border-white/20 hover:text-white"
                 >
                   <Icon className="size-4" />
                 </a>
@@ -74,7 +74,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             {columns.map((column) => (
               <div key={column.title}>
-                <h4 className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#998173]">
+                <h4 className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#8e8f8b]">
                   {column.title}
                 </h4>
                 <ul className="mt-4 space-y-2.5">
@@ -82,7 +82,7 @@ export function Footer() {
                     <li key={link.label}>
                       <Link
                         to={link.to}
-                        className="group inline-flex items-center gap-1 text-[13.5px] text-[#bea99c] transition-colors hover:text-white"
+                        className="group inline-flex items-center gap-1 text-[13.5px] text-[#b2b3af] transition-colors hover:text-white"
                       >
                         {link.label}
                         <ArrowUpRight className="size-3 opacity-0 transition-all group-hover:opacity-60" />
@@ -96,14 +96,14 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-4 border-t border-white/8 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[12.5px] text-[#998173]">
+          <p className="text-[12.5px] text-[#8e8f8b]">
             © {new Date().getFullYear()} Nexora Labs, Inc. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-[#998173]">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-[#8e8f8b]">
             <span>SOC 2 Type II</span>
-            <span className="hidden size-1 rounded-full bg-[#433026] sm:block" />
+            <span className="hidden size-1 rounded-full bg-[#2c2f32] sm:block" />
             <span>GDPR ready</span>
-            <span className="hidden size-1 rounded-full bg-[#433026] sm:block" />
+            <span className="hidden size-1 rounded-full bg-[#2c2f32] sm:block" />
             <Link to="/how-it-works#security" className="transition-colors hover:text-white">
               Privacy
             </Link>

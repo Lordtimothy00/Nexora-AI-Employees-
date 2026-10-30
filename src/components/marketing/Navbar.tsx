@@ -50,7 +50,7 @@ export function Navbar() {
           className={cn(
             'hidden items-center gap-1 rounded-full border px-1.5 py-1.5 transition-all duration-300 md:flex',
             scrolled
-              ? 'border-white/10 bg-[#140805]/80 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl'
+              ? 'border-white/10 bg-[#101112]/80 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl'
               : 'border-transparent bg-transparent',
           )}
         >
@@ -63,7 +63,7 @@ export function Navbar() {
                   'relative rounded-full px-4 py-1.5 text-[13.5px] font-medium transition-colors',
                   isActive
                     ? 'bg-white/[0.08] text-white'
-                    : 'text-[#bea99c] hover:bg-white/[0.05] hover:text-white',
+                    : 'text-[#b2b3af] hover:bg-white/[0.05] hover:text-white',
                 )
               }
             >
@@ -81,7 +81,7 @@ export function Navbar() {
             <>
               <Link
                 to="/login"
-                className="rounded-full px-3.5 py-2 text-[13.5px] font-medium text-[#bea99c] transition-colors hover:text-white"
+                className="rounded-full px-3.5 py-2 text-[13.5px] font-medium text-[#b2b3af] transition-colors hover:text-white"
               >
                 Sign in
               </Link>
@@ -104,11 +104,11 @@ export function Navbar() {
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[90px]" aria-hidden="true">
-        <div className={cn('h-full w-full transition-opacity duration-300', scrolled ? 'opacity-100 bg-[#0b0402]/85 backdrop-blur-xl border-b border-white/6' : 'opacity-0')} />
+        <div className={cn('h-full w-full transition-opacity duration-300', scrolled ? 'opacity-100 bg-[#08090a]/85 backdrop-blur-xl border-b border-white/6' : 'opacity-0')} />
       </div>
 
       {open && (
-        <div className="fixed inset-0 top-16 z-40 overflow-y-auto border-t border-white/8 bg-[#0b0402]/97 px-5 pb-10 pt-6 backdrop-blur-2xl md:hidden">
+        <div className="fixed inset-0 top-16 z-40 overflow-y-auto border-t border-white/8 bg-[#08090a]/97 px-5 pb-10 pt-6 backdrop-blur-2xl md:hidden">
           <nav aria-label="Mobile" className="flex flex-col gap-1">
             {links.map((link) => (
               <NavLink
@@ -117,7 +117,7 @@ export function Navbar() {
                 className={({ isActive }) =>
                   cn(
                     'flex items-center justify-between rounded-xl px-4 py-3.5 text-[15px] transition-colors',
-                    isActive ? 'bg-white/[0.06] text-white' : 'text-[#c5b2a6] hover:bg-white/[0.04]',
+                    isActive ? 'bg-white/[0.06] text-white' : 'text-[#b8b9b5] hover:bg-white/[0.04]',
                   )
                 }
               >
@@ -142,7 +142,7 @@ export function Navbar() {
               </>
             )}
           </div>
-          <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.2em] text-[#8a7365]">
+          <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.2em] text-[#7c7d79]">
             AI employees · 24/7
           </p>
         </div>

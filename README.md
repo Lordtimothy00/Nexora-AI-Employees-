@@ -5,10 +5,10 @@ sales, support, marketing, operations, finance, and people. Built as a complete 
 experience: marketing site, catalogue, employee profiles, pricing, auth, and an authenticated
 workspace with a working demo of the product.
 
-> Design direction: cinematic neon fintech. Espresso-black canvas (`#0b0402`), a vibrant ember
-> gradient system (`#ff9a4d → #dd6816 → #c02c0a`) with an olive accent (`#b5b56f`), glass panels,
-> aurora and conic lighting, Sora display type, Inter UI type, and warm editorial portraits for the
-> AI roster. Inspired by premium dark banking interfaces.
+> Design direction: monochrome premium fintech. Near-black graphite canvas (`#08090a`), silver
+> hairlines and a near-white type ramp, with a single restrained lime accent (`#c8f060`) used for
+> state, data and one highlight per section. Cinematic lighting, Sora display type, Inter UI type,
+> and full-colour editorial portraits for the AI roster. Inspired by premium dark banking interfaces.
 
 ---
 
@@ -122,16 +122,20 @@ src/
 
 Tokens live in the `@theme` block of `src/index.css`:
 
-- **Canvas** espresso `#0b0402` → **surface** `#180b07` → **panel** `#1a0c07`
-- **Ember system** `#ff9a4d` → `#dd6816` → `#c02c0a` (buttons, glow, charts)
-- **Accents** peach `#ffa15c`, olive `#b5b56f`, gold `#e9b45f`, clay `#e08a48`, coral `#e2593f`
-- **Warm neutrals** cream `#fff4ec` (all `white` utilities) and taupe text ramp from `#ead8cd` to `#8a7365`
+- **Canvas** near-black `#08090a` → **surface** `#111213` → **panel** `#141516`
+- **Monochrome** graphite surfaces, silver borders (`rgba(245,245,243,0.09)`) and a near-white text
+  ramp from `#f6f6f4` down to `#5e5f5c`
+- **Single accent** lime `#c8f060` (soft `#e2fa9e`, deep `#8fae2f`), used sparingly: live dots,
+  active states, chart marks, one highlighted phrase per section. Primary buttons are near-white
+  with ink text rather than an accent fill.
+- **Secondary accents** are deliberately desaturated silver (`#d3d5cd`, `#b9bcb4`, `#c8cac2`) so the
+  UI reads as monochrome
 - **Type** Sora (display) / Inter (UI) / JetBrains Mono (labels & data)
 - **Primitives** `.panel`, `.panel-hover`, `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`,
   `.reveal`, `.text-gradient`
 - Depth comes from 1px inset highlights, layered gradients, conic light rings, and low-opacity
-  warm borders rather than heavy shadows. Signature surfaces: `.panel-ember` (neon gradient card),
-  `.ring-glow`, and `.neon-line`.
+  white borders rather than heavy shadows. Signature surfaces: `.panel-accent` (graphite card with a
+  lime hairline), `.ring-glow`, and `.neon-line`.
 - Motion is restrained: scroll reveals (IntersectionObserver), marquee, float, typing dots, and a
   full `prefers-reduced-motion` fallback.
 

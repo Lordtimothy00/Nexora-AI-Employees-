@@ -26,16 +26,16 @@ const columns: {
   accent: string;
   dot: string;
 }[] = [
-  { id: 'backlog', label: 'Backlog', icon: Inbox, accent: 'text-[#bea99c]', dot: 'bg-[#a68e80]' },
-  { id: 'in_progress', label: 'In progress', icon: CircleDot, accent: 'text-[#f2c08f]', dot: 'bg-[#e08a48]' },
-  { id: 'review', label: 'In review', icon: Eye, accent: 'text-[#f8dfb4]', dot: 'bg-[#e9b45f]' },
-  { id: 'done', label: 'Done', icon: CheckCircle2, accent: 'text-[#d9d9a0]', dot: 'bg-mint' },
+  { id: 'backlog', label: 'Backlog', icon: Inbox, accent: 'text-[#b2b3af]', dot: 'bg-[#9d9e9a]' },
+  { id: 'in_progress', label: 'In progress', icon: CircleDot, accent: 'text-[#dadbd7]', dot: 'bg-[#b9bcb4]' },
+  { id: 'review', label: 'In review', icon: Eye, accent: 'text-[#e6e7e3]', dot: 'bg-[#d3d5cd]' },
+  { id: 'done', label: 'Done', icon: CheckCircle2, accent: 'text-[#e2fa9e]', dot: 'bg-mint' },
 ];
 
 const priorityStyles: Record<Task['priority'], string> = {
-  High: 'bg-rose-400/10 text-[#f2a48d] ring-rose-400/20',
-  Medium: 'bg-amber/10 text-[#f8dfb4] ring-amber/20',
-  Low: 'bg-white/[0.04] text-[#bea99c] ring-white/10',
+  High: 'bg-rose-400/10 text-[#d7d8d4] ring-rose-400/20',
+  Medium: 'bg-amber/10 text-[#e6e7e3] ring-amber/20',
+  Low: 'bg-white/[0.04] text-[#b2b3af] ring-white/10',
 };
 
 const order: TaskStatus[] = ['backlog', 'in_progress', 'review', 'done'];
@@ -93,8 +93,8 @@ export function Tasks() {
             className={cn(
               'shrink-0 rounded-full border px-3 py-1.5 text-[11.5px] transition',
               filter === 'all'
-                ? 'border-[#dd6816]/40 bg-[#dd6816]/12 text-white'
-                : 'border-white/8 bg-white/[0.02] text-[#a28c80] hover:text-white',
+                ? 'border-[#c8f060]/40 bg-[#c8f060]/12 text-white'
+                : 'border-white/8 bg-white/[0.02] text-[#a0a19d] hover:text-white',
             )}
           >
             All team · {tasks.length}
@@ -111,8 +111,8 @@ export function Tasks() {
                 className={cn(
                   'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11.5px] transition',
                   filter === hire.employeeId
-                    ? 'border-[#dd6816]/40 bg-[#dd6816]/12 text-white'
-                    : 'border-white/8 bg-white/[0.02] text-[#a28c80] hover:text-white',
+                    ? 'border-[#c8f060]/40 bg-[#c8f060]/12 text-white'
+                    : 'border-white/8 bg-white/[0.02] text-[#a0a19d] hover:text-white',
                 )}
               >
                 <Avatar
@@ -124,12 +124,12 @@ export function Tasks() {
                   className="size-4 rounded-full text-[8px]"
                 />
                 {person.name}
-                <span className="font-mono text-[9px] text-[#998173]">{count}</span>
+                <span className="font-mono text-[9px] text-[#8e8f8b]">{count}</span>
               </button>
             );
           })}
         </div>
-        <p className="text-[11px] text-[#8a7365]">
+        <p className="text-[11px] text-[#7c7d79]">
           {filtered.filter((task) => task.status === 'review').length} awaiting your approval
         </p>
       </div>
@@ -154,13 +154,13 @@ export function Tasks() {
                   moveTask(dragging, column.id);
                   setDragging(null);
                 }}
-                className="flex min-h-[220px] flex-col rounded-2xl border border-white/8 bg-[#100604]"
+                className="flex min-h-[220px] flex-col rounded-2xl border border-white/8 bg-[#0b0c0d]"
               >
                 <div className="flex items-center justify-between border-b border-white/6 px-3.5 py-2.5">
                   <div className="flex items-center gap-2">
                     <span className={cn('size-1.5 rounded-full', column.dot)} />
                     <p className="text-[11.5px] font-medium text-white">{column.label}</p>
-                    <span className="rounded-full bg-white/[0.05] px-1.5 py-0.5 font-mono text-[9px] text-[#a28c80]">
+                    <span className="rounded-full bg-white/[0.05] px-1.5 py-0.5 font-mono text-[9px] text-[#a0a19d]">
                       {columnTasks.length}
                     </span>
                   </div>
@@ -177,7 +177,7 @@ export function Tasks() {
                         onDragStart={() => setDragging(task.id)}
                         onDragEnd={() => setDragging(null)}
                         className={cn(
-                          'group cursor-grab rounded-xl border border-white/8 bg-[#1a0c07] p-3 transition-all hover:border-white/16 hover:bg-[#1f1009] active:cursor-grabbing',
+                          'group cursor-grab rounded-xl border border-white/8 bg-[#131415] p-3 transition-all hover:border-white/16 hover:bg-[#18191b] active:cursor-grabbing',
                           dragging === task.id && 'opacity-50',
                         )}
                       >
@@ -188,7 +188,7 @@ export function Tasks() {
                             className="flex-1 text-left"
                           >
                             <p className="text-[11.5px] font-medium leading-snug text-white">{task.title}</p>
-                            <p className="mt-1 line-clamp-2 text-[10px] leading-relaxed text-[#a68e80]">
+                            <p className="mt-1 line-clamp-2 text-[10px] leading-relaxed text-[#9d9e9a]">
                               {task.detail}
                             </p>
                           </button>
@@ -214,17 +214,17 @@ export function Tasks() {
                               {task.priority}
                             </span>
                           </div>
-                          <span className="font-mono text-[8.5px] text-[#8a7365]">{task.due}</span>
+                          <span className="font-mono text-[8.5px] text-[#7c7d79]">{task.due}</span>
                         </div>
                         <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-1.5">
-                          <span className="text-[8.5px] text-[#6f5548]">{person?.name ?? 'Unassigned'}</span>
+                          <span className="text-[8.5px] text-[#5e5f5c]">{person?.name ?? 'Unassigned'}</span>
                           <div className="flex items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
                             <button
                               type="button"
                               onClick={() => advance(task, -1)}
                               disabled={task.status === 'backlog'}
                               aria-label="Move back"
-                              className="grid size-5 place-items-center rounded text-[#a68e80] hover:bg-white/8 hover:text-white disabled:opacity-30"
+                              className="grid size-5 place-items-center rounded text-[#9d9e9a] hover:bg-white/8 hover:text-white disabled:opacity-30"
                             >
                               <ArrowLeft className="size-2.5" />
                             </button>
@@ -233,7 +233,7 @@ export function Tasks() {
                               onClick={() => advance(task, 1)}
                               disabled={task.status === 'done'}
                               aria-label="Move forward"
-                              className="grid size-5 place-items-center rounded text-[#a68e80] hover:bg-white/8 hover:text-white disabled:opacity-30"
+                              className="grid size-5 place-items-center rounded text-[#9d9e9a] hover:bg-white/8 hover:text-white disabled:opacity-30"
                             >
                               <ArrowRight className="size-2.5" />
                             </button>
@@ -245,8 +245,8 @@ export function Tasks() {
 
                   {columnTasks.length === 0 && (
                     <div className="flex h-[120px] flex-col items-center justify-center rounded-xl border border-dashed border-white/8 text-center">
-                      <p className="text-[10px] text-[#6f5548]">Nothing here</p>
-                      <p className="mt-0.5 text-[9px] text-[#4a342a]">Drag a task in</p>
+                      <p className="text-[10px] text-[#5e5f5c]">Nothing here</p>
+                      <p className="mt-0.5 text-[9px] text-[#33363a]">Drag a task in</p>
                     </div>
                   )}
                 </div>
@@ -256,9 +256,9 @@ export function Tasks() {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-white/8 bg-white/[0.015] px-4 py-3 text-[10.5px] text-[#998173]">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-white/8 bg-white/[0.015] px-4 py-3 text-[10.5px] text-[#8e8f8b]">
         <span className="inline-flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-[#e08a48]" /> Drag cards between columns
+          <span className="size-1.5 rounded-full bg-[#b9bcb4]" /> Drag cards between columns
         </span>
         <span className="inline-flex items-center gap-1.5">
           <ChevronRight className="size-3" /> Or use the arrows on hover
@@ -279,10 +279,10 @@ export function Tasks() {
       {selected && (
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSelected(null)} />
-          <div className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#160a06] sm:rounded-2xl">
+          <div className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#111213] sm:rounded-2xl">
             <div className="flex items-start justify-between gap-3 border-b border-white/8 px-5 py-4">
               <div>
-                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#998173]">Task brief</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#8e8f8b]">Task brief</p>
                 <h2 className="mt-1 font-display text-[15px] font-semibold leading-snug text-white">
                   {selected.title}
                 </h2>
@@ -291,7 +291,7 @@ export function Tasks() {
                 type="button"
                 onClick={() => setSelected(null)}
                 aria-label="Close"
-                className="grid size-7 place-items-center rounded-lg text-[#998173] hover:bg-white/8 hover:text-white"
+                className="grid size-7 place-items-center rounded-lg text-[#8e8f8b] hover:bg-white/8 hover:text-white"
               >
                 <X className="size-3.5" />
               </button>
@@ -306,10 +306,10 @@ export function Tasks() {
                 >
                   {selected.priority} priority
                 </span>
-                <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#bea99c]">
+                <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#b2b3af]">
                   Due {selected.due}
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#bea99c]">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#b2b3af]">
                   <span className="size-1.5 rounded-full bg-mint" />
                   {columns.find((column) => column.id === selected.status)?.label}
                 </span>
@@ -330,19 +330,19 @@ export function Tasks() {
                     />
                     <div>
                       <p className="text-[12px] font-medium text-white">{person.name}</p>
-                      <p className="text-[10.5px] text-[#998173]">{person.role}</p>
+                      <p className="text-[10.5px] text-[#8e8f8b]">{person.role}</p>
                     </div>
                   </div>
                 );
               })()}
 
               <div>
-                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#998173]">Context</p>
-                <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#d2c0b5]">{selected.detail}</p>
+                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#8e8f8b]">Context</p>
+                <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#c3c4c0]">{selected.detail}</p>
               </div>
 
               <div>
-                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#998173]">Move to</p>
+                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#8e8f8b]">Move to</p>
                 <div className="mt-1.5 grid grid-cols-2 gap-1.5">
                   {columns.map((column) => (
                     <button
@@ -357,8 +357,8 @@ export function Tasks() {
                       className={cn(
                         'rounded-lg border px-2.5 py-1.5 text-[11px] transition',
                         selected.status === column.id
-                          ? 'border-[#dd6816]/40 bg-[#dd6816]/12 text-white'
-                          : 'border-white/8 bg-white/[0.02] text-[#a28c80] hover:border-white/16 hover:text-white',
+                          ? 'border-[#c8f060]/40 bg-[#c8f060]/12 text-white'
+                          : 'border-white/8 bg-white/[0.02] text-[#a0a19d] hover:border-white/16 hover:text-white',
                       )}
                     >
                       {column.label}
@@ -368,7 +368,7 @@ export function Tasks() {
               </div>
             </div>
             <div className="flex items-center justify-between border-t border-white/8 bg-white/[0.015] px-5 py-3">
-              <p className="text-[10px] text-[#8a7365]">Auto-saved to your workspace</p>
+              <p className="text-[10px] text-[#7c7d79]">Auto-saved to your workspace</p>
               <Button size="sm" variant="secondary" onClick={() => setSelected(null)}>
                 Close
               </Button>

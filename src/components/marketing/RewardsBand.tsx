@@ -31,19 +31,19 @@ const rewards = [
 
 const toneStyles = {
   olive: {
-    icon: 'bg-[#b5b56f]/15 text-[#e2e2b0] ring-[#b5b56f]/25',
-    bar: 'bg-[linear-gradient(90deg,#d9d9a0,#b5b56f)]',
-    pill: 'bg-[#b5b56f]/12 text-[#e2e2b0]',
+    icon: 'bg-[#c8f060]/15 text-[#e2fa9e] ring-[#c8f060]/25',
+    bar: 'bg-[linear-gradient(90deg,#e2fa9e,#c8f060)]',
+    pill: 'bg-[#c8f060]/12 text-[#e2fa9e]',
   },
   ember: {
-    icon: 'bg-[#dd6816]/18 text-[#ffc08e] ring-[#dd6816]/30',
-    bar: 'bg-[linear-gradient(90deg,#ffa15c,#dd6816)]',
-    pill: 'bg-[#dd6816]/15 text-[#ffc08e]',
+    icon: 'bg-[#c8f060]/18 text-[#e2fa9e] ring-[#c8f060]/30',
+    bar: 'bg-[linear-gradient(90deg,#d7f68c,#c8f060)]',
+    pill: 'bg-[#c8f060]/15 text-[#e2fa9e]',
   },
   gold: {
-    icon: 'bg-[#e9b45f]/15 text-[#f8dfb4] ring-[#e9b45f]/25',
-    bar: 'bg-[linear-gradient(90deg,#f8dfb4,#e9b45f)]',
-    pill: 'bg-[#e9b45f]/12 text-[#f8dfb4]',
+    icon: 'bg-[#d3d5cd]/15 text-[#e6e7e3] ring-[#d3d5cd]/25',
+    bar: 'bg-[linear-gradient(90deg,#e6e7e3,#d3d5cd)]',
+    pill: 'bg-[#d3d5cd]/12 text-[#e6e7e3]',
   },
 };
 
@@ -52,24 +52,24 @@ export function RewardsBand() {
     <section id="rewards" className="relative py-6 md:py-10">
       <div className="shell">
         <Reveal>
-          <div className="noise relative overflow-hidden rounded-[30px] border border-[#b5b56f]/25 bg-[linear-gradient(115deg,#25260f_0%,#16170c_40%,#1b0c06_100%)] p-6 md:p-10">
-            <div className="pointer-events-none absolute inset-x-28 -top-px h-px bg-gradient-to-r from-transparent via-[#d9d9a0] to-transparent" />
-            <div className="pointer-events-none absolute -left-24 -top-28 size-[460px] rounded-full bg-[radial-gradient(circle,rgba(181,181,111,0.22),transparent_65%)]" />
-            <div className="pointer-events-none absolute -bottom-40 right-[-80px] size-[420px] rounded-full bg-[radial-gradient(circle,rgba(221,104,22,0.28),transparent_65%)]" />
+          <div className="noise relative overflow-hidden rounded-[30px] border border-white/12 bg-[linear-gradient(115deg,#1d2022_0%,#121314_45%,#0d0e0f_100%)] p-6 md:p-10">
+            <div className="pointer-events-none absolute inset-x-28 -top-px h-px bg-gradient-to-r from-transparent via-[#e2fa9e] to-transparent" />
+            <div className="pointer-events-none absolute -left-24 -top-28 size-[460px] rounded-full bg-[radial-gradient(circle,rgba(200,240,96,0.12),transparent_65%)]" />
+            <div className="pointer-events-none absolute -bottom-40 right-[-80px] size-[420px] rounded-full bg-[radial-gradient(circle,rgba(245,245,243,0.08),transparent_65%)]" />
             <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.25] [mask-image:radial-gradient(ellipse_at_70%_30%,black,transparent_72%)]" />
 
             <div className="relative grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-center">
               <div>
-                <span className="eyebrow border-[#b5b56f]/25 bg-[#b5b56f]/[0.07] text-[#e2e2b0]">
-                  <Gift className="size-3 text-[#d9d9a0]" />
+                <span className="eyebrow border-[#c8f060]/25 bg-[#c8f060]/[0.07] text-[#e2fa9e]">
+                  <Gift className="size-3 text-[#e2fa9e]" />
                   Nexora perks
                 </span>
                 <h2 className="mt-5 text-[clamp(1.9rem,3.6vw,2.8rem)] font-semibold leading-[1.06]">
                   Rewards for teams
                   <br />
-                  <span className="text-[#d9d9a0]">that actually ship.</span>
+                  <span className="text-[#e2fa9e]">that actually ship.</span>
                 </h2>
-                <p className="mt-4 max-w-md text-[14px] leading-relaxed text-[#c5b2a6]">
+                <p className="mt-4 max-w-md text-[14px] leading-relaxed text-[#b8b9b5]">
                   Every delivered task earns points. Points unlock credits, free months, and early
                   access to new employees — automatically, with no forms to fill in.
                 </p>
@@ -78,12 +78,12 @@ export function RewardsBand() {
                   <ButtonLink to="/signup" size="lg" iconRight={<ArrowRight className="size-4" />}>
                     Start earning on your first task
                   </ButtonLink>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[11.5px] text-[#a68e80]">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[11.5px] text-[#9d9e9a]">
                     <span className="inline-flex items-center gap-1">
-                      <Check className="size-3 text-[#b5b56f]" /> Points never expire
+                      <Check className="size-3 text-[#c8f060]" /> Points never expire
                     </span>
                     <span className="inline-flex items-center gap-1">
-                      <Check className="size-3 text-[#b5b56f]" /> Applied to your next invoice
+                      <Check className="size-3 text-[#c8f060]" /> Applied to your next invoice
                     </span>
                   </div>
                 </div>
@@ -91,40 +91,40 @@ export function RewardsBand() {
 
               <div className="space-y-3">
                 {/* perks card */}
-                <div className="relative overflow-hidden rounded-2xl border border-[#b5b56f]/35 bg-[linear-gradient(135deg,#41411c_0%,#26270f_48%,#25100a_100%)] p-4">
+                <div className="relative overflow-hidden rounded-2xl border border-[#c8f060]/25 bg-[linear-gradient(135deg,#2b2f32_0%,#1b1d1f_48%,#121314_100%)] p-4">
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute -right-10 -top-12 size-36 rounded-full bg-[radial-gradient(circle,rgba(217,217,160,0.3),transparent_68%)] blur-lg"
+                    className="pointer-events-none absolute -right-10 -top-12 size-36 rounded-full bg-[radial-gradient(circle,rgba(200,240,96,0.2),transparent_68%)] blur-lg"
                   />
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-10 -top-px h-px bg-gradient-to-r from-transparent via-[#e2e2b0] to-transparent"
+                    className="pointer-events-none absolute inset-x-10 -top-px h-px bg-gradient-to-r from-transparent via-[#e2fa9e] to-transparent"
                   />
                   <div className="relative flex items-start justify-between">
                     <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#e2e2b0]/80">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#e2fa9e]/80">
                         Nexora perks
                       </p>
                       <p className="mt-2 font-display text-[20px] font-semibold leading-none text-white">
-                        1,842 <span className="text-[10px] font-normal text-[#c7c8a4]">pts</span>
+                        1,842 <span className="text-[10px] font-normal text-[#c3c4c0]">pts</span>
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[#d9d9a0]/30 bg-[#d9d9a0]/10 px-2 py-1 text-[9px] text-[#e2e2b0]">
-                      <Crown className="size-2.5" /> Olive tier
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[#e2fa9e]/30 bg-[#e2fa9e]/10 px-2 py-1 text-[9px] text-[#e2fa9e]">
+                      <Crown className="size-2.5" /> Signal tier
                     </span>
                   </div>
                   <div className="relative mt-4 flex items-end justify-between">
                     <div>
-                      <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#c7c8a4]/70">
+                      <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#c3c4c0]/70">
                         Member
                       </p>
-                      <p className="mt-0.5 text-[11px] text-[#f4e9d6]">Alex Morgan</p>
+                      <p className="mt-0.5 text-[11px] text-[#e6e7e3]">Alex Morgan</p>
                     </div>
                     <div className="flex items-end gap-[3px]">
                       {[8, 13, 10, 18, 22, 17, 26].map((height, index) => (
                         <span
                           key={index}
-                          className="w-[4px] rounded-sm bg-[linear-gradient(180deg,#e2e2b0,rgba(181,181,111,0.25))]"
+                          className="w-[4px] rounded-sm bg-[linear-gradient(180deg,#e2fa9e,rgba(200,240,96,0.25))]"
                           style={{ height: `${height}px` }}
                         />
                       ))}
@@ -135,15 +135,15 @@ export function RewardsBand() {
                 {/* progress */}
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3.5">
                   <div className="flex items-center justify-between text-[10.5px]">
-                    <span className="inline-flex items-center gap-1.5 text-[#c5b2a6]">
-                      <Zap className="size-3 text-[#ffc08e]" /> Next reward · $250 credit
+                    <span className="inline-flex items-center gap-1.5 text-[#b8b9b5]">
+                      <Zap className="size-3 text-[#e2fa9e]" /> Next reward · $250 credit
                     </span>
                     <span className="font-mono text-[9.5px] text-white">588 / 1,000</span>
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full w-[59%] rounded-full bg-[linear-gradient(90deg,#d9d9a0,#ffa15c)]" />
+                    <div className="h-full w-[59%] rounded-full bg-[linear-gradient(90deg,#e2fa9e,#d7f68c)]" />
                   </div>
-                  <p className="mt-1.5 text-[9.5px] text-[#8a7365]">
+                  <p className="mt-1.5 text-[9.5px] text-[#7c7d79]">
                     412 tasks to go — roughly two weeks at your current pace.
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export function RewardsBand() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[11.5px] font-medium text-white">{reward.title}</p>
-                          <p className="truncate text-[10px] text-[#8a7365]">{reward.description}</p>
+                          <p className="truncate text-[10px] text-[#7c7d79]">{reward.description}</p>
                         </div>
                         <span
                           className={`shrink-0 rounded-full px-2 py-0.5 font-mono text-[8.5px] uppercase tracking-[0.08em] ${tone.pill}`}
@@ -171,7 +171,7 @@ export function RewardsBand() {
                   })}
                 </div>
 
-                <p className="flex items-center gap-1.5 text-[9px] text-[#6f5548]">
+                <p className="flex items-center gap-1.5 text-[9px] text-[#5e5f5c]">
                   <Sparkles className="size-2.5" />
                   Illustrative rewards in this preview. Points shown are from the demo workspace.
                 </p>

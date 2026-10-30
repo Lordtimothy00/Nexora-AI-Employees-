@@ -47,17 +47,17 @@ export function EmployeeCard({
           <div>
             <div className="flex items-center gap-1.5">
               <h3 className="font-display text-[17px] font-semibold text-white">{employee.name}</h3>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#a28c80]">
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#a0a19d]">
                 AI
               </span>
             </div>
-            <p className="mt-0.5 text-[12.5px] text-[#ae988b]">{employee.role}</p>
+            <p className="mt-0.5 text-[12.5px] text-[#a6a7a3]">{employee.role}</p>
           </div>
         </div>
-        <ArrowUpRight className="size-4 shrink-0 text-[#8a7365] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+        <ArrowUpRight className="size-4 shrink-0 text-[#7c7d79] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
       </div>
 
-      <p className="mt-4 text-[13.5px] leading-relaxed text-[#c5b2a6]">{employee.tagline}</p>
+      <p className="mt-4 text-[13.5px] leading-relaxed text-[#b8b9b5]">{employee.tagline}</p>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
         <span
@@ -73,7 +73,7 @@ export function EmployeeCard({
         {employee.tags.slice(0, 2).map((tag) => (
           <span
             key={tag}
-            className="rounded-full border border-white/8 bg-white/[0.02] px-2.5 py-1 text-[10.5px] text-[#a28c80]"
+            className="rounded-full border border-white/8 bg-white/[0.02] px-2.5 py-1 text-[10.5px] text-[#a0a19d]"
           >
             {tag}
           </span>
@@ -81,12 +81,12 @@ export function EmployeeCard({
       </div>
 
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/8 pt-4">
-        <div className="flex items-center gap-3 text-[11.5px] text-[#a68e80]">
+        <div className="flex items-center gap-3 text-[11.5px] text-[#9d9e9a]">
           <span className="inline-flex items-center gap-1">
-            <Star className="size-3 fill-[#e9b45f] text-[#e9b45f]" />
+            <Star className="size-3 fill-[#d3d5cd] text-[#d3d5cd]" />
             {employee.rating.toFixed(1)}
           </span>
-          <span className="size-1 rounded-full bg-[#433026]" />
+          <span className="size-1 rounded-full bg-[#2c2f32]" />
           <span>{employee.deployments.toLocaleString()} teams</span>
         </div>
         <span className="text-[12.5px] font-medium text-white">${employee.priceMonthly}/mo</span>
