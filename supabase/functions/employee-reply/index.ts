@@ -4,7 +4,7 @@
 // turns of the thread and the new message; this function asks the configured model for the reply.
 //
 // Configure one (or more) secrets on the project (Settings -> Edge Functions -> Secrets):
-//   GEMINI_API_KEY      -> uses gemini-2.5-flash, Google's free tier covers a demo
+//   GEMINI_API_KEY      -> uses gemini-3.8-flash, Google's free tier covers a demo
 //   OPENAI_API_KEY      -> uses gpt-4o-mini
 //   ANTHROPIC_API_KEY   -> uses claude-3-5-haiku-latest
 //
@@ -12,6 +12,9 @@
 // refused on quota or auth is skipped for a few minutes so a dead account does not add a
 // failed round trip to every reply. With none set, the function answers 501 and the app
 // falls back to its scripted replies.
+//
+// Model names move under you: gemini-2.5-flash was retired for new keys mid-build. Override
+// any of them with GEMINI_MODEL / OPENAI_MODEL / ANTHROPIC_MODEL instead of redeploying.
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -24,6 +27,10 @@ const json = (body: unknown, status = 200) =>
     status,
     headers: { ...CORS, 'Content-Type': 'application/json' },
   });
+
+const GEMINI_MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3.8-flash';
+const OPENAI_MODEL = Deno.env.get('OPENAI_MODEL') ?? 'gpt-4o-mini';
+const ANTHROPIC_MODEL = Deno.env.get('ANTHROPIC_MODEL') ?? 'claude-3-5-haiku-latest';
 
 type Turn = { from: 'human' | 'employee'; text: string };
 
@@ -69,7 +76,7 @@ async function askOpenAI(key: string, body: Body): Promise<string> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: OPENAI_MODEL,
       temperature: 0.7,
       max_tokens: 320,
       messages: [
@@ -97,7 +104,7 @@ async function askAnthropic(key: string, body: Body): Promise<string> {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-3-5-haiku-latest',
+      model: ANTHROPIC_MODEL,
       max_tokens: 320,
       system: systemPrompt(body.employee),
       messages: [
@@ -117,7 +124,7 @@ async function askAnthropic(key: string, body: Body): Promise<string> {
 
 async function askGemini(key: string, body: Body): Promise<string> {
   const response = await fetch(
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },

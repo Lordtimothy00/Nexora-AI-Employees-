@@ -104,12 +104,15 @@ back to the localStorage workspace below — `npm run dev` and `npm test` work w
 Employee answers come from the `employee-reply` edge function (`supabase/functions/employee-reply`),
 deployed with JWT verification on.
 
-- Set at least one secret on the project: `GEMINI_API_KEY` (uses `gemini-2.5-flash`, whose Google
+- Set at least one secret on the project: `GEMINI_API_KEY` (uses `gemini-3.8-flash`, whose Google
   AI Studio free tier needs no card — the best default for a demo), `OPENAI_API_KEY` (uses
   `gpt-4o-mini`) or `ANTHROPIC_API_KEY` (uses `claude-3-5-haiku-latest`).
 - Providers are tried cheapest-first and the function falls through to the next one when one
   refuses, so an account with no credit left does not break chat. A provider returning
   429/401/403 is skipped for five minutes so a dead account does not slow every reply.
+- Model names are overridable without a redeploy: `GEMINI_MODEL`, `OPENAI_MODEL`,
+  `ANTHROPIC_MODEL`. Providers retire defaults (gemini-2.5-flash was closed to new keys), so this
+  is the one-line fix instead of a function update.
 - The browser sends the employee's persona plus the last eight turns; the function builds the system
   prompt server-side and calls the provider directly — no SDK, no key in the bundle.
 - No key, or any failure, returns a non-2xx response. `requestEmployeeReply()` returns a failure
