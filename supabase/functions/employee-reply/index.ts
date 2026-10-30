@@ -4,7 +4,7 @@
 // turns of the thread and the new message; this function asks the configured model for the reply.
 //
 // Configure one (or more) secrets on the project (Settings -> Edge Functions -> Secrets):
-//   GEMINI_API_KEY      -> uses gemini-3.8-flash, Google's free tier covers a demo
+//   GEMINI_API_KEY      -> uses gemini-flash-lite-latest, Google's free tier covers a demo
 //   OPENAI_API_KEY      -> uses gpt-4o-mini
 //   ANTHROPIC_API_KEY   -> uses claude-3-5-haiku-latest
 //
@@ -28,7 +28,9 @@ const json = (body: unknown, status = 200) =>
     headers: { ...CORS, 'Content-Type': 'application/json' },
   });
 
-const GEMINI_MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3.8-flash';
+// The -latest aliases track whatever Google ships next, which survives the model
+// retirements that broke the first attempt at this integration.
+const GEMINI_MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-flash-lite-latest';
 const OPENAI_MODEL = Deno.env.get('OPENAI_MODEL') ?? 'gpt-4o-mini';
 const ANTHROPIC_MODEL = Deno.env.get('ANTHROPIC_MODEL') ?? 'claude-3-5-haiku-latest';
 
@@ -64,6 +66,7 @@ function systemPrompt(employee: EmployeeSeed) {
     'Write like a capable colleague in a chat: plain sentences, two to four of them, no headings, no bullet lists unless you are explicitly asked for a list.',
     'Be concrete. If you need a decision from the human, end with one clear question.',
     'Never invent metrics, customer names, or outcomes you could not know. If you do not have the data, say what you would need.',
+    'Never quote a number about work in progress — quantities, percentages, amounts, dates — unless the human wrote it in this thread. Say "the batch", "the list" or "this week" instead of inventing a count.',
   ]
     .filter(Boolean)
     .join('\n');
@@ -144,11 +147,9 @@ async function askGemini(key: string, body: Body): Promise<string> {
           })),
           { role: 'user', parts: [{ text: body.message }] },
         ],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 320,
-          thinkingConfig: { thinkingBudget: 0 },
-        },
+        // No thinkingConfig: the lite models reject it with 400 INVALID_ARGUMENT, and a
+        // chat reply does not need a reasoning budget.
+        generationConfig: { temperature: 0.7, maxOutputTokens: 320 },
       }),
     },
   );

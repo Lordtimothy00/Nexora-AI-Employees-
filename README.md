@@ -104,7 +104,7 @@ back to the localStorage workspace below — `npm run dev` and `npm test` work w
 Employee answers come from the `employee-reply` edge function (`supabase/functions/employee-reply`),
 deployed with JWT verification on.
 
-- Set at least one secret on the project: `GEMINI_API_KEY` (uses `gemini-3.8-flash`, whose Google
+- Set at least one secret on the project: `GEMINI_API_KEY` (uses `gemini-flash-lite-latest`, whose Google
   AI Studio free tier needs no card — the best default for a demo), `OPENAI_API_KEY` (uses
   `gpt-4o-mini`) or `ANTHROPIC_API_KEY` (uses `claude-3-5-haiku-latest`).
 - Providers are tried cheapest-first and the function falls through to the next one when one
