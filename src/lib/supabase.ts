@@ -1,7 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Vercel's Supabase integration names this variable VITE_SUPABASE_PUBLISHABLE_KEY,
+// the Supabase docs use VITE_SUPABASE_ANON_KEY. Accept either so a deploy does not
+// silently fall back to the local demo workspace.
+const anonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 /**
  * The app runs in two modes:
