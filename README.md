@@ -5,10 +5,11 @@ sales, support, marketing, operations, finance, and people. Built as a complete 
 experience: marketing site, catalogue, employee profiles, pricing, auth, and an authenticated
 workspace with a working demo of the product.
 
-> Design direction: monochrome premium fintech. Near-black, slightly cool canvas (`#060910`), silver
-> hairlines and a cool near-white type ramp, with a single restrained lime accent (`#c8f060`) used for
-> state, data and one highlight per section. Cinematic lighting, Sora display type, Inter UI type,
-> and full-colour editorial portraits for the AI roster. Inspired by premium dark banking interfaces.
+> Design direction: **Nexora AI OS** — Apple Vision Pro meets a futuristic SaaS command center.
+> Deep-space canvas (`#05070d`) with electric-blue (`#4d8dff`) and violet (`#8b5cf6`) aurora layers,
+> drifting particles and a hairline grid. Surfaces are frosted glass (24–40px backdrop blur, subtle
+> blue-white edges, 20–28px corners), the navbar floats above the page, and the hero is ringed by
+> floating glass employee cards with live status indicators.
 
 ---
 
@@ -101,7 +102,8 @@ src/
   index.css               # Tailwind v4 theme tokens + primitives (panel, buttons, reveal…)
   components/
     ui/                   # Button, Logo, Avatar, Field, Accordion, Reveal, SectionHeading, BackButton
-    marketing/            # Navbar, Footer, layout, hero preview, phone showcase, perks band, cards, CTA, auth shell
+    marketing/            # Navbar, Footer, layout, ambient AI-OS background, hero floating cards,
+                          # app preview, phone showcase, perks band, employee cards, CTA, auth shell
     dashboard/            # dashboard layout, protected route, charts, assign-task modal, primitives
     ErrorBoundary.tsx
   context/
@@ -133,7 +135,7 @@ Tokens live in the `@theme` block of `src/index.css`:
 - **Type** Sora (display) / Inter (UI) / JetBrains Mono (labels & data)
 - **Primitives** `.glass` / `.glass-strong` (translucent, blurred surfaces), `.panel`, `.panel-hover`,
   `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`, `.reveal`, `.text-gradient`
-- Depth comes from frosted, iPhone-style translucency (34–44px backdrop blur with 185–195% saturation, a bright specular top edge and a cool slate cast), 1px inset
+- Depth comes from frosted glass (34–44px backdrop blur, 185–195% saturation), layered blue/violet aurora glows, drifting particles and a masked hairline grid, 1px inset
   highlights, layered gradients, conic light rings, and low-opacity white borders rather than heavy
   shadows. Signature surfaces: `.panel-accent` (graphite card with a
   lime hairline), `.ring-glow`, and `.neon-line`. The marketing header is a compact 52–56px floating

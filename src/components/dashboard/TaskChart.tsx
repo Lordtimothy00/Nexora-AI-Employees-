@@ -48,12 +48,12 @@ export function TaskChart({
       >
         <defs>
           <linearGradient id={`area-${gradientId}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#c8f060" stopOpacity="0.38" />
-            <stop offset="100%" stopColor="#c8f060" stopOpacity="0" />
+            <stop offset="0%" stopColor="#4d8dff" stopOpacity="0.38" />
+            <stop offset="100%" stopColor="#4d8dff" stopOpacity="0" />
           </linearGradient>
           <linearGradient id={`line-${gradientId}`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#d7f68c" />
-            <stop offset="100%" stopColor="#c8f060" />
+            <stop offset="0%" stopColor="#7aa8ff" />
+            <stop offset="100%" stopColor="#4d8dff" />
           </linearGradient>
         </defs>
         {[0.2, 0.5, 0.8].map((ratio) => (
@@ -63,17 +63,17 @@ export function TaskChart({
             x2={width}
             y1={height * ratio}
             y2={height * ratio}
-            stroke="rgba(226,236,247,0.05)"
+            stroke="rgba(190,215,255,0.05)"
             strokeDasharray="4 8"
           />
         ))}
         <path d={`${line} L ${last.x} ${height} L ${padding} ${height} Z`} fill={`url(#area-${gradientId})`} />
         <path d={line} fill="none" stroke={`url(#line-${gradientId})`} strokeWidth="2.2" strokeLinecap="round" />
-        <circle cx={last.x} cy={last.y} r="4.5" fill="#0f1219" stroke="#c8f060" strokeWidth="2.5" />
+        <circle cx={last.x} cy={last.y} r="4.5" fill="#0b111f" stroke="#4d8dff" strokeWidth="2.5" />
       </svg>
-      <div className="mt-2 flex justify-between font-mono text-[9px] uppercase tracking-wider text-[#8a919a]">
+      <div className="mt-2 flex justify-between font-mono text-[9px] uppercase tracking-wider text-[#8d9bb1]">
         {labels.map((label, index) => (
-          <span key={`${label}-${index}`} className={index === labels.length - 1 ? 'text-[#d7f68c]' : undefined}>
+          <span key={`${label}-${index}`} className={index === labels.length - 1 ? 'text-[#7aa8ff]' : undefined}>
             {label}
           </span>
         ))}
@@ -100,7 +100,7 @@ export function DonutChart({
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
       <div className="relative size-[140px] shrink-0">
         <svg viewBox="0 0 140 140" className="size-full -rotate-90">
-          <circle cx="70" cy="70" r={radius} fill="none" stroke="rgba(226,236,247,0.06)" strokeWidth="13" />
+          <circle cx="70" cy="70" r={radius} fill="none" stroke="rgba(190,215,255,0.06)" strokeWidth="13" />
           {segments.map((segment) => {
             const length = (segment.value / total) * circumference;
             const dash = `${Math.max(length - 4, 0)} ${circumference - Math.max(length - 4, 0)}`;
@@ -125,7 +125,7 @@ export function DonutChart({
         <div className="absolute inset-0 grid place-items-center text-center">
           <div>
             <p className="font-display text-[22px] font-semibold leading-none text-white">{centerValue}</p>
-            <p className="mt-1 text-[9px] uppercase tracking-[0.1em] text-[#9ba2ab]">{centerLabel}</p>
+            <p className="mt-1 text-[9px] uppercase tracking-[0.1em] text-[#9aa7bd]">{centerLabel}</p>
           </div>
         </div>
       </div>
@@ -133,9 +133,9 @@ export function DonutChart({
         {segments.map((segment) => (
           <div key={segment.label} className="flex items-center gap-2 text-[11.5px]">
             <span className="size-2 rounded-full" style={{ background: segment.color }} />
-            <span className="flex-1 text-[#bbc2cb]">{segment.label}</span>
+            <span className="flex-1 text-[#b9c6d9]">{segment.label}</span>
             <span className="font-medium text-white">{segment.value}</span>
-            <span className="w-9 text-right text-[10px] text-[#9ba2ab]">
+            <span className="w-9 text-right text-[10px] text-[#9aa7bd]">
               {Math.round((segment.value / total) * 100)}%
             </span>
           </div>

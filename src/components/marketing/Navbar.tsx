@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 const links = [
   { label: 'AI Employees', to: '/employees' },
-  { label: 'How it works', to: '/how-it-works' },
+  { label: 'Solutions', to: '/how-it-works' },
   { label: 'Pricing', to: '/pricing' },
 ];
 
@@ -40,15 +40,15 @@ export function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-[#060910] via-[#060910]/75 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-[#05070d] via-[#05070d]/75 to-transparent"
       />
 
       <div className="mx-auto max-w-[1200px] px-3 pt-3 md:px-6">
         <div
           className={cn(
-            'flex h-[52px] items-center justify-between gap-2 rounded-2xl border px-2 backdrop-blur-2xl backdrop-saturate-200 transition-all duration-300 md:h-[56px] md:gap-4 md:px-3',
+            'flex h-[52px] items-center justify-between gap-2 rounded-[22px] border px-2 backdrop-blur-2xl backdrop-saturate-200 transition-all duration-300 md:h-[56px] md:gap-4 md:px-3',
             scrolled
-              ? 'border-white/22 bg-[#0b1017]/62 shadow-[0_18px_50px_-32px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.34)]'
+              ? 'border-white/22 bg-[#080e1b]/62 shadow-[0_18px_50px_-32px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.34)]'
               : 'border-white/18 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]',
           )}
         >
@@ -66,8 +66,8 @@ export function Navbar() {
                   cn(
                     'relative rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.16] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]'
-                      : 'text-[#bbc2cb] hover:bg-white/[0.05] hover:text-white',
+                      ? 'bg-[linear-gradient(120deg,rgba(77,141,255,0.3),rgba(139,92,246,0.26))] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_0_24px_-10px_rgba(77,141,255,0.9)]'
+                      : 'text-[#b9c6d9] hover:bg-white/[0.05] hover:text-white',
                   )
                 }
               >
@@ -90,7 +90,7 @@ export function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="rounded-full px-3 py-2 text-[12.5px] font-medium text-[#bbc2cb] transition-colors hover:text-white"
+                  className="rounded-full px-3 py-2 text-[12.5px] font-medium text-[#b9c6d9] transition-colors hover:text-white"
                 >
                   Sign in
                 </Link>
@@ -100,7 +100,7 @@ export function Navbar() {
                   className="h-9 px-3.5 text-[12.5px]"
                   iconRight={<ArrowRight className="size-3.5" />}
                 >
-                  Hire your first AI
+                  Get Started
                 </ButtonLink>
               </>
             )}
@@ -119,7 +119,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="fixed inset-x-3 top-[70px] z-40 max-h-[calc(100dvh-84px)] overflow-y-auto rounded-2xl border border-white/20 bg-[#0b1017]/72 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.32)] backdrop-blur-2xl backdrop-saturate-200 md:hidden">
+        <div className="fixed inset-x-3 top-[70px] z-40 max-h-[calc(100dvh-84px)] overflow-y-auto rounded-[22px] border border-white/20 bg-[#080e1b]/72 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.32)] backdrop-blur-2xl backdrop-saturate-200 md:hidden">
           <nav aria-label="Mobile" className="flex flex-col gap-1">
             {links.map((link) => (
               <NavLink
@@ -128,7 +128,7 @@ export function Navbar() {
                 className={({ isActive }) =>
                   cn(
                     'flex items-center justify-between rounded-xl px-3.5 py-3 text-[14px] transition-colors',
-                    isActive ? 'bg-white/[0.07] text-white' : 'text-[#c1c8d1] hover:bg-white/[0.05]',
+                    isActive ? 'bg-white/[0.07] text-white' : 'text-[#c4d0e2] hover:bg-white/[0.05]',
                   )
                 }
               >
@@ -145,7 +145,7 @@ export function Navbar() {
             ) : (
               <>
                 <ButtonLink to="/signup" size="md" className="w-full">
-                  Hire your first AI
+                  Get Started
                 </ButtonLink>
                 <ButtonLink to="/login" variant="secondary" size="md" className="w-full">
                   Sign in
@@ -153,7 +153,7 @@ export function Navbar() {
               </>
             )}
           </div>
-          <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#8a919a]">
+          <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#8d9bb1]">
             AI employees · 24/7
           </p>
         </div>

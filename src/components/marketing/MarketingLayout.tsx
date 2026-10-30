@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
+import { AmbientBackground } from './AmbientBackground';
 import { Footer } from './Footer';
 
 export function ScrollToTop() {
@@ -21,6 +22,7 @@ export function ScrollToTop() {
 export function MarketingLayout() {
   return (
     <div className="relative min-h-screen overflow-x-clip">
+      <AmbientBackground />
       <Navbar />
       <main className="relative">
         <Outlet />

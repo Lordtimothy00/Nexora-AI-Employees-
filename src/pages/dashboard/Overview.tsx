@@ -145,7 +145,7 @@ export function Overview() {
                       onClick={() => setRange(option)}
                       className={cn(
                         'rounded-md px-2 py-1 text-[10.5px] transition',
-                        range === option ? 'bg-white/10 text-white' : 'text-[#a9b0b9] hover:text-white',
+                        range === option ? 'bg-white/10 text-white' : 'text-[#a7b4c8] hover:text-white',
                       )}
                     >
                       {option === '7d' ? '7 days' : '30 days'}
@@ -159,9 +159,9 @@ export function Overview() {
                   <p className="font-display text-[26px] font-semibold leading-none text-white">
                     {chart.data.reduce((sum, value) => sum + value, 0)}
                   </p>
-                  <p className="mt-1 text-[11px] text-[#9ba2ab]">tasks completed · last {range === '7d' ? '7' : '30'} days</p>
+                  <p className="mt-1 text-[11px] text-[#9aa7bd]">tasks completed · last {range === '7d' ? '7' : '30'} days</p>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-1 text-[10.5px] text-[#e2fa9e]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-1 text-[10.5px] text-[#9cc0ff]">
                   <ArrowUpRight className="size-3" /> 18.4%
                 </span>
               </div>
@@ -182,15 +182,15 @@ export function Overview() {
                         size="xs"
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11.5px] leading-relaxed text-[#cccfd1]">{activity.text}</p>
-                        <p className="mt-0.5 text-[9.5px] text-[#8a919a]">
+                        <p className="text-[11.5px] leading-relaxed text-[#ced8e6]">{activity.text}</p>
+                        <p className="mt-0.5 text-[9.5px] text-[#8d9bb1]">
                           {person?.name} · {timeAgo(activity.at)}
                         </p>
                       </div>
                       <span
                         className={cn(
                           'mt-1 size-1.5 shrink-0 rounded-full',
-                          activity.kind === 'alert' ? 'bg-amber' : activity.kind === 'hire' ? 'bg-[#d7f68c]' : 'bg-mint',
+                          activity.kind === 'alert' ? 'bg-amber' : activity.kind === 'hire' ? 'bg-[#7aa8ff]' : 'bg-mint',
                         )}
                       />
                     </div>
@@ -205,7 +205,7 @@ export function Overview() {
               title="Your team"
               subtitle={`${activeHires.length} active · ${hires.length} hired`}
               action={
-                <Link to="/dashboard/team" className="text-[11.5px] text-[#e2fa9e] hover:text-white">
+                <Link to="/dashboard/team" className="text-[11.5px] text-[#9cc0ff] hover:text-white">
                   Manage
                 </Link>
               }
@@ -232,31 +232,31 @@ export function Overview() {
                             className={cn(
                               'rounded-full px-1.5 py-0.5 text-[9px] uppercase tracking-wider ring-1 ring-inset',
                               hire.status === 'active'
-                                ? 'bg-mint/10 text-[#e2fa9e] ring-mint/20'
-                                : 'bg-amber/10 text-[#e4e7e9] ring-amber/20',
+                                ? 'bg-mint/10 text-[#9cc0ff] ring-mint/20'
+                                : 'bg-amber/10 text-[#e6ecf6] ring-amber/20',
                             )}
                           >
                             {hire.status}
                           </span>
                         </div>
-                        <p className="truncate text-[10.5px] text-[#9ba2ab]">{person.role}</p>
+                        <p className="truncate text-[10.5px] text-[#9aa7bd]">{person.role}</p>
                         <div className="mt-1.5 flex items-center gap-2">
                           <div className="h-1 w-24 overflow-hidden rounded-full bg-white/8">
                             <div
-                              className="h-full rounded-full bg-[linear-gradient(90deg,#d7f68c,#8fae2f)]"
+                              className="h-full rounded-full bg-[linear-gradient(90deg,#7aa8ff,#2a5fd6)]"
                               style={{ width: `${hire.utilization}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[9px] text-[#9ba2ab]">{hire.utilization}%</span>
+                          <span className="font-mono text-[9px] text-[#9aa7bd]">{hire.utilization}%</span>
                         </div>
                       </div>
                       <div className="hidden text-right sm:block">
                         <p className="text-[12px] font-medium text-white">{hire.tasksCompleted.toLocaleString()}</p>
-                        <p className="text-[9.5px] text-[#9ba2ab]">tasks</p>
+                        <p className="text-[9.5px] text-[#9aa7bd]">tasks</p>
                       </div>
                       <Link
                         to="/dashboard/conversations"
-                        className="grid size-8 place-items-center rounded-lg border border-white/12 bg-white/[0.03] text-[#bbc2cb] transition hover:border-white/20 hover:text-white"
+                        className="grid size-8 place-items-center rounded-lg border border-white/12 bg-white/[0.03] text-[#b9c6d9] transition hover:border-white/20 hover:text-white"
                         aria-label={`Message ${person.name}`}
                       >
                         <MessageSquare className="size-3.5" />
@@ -278,7 +278,7 @@ export function Overview() {
                     <Check className="size-4 text-mint" />
                   </span>
                   <p className="mt-3 text-[12.5px] font-medium text-white">Queue is clear</p>
-                  <p className="mt-1 max-w-[220px] text-[11px] leading-relaxed text-[#9ba2ab]">
+                  <p className="mt-1 max-w-[220px] text-[11px] leading-relaxed text-[#9aa7bd]">
                     Your team is operating inside policy. Anything new will appear here.
                   </p>
                 </div>
@@ -298,7 +298,7 @@ export function Overview() {
                           />
                           <div className="min-w-0 flex-1">
                             <p className="text-[11.5px] font-medium leading-snug text-white">{task.title}</p>
-                            <p className="mt-0.5 text-[9.5px] text-[#9ba2ab]">
+                            <p className="mt-0.5 text-[9.5px] text-[#9aa7bd]">
                               {person?.name} · due {task.due}
                             </p>
                           </div>
@@ -309,7 +309,7 @@ export function Overview() {
                           </Button>
                           <Link
                             to="/dashboard/tasks"
-                            className="rounded-full border border-white/10 px-3 py-1 text-[10.5px] text-[#bbc2cb] transition hover:border-white/20 hover:text-white"
+                            className="rounded-full border border-white/10 px-3 py-1 text-[10.5px] text-[#b9c6d9] transition hover:border-white/20 hover:text-white"
                           >
                             Review
                           </Link>
@@ -322,7 +322,7 @@ export function Overview() {
             </Panel>
           </div>
 
-          <Panel className="relative overflow-hidden border-[#e2fa9e]/20 bg-[linear-gradient(120deg,rgba(200,240,96,0.1),rgba(19,20,21,0.85))]" padded={false}>
+          <Panel className="relative overflow-hidden border-[#9cc0ff]/20 bg-[linear-gradient(120deg,rgba(77,141,255,0.1),rgba(19,20,21,0.85))]" padded={false}>
             <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.25]" />
             <div className="relative flex flex-col items-start justify-between gap-4 p-5 sm:flex-row sm:items-center">
               <div className="flex items-center gap-3">
@@ -338,14 +338,14 @@ export function Overview() {
                         initials={person.initials}
                         accent={person.accent}
                         size="sm"
-                        className="ring-2 ring-[#0f1219]"
+                        className="ring-2 ring-[#0b111f]"
                       />
                     );
                   })}
                 </div>
                 <div>
                   <p className="text-[12.5px] font-medium text-white">Give your team more leverage</p>
-                  <p className="text-[11px] text-[#9ba2ab]">
+                  <p className="text-[11px] text-[#9aa7bd]">
                     You have {5 - hires.length} seats left on the Growth plan.
                   </p>
                 </div>

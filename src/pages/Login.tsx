@@ -57,14 +57,14 @@ export function Login() {
       subtitle={
         <>
           Sign in to your workspace. New here?{' '}
-          <Link to="/signup" className="font-medium text-[#e2fa9e] hover:text-white">
+          <Link to="/signup" className="font-medium text-[#9cc0ff] hover:text-white">
             Hire your first AI employee
           </Link>
           .
         </>
       }
       footer={
-        <span className="text-[#9ba2ab]">
+        <span className="text-[#9aa7bd]">
           Protected by SOC 2 Type II controls ·{' '}
           <Link to="/how-it-works#security" className="hover:text-white">
             Security
@@ -95,18 +95,18 @@ export function Login() {
         />
 
         <div className="flex items-center justify-between pt-0.5">
-          <label className="inline-flex cursor-pointer items-center gap-2 text-[12px] text-[#acb3bc]">
+          <label className="inline-flex cursor-pointer items-center gap-2 text-[12px] text-[#aab8cc]">
             <input
               type="checkbox"
               defaultChecked
-              className="size-3.5 rounded border-white/20 bg-white/5 accent-[#c8f060]"
+              className="size-3.5 rounded border-white/20 bg-white/5 accent-[#4d8dff]"
             />
             Keep me signed in
           </label>
           <button
             type="button"
             onClick={() => setNotice('Password reset is disabled in this preview. Use the demo account below.')}
-            className="text-[12px] text-[#acb3bc] transition-colors hover:text-white"
+            className="text-[12px] text-[#aab8cc] transition-colors hover:text-white"
           >
             Reset password
           </button>
@@ -120,7 +120,7 @@ export function Login() {
         )}
 
         {notice && (
-          <div className="rounded-xl border border-[#c8f060]/25 bg-[#c8f060]/[0.08] px-3 py-2.5 text-[12px] leading-relaxed text-[#e4e7e9]">
+          <div className="rounded-xl border border-[#4d8dff]/25 bg-[#4d8dff]/[0.08] px-3 py-2.5 text-[12px] leading-relaxed text-[#e6ecf6]">
             {notice}
           </div>
         )}
@@ -131,16 +131,16 @@ export function Login() {
 
         <div className="relative py-1 text-center">
           <div className="absolute inset-x-0 top-1/2 h-px bg-white/8" />
-          <span className="relative bg-[#060910] px-3 text-[10.5px] uppercase tracking-[0.14em] text-[#8a919a]">
+          <span className="relative bg-[#05070d] px-3 text-[10.5px] uppercase tracking-[0.14em] text-[#8d9bb1]">
             or
           </span>
         </div>
 
         <Button type="button" variant="secondary" size="lg" className="w-full" onClick={useDemo}>
-          <Sparkles className="size-4 text-[#e2fa9e]" /> Continue with the demo workspace
+          <Sparkles className="size-4 text-[#9cc0ff]" /> Continue with the demo workspace
         </Button>
 
-        <p className="text-center text-[11px] leading-relaxed text-[#8a919a]">
+        <p className="text-center text-[11px] leading-relaxed text-[#8d9bb1]">
           Demo credentials: demo@nexora.ai · demo1234. This preview stores everything locally in
           your browser.
         </p>

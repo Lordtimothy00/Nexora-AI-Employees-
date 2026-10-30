@@ -115,7 +115,7 @@ const security = [
 ];
 
 const visualFrame =
-  'relative flex h-full flex-col justify-center overflow-hidden rounded-2xl border border-white/12 bg-[#0f1219] p-5';
+  'relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-white/12 bg-[#0b111f] p-5';
 
 function PhaseVisual({ kind }: { kind: string }) {
   if (kind === 'roles') {
@@ -133,17 +133,17 @@ function PhaseVisual({ kind }: { kind: string }) {
               className={cn(
                 'flex items-center gap-3 rounded-xl border px-3 py-2.5 transition',
                 row.active
-                  ? 'border-[#c8f060]/40 bg-[#c8f060]/10'
+                  ? 'border-[#4d8dff]/40 bg-[#4d8dff]/10'
                   : 'border-white/12 bg-white/[0.025]',
               )}
             >
               <Avatar name={row.name} src={row.src} initials={row.name.slice(0, 1)} accent={row.accent} size="sm" />
               <div className="flex-1">
                 <p className="text-[12px] font-medium text-white">{row.name}</p>
-                <p className="text-[10.5px] text-[#a9b0b9]">{row.role}</p>
+                <p className="text-[10.5px] text-[#a7b4c8]">{row.role}</p>
               </div>
               {row.active ? (
-                <span className="rounded-full bg-[#c8f060]/20 px-2 py-0.5 text-[9px] uppercase tracking-wider text-[#e2fa9e]">
+                <span className="rounded-full bg-[#4d8dff]/20 px-2 py-0.5 text-[9px] uppercase tracking-wider text-[#9cc0ff]">
                   selected
                 </span>
               ) : (
@@ -159,7 +159,7 @@ function PhaseVisual({ kind }: { kind: string }) {
   if (kind === 'calibration') {
     return (
       <div className={visualFrame}>
-        <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#9ba2ab]">Calibration · 3 of 5</p>
+        <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[#9aa7bd]">Calibration · 3 of 5</p>
         <div className="mt-4 space-y-4">
           {[
             { label: 'Tone', value: 'Direct, warm', pct: 72 },
@@ -168,19 +168,19 @@ function PhaseVisual({ kind }: { kind: string }) {
           ].map((row) => (
             <div key={row.label}>
               <div className="flex items-center justify-between text-[10.5px]">
-                <span className="text-[#acb3bc]">{row.label}</span>
-                <span className="text-[#d6d9db]">{row.value}</span>
+                <span className="text-[#aab8cc]">{row.label}</span>
+                <span className="text-[#d8e1ee]">{row.value}</span>
               </div>
               <div className="mt-1.5 h-1.5 rounded-full bg-white/8">
                 <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#d7f68c,#8fae2f)]"
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#7aa8ff,#2a5fd6)]"
                   style={{ width: `${row.pct}%` }}
                 />
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded-lg border border-white/12 bg-white/[0.03] p-2.5 text-[10px] leading-relaxed text-[#b6bdc6]">
+        <div className="mt-5 rounded-lg border border-white/12 bg-white/[0.03] p-2.5 text-[10px] leading-relaxed text-[#b8c5d7]">
           “Write like a founder, not a brochure. Escalate anything over $150.”
         </div>
       </div>
@@ -197,16 +197,16 @@ function PhaseVisual({ kind }: { kind: string }) {
               className={cn(
                 'flex items-center justify-between rounded-lg border px-2.5 py-2 text-[10.5px]',
                 index % 3 === 1
-                  ? 'border-mint/25 bg-mint/[0.06] text-[#d7f68c]'
-                  : 'border-white/12 bg-white/[0.03] text-[#bbc2cb]',
+                  ? 'border-mint/25 bg-mint/[0.06] text-[#7aa8ff]'
+                  : 'border-white/12 bg-white/[0.03] text-[#b9c6d9]',
               )}
             >
               {tool}
-              {index % 3 === 1 ? <Check className="size-3 text-mint" /> : <Plug className="size-3 text-[#8a919a]" />}
+              {index % 3 === 1 ? <Check className="size-3 text-mint" /> : <Plug className="size-3 text-[#8d9bb1]" />}
             </div>
           ))}
         </div>
-        <p className="mt-3 text-center text-[9.5px] text-[#9ba2ab]">4 connected · 2 available</p>
+        <p className="mt-3 text-center text-[9.5px] text-[#9aa7bd]">4 connected · 2 available</p>
       </div>
     );
   }
@@ -215,10 +215,10 @@ function PhaseVisual({ kind }: { kind: string }) {
     return (
       <div className={visualFrame}>
         <div className="space-y-2.5">
-          <div className="ml-auto w-fit max-w-[90%] rounded-2xl rounded-br-md bg-[#c8f060]/18 px-3 py-2 text-[11px] text-[#e5e8ea]">
+          <div className="ml-auto w-fit max-w-[90%] rounded-[22px] rounded-br-md bg-[#4d8dff]/18 px-3 py-2 text-[11px] text-[#e7edf7]">
             Prep the Q4 board deck narrative by Friday.
           </div>
-          <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-md border border-white/12 bg-white/[0.04] px-3 py-2 text-[11px] text-[#cccfd1]">
+          <div className="w-fit max-w-[92%] rounded-[22px] rounded-bl-md border border-white/12 bg-white/[0.04] px-3 py-2 text-[11px] text-[#ced8e6]">
             Got it. I will pull numbers from Atlas, the churn story from last month, and draft the
             narrative before slides. First pass tomorrow at 10.
           </div>
@@ -227,12 +227,12 @@ function PhaseVisual({ kind }: { kind: string }) {
               {[0, 1, 2].map((dot) => (
                 <span
                   key={dot}
-                  className="size-1 animate-bounce rounded-full bg-[#d7f68c]"
+                  className="size-1 animate-bounce rounded-full bg-[#7aa8ff]"
                   style={{ animationDelay: `${dot * 130}ms` }}
                 />
               ))}
             </span>
-            <span className="text-[9.5px] text-[#acb3bc]">Drafting · 62%</span>
+            <span className="text-[9.5px] text-[#aab8cc]">Drafting · 62%</span>
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@ function PhaseVisual({ kind }: { kind: string }) {
     <div className={visualFrame}>
       <div className="flex items-center justify-between">
         <p className="text-[11px] font-medium text-white">Hours saved this month</p>
-        <span className="rounded-full bg-mint/12 px-2 py-0.5 text-[9px] text-[#e2fa9e]">+22%</span>
+        <span className="rounded-full bg-mint/12 px-2 py-0.5 text-[9px] text-[#9cc0ff]">+22%</span>
       </div>
       <p className="mt-2 font-display text-[26px] font-semibold text-white">312h</p>
       <div className="mt-3 flex items-end gap-1.5">
@@ -255,9 +255,9 @@ function PhaseVisual({ kind }: { kind: string }) {
           />
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-between border-t border-white/12 pt-2.5 text-[9.5px] text-[#9ba2ab]">
+      <div className="mt-3 flex items-center justify-between border-t border-white/12 pt-2.5 text-[9.5px] text-[#9aa7bd]">
         <span>3 employees</span>
-        <span className="text-[#e2fa9e]">View analytics →</span>
+        <span className="text-[#9cc0ff]">View analytics →</span>
       </div>
     </div>
   );
@@ -272,7 +272,7 @@ export function HowItWorks() {
           <div className="mx-auto max-w-3xl text-center">
             <Reveal>
               <span className="eyebrow">
-                <Sparkles className="size-3 text-[#d7f68c]" /> How Nexora works
+                <Sparkles className="size-3 text-[#7aa8ff]" /> How Nexora works
               </span>
             </Reveal>
             <Reveal delay={70}>
@@ -283,7 +283,7 @@ export function HowItWorks() {
               </h1>
             </Reveal>
             <Reveal delay={130}>
-              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-[#b6bdc6] md:text-base">
+              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-[#b8c5d7] md:text-base">
                 No job posts, no interview loops, no six-week ramp. Pick a role, calibrate it to your
                 business, and assign the work you have been putting off.
               </p>
@@ -301,7 +301,7 @@ export function HowItWorks() {
           </div>
 
           <Reveal delay={160}>
-            <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-6 py-4">
+            <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl px-6 py-4">
               {[
                 { label: 'Set-up time', value: '4 minutes' },
                 { label: 'First delivery', value: 'Same day' },
@@ -311,7 +311,7 @@ export function HowItWorks() {
                 <div key={item.label} className="flex items-center gap-6">
                   <div className="text-center">
                     <p className="text-[13px] font-medium text-white">{item.value}</p>
-                    <p className="text-[10.5px] uppercase tracking-[0.08em] text-[#9ba2ab]">{item.label}</p>
+                    <p className="text-[10.5px] uppercase tracking-[0.08em] text-[#9aa7bd]">{item.label}</p>
                   </div>
                   {index < 3 && <span className="hidden h-7 w-px bg-white/10 sm:block" />}
                 </div>
@@ -327,21 +327,21 @@ export function HowItWorks() {
           <div className="relative space-y-4">
             {phases.map((phase, index) => (
               <Reveal key={phase.number} delay={index * 40}>
-                <div className="grid gap-6 rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5 transition-colors hover:border-white/14 md:grid-cols-[1.15fr_1fr] md:items-center md:p-7">
+                <div className="grid gap-6 rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5 transition-colors hover:border-white/14 md:grid-cols-[1.15fr_1fr] md:items-center md:p-7">
                   <div className={cn(index % 2 === 1 && 'md:order-2')}>
                     <div className="flex items-center gap-3">
-                      <span className="grid size-10 place-items-center rounded-xl border border-[#c8f060]/25 bg-[#c8f060]/10 font-mono text-[11px] text-[#e2fa9e]">
+                      <span className="grid size-10 place-items-center rounded-xl border border-[#4d8dff]/25 bg-[#4d8dff]/10 font-mono text-[11px] text-[#9cc0ff]">
                         {phase.number}
                       </span>
-                      <phase.icon className="size-4 text-[#a9b0b9]" strokeWidth={1.7} />
+                      <phase.icon className="size-4 text-[#a7b4c8]" strokeWidth={1.7} />
                     </div>
                     <h2 className="mt-4 font-display text-[clamp(1.35rem,2.4vw,1.8rem)] font-semibold leading-snug">
                       {phase.title}
                     </h2>
-                    <p className="mt-3 max-w-lg text-[13.5px] leading-relaxed text-[#acb3bc]">{phase.body}</p>
+                    <p className="mt-3 max-w-lg text-[13.5px] leading-relaxed text-[#aab8cc]">{phase.body}</p>
                     <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
                       {phase.points.map((point) => (
-                        <li key={point} className="inline-flex items-center gap-1.5 text-[12px] text-[#ccd3dc]">
+                        <li key={point} className="inline-flex items-center gap-1.5 text-[12px] text-[#cfd9e8]">
                           <Check className="size-3.5 text-mint" /> {point}
                         </li>
                       ))}
@@ -378,8 +378,8 @@ export function HowItWorks() {
               />
               <Reveal delay={100}>
                 <div className="panel mt-8 p-5">
-                  <div className="flex items-center gap-2 text-[11px] text-[#acb3bc]">
-                    <Clock className="size-3.5 text-[#d7f68c]" /> Working hours
+                  <div className="flex items-center gap-2 text-[11px] text-[#aab8cc]">
+                    <Clock className="size-3.5 text-[#7aa8ff]" /> Working hours
                   </div>
                   <p className="mt-2 font-display text-[22px] font-semibold text-white">24 / 7 / 365</p>
                   <div className="mt-3 flex gap-1">
@@ -388,12 +388,12 @@ export function HowItWorks() {
                         key={hour}
                         className={cn(
                           'h-5 flex-1 rounded-[2px]',
-                          hour % 5 === 0 ? 'bg-[#c8f060]/70' : 'bg-[#c8f060]/25',
+                          hour % 5 === 0 ? 'bg-[#4d8dff]/70' : 'bg-[#4d8dff]/25',
                         )}
                       />
                     ))}
                   </div>
-                  <div className="mt-1.5 flex justify-between font-mono text-[9px] text-[#8a919a]">
+                  <div className="mt-1.5 flex justify-between font-mono text-[9px] text-[#8d9bb1]">
                     <span>00</span>
                     <span>06</span>
                     <span>12</span>
@@ -405,20 +405,20 @@ export function HowItWorks() {
             </div>
 
             <div className="relative">
-              <div className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-[#c8f060]/50 via-white/10 to-transparent" />
+              <div className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-[#4d8dff]/50 via-white/10 to-transparent" />
               <div className="space-y-3">
                 {dayInLife.map((item, index) => (
                   <Reveal key={item.time} delay={index * 50}>
                     <div className="relative flex gap-4">
-                      <div className="relative z-10 mt-3 grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-[#0f1219]">
-                        <item.icon className="size-3.5 text-[#d7f68c]" strokeWidth={1.7} />
+                      <div className="relative z-10 mt-3 grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-[#0b111f]">
+                        <item.icon className="size-3.5 text-[#7aa8ff]" strokeWidth={1.7} />
                       </div>
                       <div className="flex-1 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4 transition-colors hover:border-white/14">
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-[13px] font-medium text-white">{item.title}</p>
-                          <span className="font-mono text-[10px] text-[#9ba2ab]">{item.time}</span>
+                          <span className="font-mono text-[10px] text-[#9aa7bd]">{item.time}</span>
                         </div>
-                        <p className="mt-1 text-[12px] leading-relaxed text-[#acb3bc]">{item.detail}</p>
+                        <p className="mt-1 text-[12px] leading-relaxed text-[#aab8cc]">{item.detail}</p>
                       </div>
                     </div>
                   </Reveal>
@@ -441,13 +441,13 @@ export function HowItWorks() {
           <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
             {integrations.map((integration, index) => (
               <Reveal key={integration.name} delay={index * 25}>
-                <div className="group flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-3 py-2.5 transition-all hover:border-[#c8f060]/30 hover:bg-white/[0.04]">
-                  <span className="grid size-7 shrink-0 place-items-center rounded-md border border-white/10 bg-white/[0.04] font-display text-[11px] font-semibold text-[#e2fa9e]">
+                <div className="group flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl px-3 py-2.5 transition-all hover:border-[#4d8dff]/30 hover:bg-white/[0.04]">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-md border border-white/10 bg-white/[0.04] font-display text-[11px] font-semibold text-[#9cc0ff]">
                     {integration.name[0]}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-[11.5px] font-medium text-[#d6d9db]">{integration.name}</p>
-                    <p className="truncate text-[9px] uppercase tracking-[0.08em] text-[#8a919a]">
+                    <p className="truncate text-[11.5px] font-medium text-[#d8e1ee]">{integration.name}</p>
+                    <p className="truncate text-[9px] uppercase tracking-[0.08em] text-[#8d9bb1]">
                       {integration.category}
                     </p>
                   </div>
@@ -456,9 +456,9 @@ export function HowItWorks() {
             ))}
           </div>
           <Reveal delay={120}>
-            <p className="mt-6 text-center text-[12px] text-[#9ba2ab]">
+            <p className="mt-6 text-center text-[12px] text-[#9aa7bd]">
               Plus Google Sheets, Airtable, Segment, Linear, Ashby, and any REST API on Scale.{' '}
-              <a href="#security" className="text-[#e2fa9e] hover:text-white">
+              <a href="#security" className="text-[#9cc0ff] hover:text-white">
                 Read the security model <ChevronRight className="inline size-3" />
               </a>
             </p>
@@ -492,7 +492,7 @@ export function HowItWorks() {
                   ].map((badge) => (
                     <div key={badge.label} className="rounded-xl border border-white/12 bg-white/[0.025] px-4 py-3">
                       <p className="font-display text-[15px] font-semibold text-white">{badge.value}</p>
-                      <p className="mt-0.5 text-[10px] uppercase tracking-[0.1em] text-[#9ba2ab]">{badge.label}</p>
+                      <p className="mt-0.5 text-[10px] uppercase tracking-[0.1em] text-[#9aa7bd]">{badge.label}</p>
                     </div>
                   ))}
                 </div>
@@ -502,10 +502,10 @@ export function HowItWorks() {
             <div className="grid gap-3 sm:grid-cols-2">
               {security.map((item, index) => (
                 <Reveal key={item.title} delay={index * 50}>
-                  <div className="h-full rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5">
-                    <item.icon className="size-4 text-[#d8dbdd]" strokeWidth={1.7} />
+                  <div className="h-full rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl p-5">
+                    <item.icon className="size-4 text-[#dae3f0]" strokeWidth={1.7} />
                     <h3 className="mt-3 font-display text-[14px] font-medium text-white">{item.title}</h3>
-                    <p className="mt-1.5 text-[12px] leading-relaxed text-[#acb3bc]">{item.body}</p>
+                    <p className="mt-1.5 text-[12px] leading-relaxed text-[#aab8cc]">{item.body}</p>
                   </div>
                 </Reveal>
               ))}
@@ -525,15 +525,15 @@ export function HowItWorks() {
                 description="Still unsure? Talk to a human on our team — we answer in under a day."
               />
               <Reveal delay={100}>
-                <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4">
+                <div className="mt-6 flex items-center gap-3 rounded-[22px] border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4">
                   <div className="flex -space-x-2">
                     {['/team/nova.jpg', '/team/kai.jpg', '/team/atlas.jpg'].map((src) => (
-                      <Avatar key={src} name="Nexora team" src={src} initials="NX" accent="violet" size="sm" className="ring-2 ring-[#0f1219]" />
+                      <Avatar key={src} name="Nexora team" src={src} initials="NX" accent="violet" size="sm" className="ring-2 ring-[#0b111f]" />
                     ))}
                   </div>
                   <div className="text-[12px]">
-                    <p className="text-[#d6d9db]">Real humans, no sales theatre.</p>
-                    <p className="text-[#9ba2ab]">Average reply: 3 hours</p>
+                    <p className="text-[#d8e1ee]">Real humans, no sales theatre.</p>
+                    <p className="text-[#9aa7bd]">Average reply: 3 hours</p>
                   </div>
                 </div>
               </Reveal>

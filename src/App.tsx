@@ -24,7 +24,7 @@ import { Billing } from '@/pages/dashboard/Billing';
 import { Settings } from '@/pages/dashboard/Settings';
 
 const routeTitles: { match: RegExp; title: string }[] = [
-  { match: /^\/$/, title: 'AI employees who actually do the work' },
+  { match: /^\/$/, title: 'Your AI employees, always working' },
   { match: /^\/employees\/?$/, title: 'AI Employees' },
   { match: /^\/employees\/[^/]+$/, title: 'AI Employee' },
   { match: /^\/how-it-works$/, title: 'How it works' },

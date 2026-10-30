@@ -5,23 +5,23 @@ export function LogoMark({ className, size = 'md' }: { className?: string; size?
   return (
     <span
       className={cn(
-        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#151921,#0e1118)] shadow-[inset_0_1px_0_rgba(226,236,247,0.16)]',
+        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#111927,#0a101d)] shadow-[inset_0_1px_0_rgba(190,215,255,0.16)]',
         size === 'sm' ? 'size-8 rounded-[9px]' : 'size-9 rounded-[11px]',
         className,
       )}
     >
       <span
         className={cn(
-          'absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(200,240,96,0.22),transparent_65%)]',
+          'absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(77,141,255,0.45),transparent_68%)]',
           size === 'sm' ? 'rounded-[9px]' : 'rounded-[11px]',
         )}
       />
       <svg viewBox="0 0 64 64" className="relative size-[62%]" aria-hidden="true">
         <defs>
           <linearGradient id="nexora-mark" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#fdffff" />
-            <stop offset="0.55" stopColor="#dbe2ea" />
-            <stop offset="1" stopColor="#c8f060" />
+            <stop offset="0" stopColor="#ffffff" />
+            <stop offset="0.5" stopColor="#9cc0ff" />
+            <stop offset="1" stopColor="#8b5cf6" />
           </linearGradient>
         </defs>
         <path
@@ -66,10 +66,13 @@ export function Logo({
             )}
           >
             NEXORA
+            <span className="ml-1 font-mono text-[0.72em] font-medium tracking-[0.18em] text-[#9cc0ff]">
+              AI
+            </span>
           </span>
           <span
             className={cn(
-              'size-1 rounded-full bg-[#c8f060] shadow-[0_0_8px_1px_rgba(200,240,96,0.7)]',
+              'size-1 rounded-full bg-[#4d8dff] shadow-[0_0_8px_1px_rgba(77,141,255,0.7)]',
               size === 'sm' ? 'mt-0.5' : 'mt-1',
             )}
           />

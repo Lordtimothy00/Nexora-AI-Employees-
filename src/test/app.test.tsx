@@ -34,7 +34,7 @@ const seedSession = () => {
 describe('marketing pages', () => {
   it('renders the home hero and featured employees', async () => {
     renderAt('/');
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Hire AI employees/i);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Your AI Employees/i);
     expect(screen.getByRole('link', { name: /Browse all/i })).toBeInTheDocument();
     expect(screen.getAllByText('Ava').length).toBeGreaterThan(0);
   });
@@ -66,7 +66,7 @@ describe('marketing pages', () => {
     await user.click(screen.getByRole('button', { name: /Back to Home/i }));
 
     await waitFor(() =>
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Hire AI employees/i),
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Your AI Employees/i),
     );
   });
 

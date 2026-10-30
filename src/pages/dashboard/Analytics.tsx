@@ -19,12 +19,12 @@ const ranges = {
 };
 
 const deptColors: Record<string, string> = {
-  Sales: '#d7f68c',
-  Support: '#c8f060',
-  Operations: '#b7bcba',
-  Marketing: '#d8dfe7',
-  Finance: '#e2fa9e',
-  People: '#c6cac8',
+  Sales: '#7aa8ff',
+  Support: '#4d8dff',
+  Operations: '#b8c4d4',
+  Marketing: '#dbe4f2',
+  Finance: '#9cc0ff',
+  People: '#c7d2e0',
 };
 
 export function Analytics() {
@@ -47,7 +47,7 @@ export function Analytics() {
     return Array.from(map.entries()).map(([label, value]) => ({
       label,
       value,
-      color: deptColors[label] ?? '#d7f68c',
+      color: deptColors[label] ?? '#7aa8ff',
     }));
   }, [hires]);
 
@@ -116,9 +116,9 @@ export function Analytics() {
       {hires.length === 0 ? (
         <Panel>
           <div className="flex flex-col items-center py-14 text-center">
-            <Users className="size-6 text-[#5c5f62]" />
+            <Users className="size-6 text-[#5f6b7d]" />
             <p className="mt-3 font-display text-[15px] font-semibold text-white">No data to analyse yet</p>
-            <p className="mt-1.5 max-w-sm text-[12.5px] text-[#acb3bc]">
+            <p className="mt-1.5 max-w-sm text-[12.5px] text-[#aab8cc]">
               Hire your first employee and analytics begin populating within the hour.
             </p>
             <ButtonLink to="/employees" className="mt-5" size="sm">
@@ -148,7 +148,7 @@ export function Analytics() {
                       onClick={() => setRange(option)}
                       className={cn(
                         'rounded-md px-2 py-1 text-[10.5px] transition',
-                        range === option ? 'bg-white/10 text-white' : 'text-[#a9b0b9] hover:text-white',
+                        range === option ? 'bg-white/10 text-white' : 'text-[#a7b4c8] hover:text-white',
                       )}
                     >
                       {option === '7d' ? '7 days' : '30 days'}
@@ -161,10 +161,10 @@ export function Analytics() {
                 <p className="font-display text-[26px] font-semibold leading-none text-white">
                   {Math.round(chart.data.reduce((sum, value) => sum + value, 0) * chart.multiplier)}
                 </p>
-                <span className="mb-0.5 inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-0.5 text-[10px] text-[#e2fa9e]">
+                <span className="mb-0.5 inline-flex items-center gap-1 rounded-full bg-mint/10 px-2 py-0.5 text-[10px] text-[#9cc0ff]">
                   <TrendingUp className="size-2.5" /> 18.4%
                 </span>
-                <span className="mb-0.5 text-[10.5px] text-[#9ba2ab]">vs. previous period</span>
+                <span className="mb-0.5 text-[10.5px] text-[#9aa7bd]">vs. previous period</span>
               </div>
               <TaskChart data={chart.data} labels={chart.labels} height={200} />
             </Panel>
@@ -178,7 +178,7 @@ export function Analytics() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[680px] text-left">
                 <thead>
-                  <tr className="border-b border-white/10 text-[9.5px] uppercase tracking-[0.1em] text-[#8a919a]">
+                  <tr className="border-b border-white/10 text-[9.5px] uppercase tracking-[0.1em] text-[#8d9bb1]">
                     <th className="px-4 py-2.5 font-medium">Employee</th>
                     <th className="px-3 py-2.5 font-medium">Department</th>
                     <th className="px-3 py-2.5 text-right font-medium">Tasks</th>
@@ -204,33 +204,33 @@ export function Analytics() {
                             />
                             <div>
                               <p className="text-[11.5px] font-medium text-white">{person.name}</p>
-                              <p className="text-[9.5px] text-[#9ba2ab]">{person.role}</p>
+                              <p className="text-[9.5px] text-[#9aa7bd]">{person.role}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-3 py-2.5">
-                          <span className="rounded-full border border-white/12 bg-white/[0.03] px-2 py-0.5 text-[9.5px] text-[#bbc2cb]">
+                          <span className="rounded-full border border-white/12 bg-white/[0.03] px-2 py-0.5 text-[9.5px] text-[#b9c6d9]">
                             {person.department}
                           </span>
                         </td>
                         <td className="px-3 py-2.5 text-right font-mono text-[11px] text-white">
                           {hire.tasksCompleted.toLocaleString()}
                         </td>
-                        <td className="px-3 py-2.5 text-right font-mono text-[11px] text-[#bbc2cb]">
+                        <td className="px-3 py-2.5 text-right font-mono text-[11px] text-[#b9c6d9]">
                           {person.hoursSavedPerWeek}
                         </td>
                         <td className="px-3 py-2.5">
                           <div className="flex items-center gap-2">
                             <div className="h-1 w-16 overflow-hidden rounded-full bg-white/8">
                               <div
-                                className="h-full rounded-full bg-[linear-gradient(90deg,#d7f68c,#8fae2f)]"
+                                className="h-full rounded-full bg-[linear-gradient(90deg,#7aa8ff,#2a5fd6)]"
                                 style={{ width: `${hire.utilization}%` }}
                               />
                             </div>
-                            <span className="font-mono text-[9.5px] text-[#9ba2ab]">{hire.utilization}%</span>
+                            <span className="font-mono text-[9.5px] text-[#9aa7bd]">{hire.utilization}%</span>
                           </div>
                         </td>
-                        <td className="px-3 py-2.5 text-right font-mono text-[11px] text-[#bbc2cb]">
+                        <td className="px-3 py-2.5 text-right font-mono text-[11px] text-[#b9c6d9]">
                           ${person.priceMonthly}
                         </td>
                       </tr>
@@ -243,10 +243,10 @@ export function Analytics() {
 
           <div className="grid gap-3 md:grid-cols-3">
             {insights.map((insight) => (
-              <div key={insight.title} className="rounded-2xl border border-white/12 bg-[linear-gradient(160deg,rgba(200,240,96,0.09),rgba(226,236,247,0.01))] p-4">
-                <insight.icon className="size-4 text-[#e2fa9e]" />
+              <div key={insight.title} className="rounded-[22px] border border-white/12 bg-[linear-gradient(160deg,rgba(77,141,255,0.09),rgba(190,215,255,0.01))] p-4">
+                <insight.icon className="size-4 text-[#9cc0ff]" />
                 <p className="mt-2.5 text-[12px] font-medium leading-snug text-white">{insight.title}</p>
-                <p className="mt-1 text-[10.5px] leading-relaxed text-[#acb3bc]">{insight.body}</p>
+                <p className="mt-1 text-[10.5px] leading-relaxed text-[#aab8cc]">{insight.body}</p>
               </div>
             ))}
           </div>
@@ -270,20 +270,20 @@ export function Analytics() {
                       max={tasks.length || 1}
                       color={
                         status === 'done'
-                          ? '#c8f060'
+                          ? '#4d8dff'
                           : status === 'review'
-                            ? '#d8dfe7'
+                            ? '#dbe4f2'
                             : status === 'in_progress'
-                              ? '#b7bcba'
-                              : '#a9b0b9'
+                              ? '#b8c4d4'
+                              : '#a7b4c8'
                       }
                     />
                   );
                 })}
               </div>
               <div className="rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-4">
-                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#9ba2ab]">Recommendation</p>
-                <p className="mt-2 text-[12px] leading-relaxed text-[#ccd3dc]">
+                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#9aa7bd]">Recommendation</p>
+                <p className="mt-2 text-[12px] leading-relaxed text-[#cfd9e8]">
                   {tasks.filter((task) => task.status === 'review').length > 2
                     ? 'Approval queue is backing up. Clear reviews first — your team is waiting on decisions, not capacity.'
                     : 'Queue is balanced. Route the next high-priority brief to your lowest-utilisation employee to keep delivery times short.'}
