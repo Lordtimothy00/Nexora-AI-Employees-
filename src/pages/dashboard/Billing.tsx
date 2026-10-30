@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowUpRight, Check, CreditCard, Download, ReceiptText, Sparkles } from 'lucide-react';
 import { PageHeader, Panel, Toast } from '@/components/dashboard/ui';
 import { Button, ButtonLink } from '@/components/ui/Button';
@@ -10,11 +10,12 @@ import { useSearchParams } from 'react-router-dom';
 import { downloadFile } from '@/lib/download';
 import { cn, currency } from '@/lib/utils';
 
-const invoices = [
-  { id: 'INV-2041', date: 'Oct 1, 2026', amount: 149, status: 'Paid' },
-  { id: 'INV-1988', date: 'Sep 1, 2026', amount: 149, status: 'Paid' },
-  { id: 'INV-1934', date: 'Aug 1, 2026', amount: 149, status: 'Paid' },
-];
+interface Invoice {
+  id: string;
+  date: string;
+  amount: number;
+  status: 'Paid';
+}
 
 export function Billing() {
   const beginCheckout = async (planId: CheckoutPlanId) => {
@@ -58,7 +59,24 @@ export function Billing() {
     const months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
     return Math.max(0, months);
   })();
-  const history = invoices.slice(0, Math.min(invoices.length, monthsActive));
+  // Receipts are modelled from the account's age and its current price, not from a payment
+  // provider: Stripe has no invoice history here until billing is connected.
+  const invoices = useMemo<Invoice[]>(() => {
+    const count = Math.min(monthsActive, 12);
+    return Array.from({ length: count }, (_, index) => {
+      const date = new Date();
+      date.setDate(1);
+      date.setMonth(date.getMonth() - index);
+      return {
+        id: `INV-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}`,
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        amount: currentPlan.monthly,
+        status: 'Paid' as const,
+      };
+    });
+  }, [monthsActive, currentPlan.monthly]);
+
+  const history = invoices;
 
   const nextInvoice = new Date();
   nextInvoice.setMonth(nextInvoice.getMonth() + 1);
@@ -69,10 +87,10 @@ export function Billing() {
     setTimeout(() => setToast(null), 3800);
   };
 
-  const downloadInvoice = (invoice: (typeof invoices)[number]) => {
+  const downloadInvoice = (invoice: Invoice) => {
     downloadFile(
       `${invoice.id}.txt`,
-      `NEXORA LABS, INC.\nInvoice ${invoice.id}\nDate: ${invoice.date}\nPlan: ${currentPlan.name}\nAmount: ${currency(invoice.amount)}\nStatus: ${invoice.status}\n\nThank you for building with Nexora.`,
+      `NEXORA LABS, INC.\nInvoice ${invoice.id}\nDate: ${invoice.date}\nPlan: ${currentPlan.name}\nAmount: ${currency(invoice.amount)}\nStatus: ${invoice.status}\n\nSample receipt from the Nexora demo workspace — not a tax document.\nThank you for building with Nexora.`,
       'text/plain;charset=utf-8',
     );
     showToast(`${invoice.id} downloaded.`);
@@ -203,16 +221,16 @@ export function Billing() {
         </div>
       </div>
 
-      <Panel title="Invoices" subtitle="Download receipts for your records" padded={false}>
+      <Panel title="Invoices" subtitle="Modelled from your plan — Stripe is not connected" padded={false}>
         {history.length === 0 ? (
           <div className="flex flex-col items-center px-6 py-12 text-center">
             <span className="grid size-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-[#2fe3b0]">
               <ReceiptText className="size-4" />
             </span>
             <p className="mt-3 font-display text-[13.5px] font-semibold text-white">No invoices yet</p>
-            <p className="mt-1 max-w-[280px] text-[11.5px] leading-relaxed text-[#aabbc2]">
-              You are inside the 14-day trial. Your first receipt appears here once it converts —
-              nothing is charged before then.
+            <p className="mt-1 max-w-[300px] text-[11.5px] leading-relaxed text-[#aabbc2]">
+              Nothing has been charged. Receipts are modelled from your plan and account age, and a
+              real invoice history appears once Stripe is connected.
             </p>
           </div>
         ) : (

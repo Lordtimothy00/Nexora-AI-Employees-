@@ -254,8 +254,11 @@ describe('empty workspace', () => {
     );
 
     renderAt('/dashboard/billing');
-    expect(await screen.findByText('INV-2041')).toBeInTheDocument();
+    // Receipts are derived from the account age, one per month on the current plan.
+    const receipts = await screen.findAllByText(/INV-\d{6}/);
+    expect(receipts.length).toBeGreaterThan(0);
     expect(screen.queryByText(/No invoices yet/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Stripe is not connected/i)).toBeInTheDocument();
   });
 
   it('renders billing and settings with no employees and no errors', async () => {
