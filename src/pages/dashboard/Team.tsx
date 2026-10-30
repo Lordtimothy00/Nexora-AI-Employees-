@@ -19,7 +19,7 @@ import { getEmployeeById } from '@/data/employees';
 import { cn } from '@/lib/utils';
 
 export function Team() {
-  const { hires, togglePause, release, utilization, hoursSaved } = useWorkspace();
+  const { hires, togglePause, release, utilization, hoursSaved, monthlySpend } = useWorkspace();
   const [confirming, setConfirming] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(() => null);
 
@@ -226,8 +226,12 @@ export function Team() {
             <div className="grid gap-4 sm:grid-cols-3">
               {[
                 { label: 'Human equivalent', value: `$${(hires.length * 6200).toLocaleString()}/mo`, hint: 'avg. loaded salary' },
-                { label: 'Your Nexora cost', value: `$${hires.length * 49}/mo`, hint: 'billed monthly' },
-                { label: 'Monthly saving', value: `$${(hires.length * 6151).toLocaleString()}`, hint: `${hoursSaved}h of work returned` },
+                { label: 'Your Nexora cost', value: `$${monthlySpend}/mo`, hint: 'billed monthly' },
+                {
+                  label: 'Monthly saving',
+                  value: `$${(hires.length * 6200 - monthlySpend).toLocaleString()}`,
+                  hint: `${hoursSaved}h of work returned`,
+                },
               ].map((row) => (
                 <div key={row.label} className="rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-3.5">
                   <p className="text-[10px] uppercase tracking-[0.08em] text-[#9aaab3]">{row.label}</p>

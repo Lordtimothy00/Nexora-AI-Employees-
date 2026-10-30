@@ -74,6 +74,8 @@ interface WorkspaceContextValue extends WorkspaceState {
   completedThisMonth: number;
   hoursSaved: number;
   utilization: number;
+  /** What the current team costs per month, read from each employee's price. */
+  monthlySpend: number;
 }
 
 const STORAGE_KEY = 'nexora.workspace.v2';
@@ -454,6 +456,15 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     return Math.round(state.hires.reduce((sum, hire) => sum + hire.utilization, 0) / state.hires.length);
   }, [state.hires]);
 
+  const monthlySpend = useMemo(
+    () =>
+      state.hires.reduce((sum, hire) => {
+        const person = getEmployeeById(hire.employeeId);
+        return sum + (person?.priceMonthly ?? 0);
+      }, 0),
+    [state.hires],
+  );
+
   const value = useMemo(
     () => ({
       ...state,
@@ -466,8 +477,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       completedThisMonth,
       hoursSaved,
       utilization,
+      monthlySpend,
     }),
-    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization],
+    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

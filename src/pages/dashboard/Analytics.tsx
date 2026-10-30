@@ -30,7 +30,8 @@ const deptColors: Record<string, string> = {
 };
 
 export function Analytics() {
-  const { hires, hoursSaved, utilization, completedThisMonth, tasks, activities } = useWorkspace();
+  const { hires, hoursSaved, utilization, completedThisMonth, monthlySpend, tasks, activities } =
+    useWorkspace();
   const [range, setRange] = useState<'7d' | '30d'>('7d');
   const [toast, setToast] = useState<string | null>(null);
 
@@ -39,8 +40,8 @@ export function Analytics() {
     [activities, range],
   );
   const totalDelivered = hires.reduce((sum, hire) => sum + hire.tasksCompleted, 0);
-  const spend = hires.length * 49;
-  const costPerTask = totalDelivered > 0 ? spend / Math.max(completedThisMonth, 1) : 0;
+  // Cost comes from what each hired employee actually bills at, not a hard-coded seat price.
+  const costPerTask = totalDelivered > 0 ? monthlySpend / Math.max(completedThisMonth, 1) : 0;
 
   const segments = useMemo(() => {
     const map = new Map<string, number>();
@@ -85,7 +86,7 @@ export function Analytics() {
       {
         icon: TrendingUp,
         title: `${top?.name ?? 'Your team'} is your highest-leverage employee`,
-        body: `${ranked[0].tasksCompleted.toLocaleString()} tasks delivered at an effective cost of about $${(49 / Math.max(1, Math.round(ranked[0].tasksCompleted * 0.22))).toFixed(2)} per completed task.`,
+        body: `${ranked[0].tasksCompleted.toLocaleString()} tasks delivered at an effective cost of about $${((top?.priceMonthly ?? 0) / Math.max(1, Math.round(ranked[0].tasksCompleted * 0.22))).toFixed(2)} per completed task.`,
       },
       {
         icon: Target,

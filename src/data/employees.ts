@@ -89,7 +89,7 @@ export const employees: Employee[] = [
     deployments: 412,
     tasksCompleted: 128400,
     hoursSavedPerWeek: 19,
-    priceMonthly: 49,
+    priceMonthly: 12,
     featured: true,
     availability: 'Available now',
     sampleConversation: [
@@ -145,7 +145,7 @@ export const employees: Employee[] = [
     deployments: 508,
     tasksCompleted: 341900,
     hoursSavedPerWeek: 26,
-    priceMonthly: 49,
+    priceMonthly: 12,
     featured: true,
     availability: 'Available now',
     sampleConversation: [
@@ -201,7 +201,7 @@ export const employees: Employee[] = [
     deployments: 267,
     tasksCompleted: 48900,
     hoursSavedPerWeek: 15,
-    priceMonthly: 59,
+    priceMonthly: 12,
     featured: true,
     availability: 'Available now',
     sampleConversation: [
@@ -257,7 +257,7 @@ export const employees: Employee[] = [
     deployments: 198,
     tasksCompleted: 31200,
     hoursSavedPerWeek: 21,
-    priceMonthly: 69,
+    priceMonthly: 12,
     featured: true,
     availability: 'Available now',
     sampleConversation: [
@@ -313,7 +313,7 @@ export const employees: Employee[] = [
     deployments: 231,
     tasksCompleted: 18700,
     hoursSavedPerWeek: 17,
-    priceMonthly: 59,
+    priceMonthly: 12,
     availability: 'Available now',
     sampleConversation: [
       { from: 'human', text: 'We need a piece on why revops teams stall. Make it opinionated, no listicles.' },
@@ -368,7 +368,7 @@ export const employees: Employee[] = [
     deployments: 356,
     tasksCompleted: 96400,
     hoursSavedPerWeek: 12,
-    priceMonthly: 49,
+    priceMonthly: 12,
     availability: 'Available now',
     sampleConversation: [
       { from: 'human', text: 'Tomorrow is packed. I need space for the board prep.' },
@@ -423,7 +423,7 @@ export const employees: Employee[] = [
     deployments: 174,
     tasksCompleted: 14600,
     hoursSavedPerWeek: 16,
-    priceMonthly: 59,
+    priceMonthly: 12,
     availability: 'Available now',
     sampleConversation: [
       { from: 'human', text: 'We need a senior backend engineer in Lagos or remote, start in 6 weeks.' },
@@ -478,7 +478,7 @@ export const employees: Employee[] = [
     deployments: 143,
     tasksCompleted: 9800,
     hoursSavedPerWeek: 14,
-    priceMonthly: 69,
+    priceMonthly: 12,
     availability: 'Available now',
     sampleConversation: [
       { from: 'human', text: 'Can we afford two more engineers this quarter?' },
