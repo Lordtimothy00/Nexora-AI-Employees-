@@ -231,6 +231,27 @@ describe('empty workspace', () => {
     }
   });
 
+  it('says the reply is scripted instead of passing it off as the model', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    renderAt('/employees/ava-sales-development');
+
+    await user.click(await screen.findByRole('button', { name: /^Hire Ava$/i }));
+    await user.click(await screen.findByRole('link', { name: /Open your workspace/i }));
+
+    const nav = await screen.findAllByRole('link', { name: /Conversations/i });
+    await user.click(nav[0]);
+
+    const box = await screen.findByLabelText(/Message Ava/i);
+    await user.type(box, 'what needs my approval?');
+    await user.click(screen.getByRole('button', { name: /Send message/i }));
+
+    expect(
+      await screen.findByText(/no backend configured/i, {}, { timeout: 3000 }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Scripted')).toBeInTheDocument();
+  });
+
   it('shows no receipts for a brand-new account', async () => {
     renderAt('/dashboard/billing');
     expect(await screen.findByText(/No invoices yet/i)).toBeInTheDocument();

@@ -108,8 +108,12 @@ deployed with JWT verification on.
   (uses `claude-3-5-haiku-latest`).
 - The browser sends the employee's persona plus the last eight turns; the function builds the system
   prompt server-side and calls the provider directly — no SDK, no key in the bundle.
-- No key, or any failure, returns a non-2xx response. `requestEmployeeReply()` then returns `null`
-  and the app falls back to the scripted `replyFor()` templates, so chat always answers.
+- No key, or any failure, returns a non-2xx response. `requestEmployeeReply()` returns a failure
+  with its reason and the app falls back to the scripted `replyFor()` templates, so chat always
+  answers.
+- The channel header says which mode it is in — `Live · openai` or `Scripted` — and a scripted
+  channel prints the reason above the composer (501 = no key, 401 = no session, 502 = provider
+  refused). A silent fallback looked like the model answering, which cost an hour of debugging.
 - Replies are written back through the normal `messages` table, so they are workspace-scoped and
   visible to every member.
 
