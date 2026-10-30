@@ -256,7 +256,7 @@ export function Home() {
                           initials={person.initials}
                           accent={person.accent}
                           size="xs"
-                          className="ring-2 ring-[#05070d]"
+                          className="ring-2 ring-[#100e0d]"
                         />
                       ))}
                     </div>

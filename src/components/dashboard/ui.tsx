@@ -165,7 +165,7 @@ export function Toast({
 }) {
   return (
     <div className="fixed bottom-5 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 animate-rise lg:left-auto lg:right-6 lg:translate-x-0">
-      <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-[#101827]/95 px-4 py-3 shadow-[0_24px_60px_-24px_rgba(0,0,0,1)] backdrop-blur-xl">
+      <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-[#1a1614]/95 px-4 py-3 shadow-[0_24px_60px_-24px_rgba(0,0,0,1)] backdrop-blur-xl">
         <CheckCircle2 className={cn('size-4 shrink-0', tone === 'success' ? 'text-mint' : 'text-[#dae3f0]')} />
         <p className="flex-1 text-[12.5px] text-[#d8e1ee]">{message}</p>
         <button type="button" onClick={onClose} aria-label="Dismiss" className="grid size-5 place-items-center rounded-full text-[#9aa7bd] hover:bg-white/10 hover:text-white">

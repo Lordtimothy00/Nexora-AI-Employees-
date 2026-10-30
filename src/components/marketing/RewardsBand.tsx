@@ -91,7 +91,7 @@ export function RewardsBand() {
 
               <div className="space-y-3">
                 {/* perks card */}
-                <div className="relative overflow-hidden rounded-[22px] border border-[#4d8dff]/25 bg-[linear-gradient(135deg,#212c3f_0%,#141d2d_48%,#0c1221_100%)] p-4">
+                <div className="relative overflow-hidden rounded-[22px] border border-[#4d8dff]/25 bg-[linear-gradient(135deg,#212c3f_0%,#141d2d_48%,#1b1715_100%)] p-4">
                   <div
                     aria-hidden="true"
                     className="pointer-events-none absolute -right-10 -top-12 size-36 rounded-full bg-[radial-gradient(circle,rgba(77,141,255,0.2),transparent_68%)] blur-lg"

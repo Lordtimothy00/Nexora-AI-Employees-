@@ -8,7 +8,7 @@ export function RequireAuth() {
 
   if (!isReady) {
     return (
-      <div className="grid min-h-screen place-items-center bg-[#05070d]">
+      <div className="grid min-h-screen place-items-center bg-[#100e0d]">
         <div className="flex flex-col items-center gap-4">
           <LogoMark className="animate-pulse" />
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9aa7bd]">

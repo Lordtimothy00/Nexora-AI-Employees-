@@ -22,10 +22,10 @@
   --color-lime-soft: #9cc0ff;
   --color-lime-deep: #2457d6;
 
-  --color-ink: #05070d;
-  --color-ink-2: #080d18;
-  --color-surface: #0b111f;
-  --color-panel: #0e1524;
+  --color-ink: #100e0d;
+  --color-ink-2: #151210;
+  --color-surface: #1a1614;
+  --color-panel: #1d1815;
   --color-line: rgba(190,215,255,0.1);
 
   --color-nexa: #4d8dff;
@@ -151,7 +151,7 @@
 
   html {
     -webkit-text-size-adjust: 100%;
-    scrollbar-color: #212b3e #05070d;
+    scrollbar-color: #212b3e #100e0d;
   }
 
   body {
@@ -200,12 +200,12 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #05070d;
+    background: #100e0d;
   }
   ::-webkit-scrollbar-thumb {
     background: #212b3e;
     border-radius: 999px;
-    border: 2px solid #05070d;
+    border: 2px solid #100e0d;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #383d46;
@@ -237,7 +237,7 @@
         rgba(255,255,255,0.035) 72%,
         rgba(140,170,255,0.06) 100%
       ),
-      rgba(18,24,32,0.46);
+      rgba(28,24,22,0.46);
     border: 1px solid rgba(190,215,255,0.2);
     backdrop-filter: blur(34px) saturate(185%) brightness(1.04);
     -webkit-backdrop-filter: blur(34px) saturate(185%) brightness(1.04);
@@ -265,7 +265,7 @@
         rgba(139,92,246,0.09) 52%,
         rgba(160,190,255,0.08) 100%
       ),
-      rgba(11,17,31,0.55);
+      rgba(26,22,20,0.55);
     border: 1px solid rgba(200,220,255,0.24);
     backdrop-filter: blur(44px) saturate(195%) brightness(1.05);
     -webkit-backdrop-filter: blur(44px) saturate(195%) brightness(1.05);
@@ -385,7 +385,7 @@
         rgba(139,92,246,0.1) 70%,
         rgba(255,255,255,0.05) 100%
       ),
-      rgba(10,16,29,0.55);
+      rgba(18,15,13,0.55);
     border: 1px solid rgba(200,220,255,0.22);
     backdrop-filter: blur(40px) saturate(190%) brightness(1.04);
     -webkit-backdrop-filter: blur(40px) saturate(190%) brightness(1.04);

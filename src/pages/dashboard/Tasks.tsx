@@ -177,7 +177,7 @@ export function Tasks() {
                         onDragStart={() => setDragging(task.id)}
                         onDragEnd={() => setDragging(null)}
                         className={cn(
-                          'group cursor-grab rounded-xl border border-white/12 bg-[#0d1422] p-3 transition-all hover:border-white/16 hover:bg-[#161921] active:cursor-grabbing',
+                          'group cursor-grab rounded-xl border border-white/12 bg-[#1c1714] p-3 transition-all hover:border-white/16 hover:bg-[#161921] active:cursor-grabbing',
                           dragging === task.id && 'opacity-50',
                         )}
                       >
@@ -279,7 +279,7 @@ export function Tasks() {
       {selected && (
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSelected(null)} />
-          <div className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#0b111f] sm:rounded-[22px]">
+          <div className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#1a1614] sm:rounded-[22px]">
             <div className="flex items-start justify-between gap-3 border-b border-white/12 px-5 py-4">
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#9aa7bd]">Task brief</p>

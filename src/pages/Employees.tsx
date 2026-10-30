@@ -124,7 +124,7 @@ export function Employees() {
                       value={sort}
                       onChange={(event) => setSort(event.target.value as Sort)}
                       aria-label="Sort employees"
-                      className="h-9 appearance-none rounded-lg border border-white/10 bg-[#0d1422] pl-3 pr-8 text-[12.5px] text-[#ced8e6] focus:border-[#4d8dff]/60 focus:outline-none"
+                      className="h-9 appearance-none rounded-lg border border-white/10 bg-[#1c1714] pl-3 pr-8 text-[12.5px] text-[#ced8e6] focus:border-[#4d8dff]/60 focus:outline-none"
                     >
                       {sortOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -203,7 +203,7 @@ export function Employees() {
                 <Reveal key={employee.id} delay={Math.min(index, 5) * 50}>
                   <div className="relative h-full">
                     {user && hires.some((hire) => hire.employeeId === employee.id) && (
-                      <span className="absolute -top-2 right-4 z-10 rounded-full border border-mint/30 bg-[#0a101d] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#9cc0ff]">
+                      <span className="absolute -top-2 right-4 z-10 rounded-full border border-mint/30 bg-[#191512] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#9cc0ff]">
                         On your team
                       </span>
                     )}

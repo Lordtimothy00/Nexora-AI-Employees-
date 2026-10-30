@@ -314,7 +314,7 @@ export function EmployeeDetail() {
                   {['/team/nova.jpg', '/team/kai.jpg', '/team/mira.jpg'].map((src, index) => (
                     <span
                       key={src}
-                      className="size-5 overflow-hidden rounded-full border border-[#0b111f] bg-white/10"
+                      className="size-5 overflow-hidden rounded-full border border-[#1a1614] bg-white/10"
                     >
                       <img src={src} alt="" className="size-full object-cover" />
                       <span className="sr-only">Customer {index + 1}</span>
@@ -674,7 +674,7 @@ export function EmployeeDetail() {
       {/* Hire toast */}
       {justHired && (
         <div className="fixed bottom-5 left-1/2 z-[60] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 animate-rise">
-          <div className="flex items-start gap-3 rounded-[22px] border border-mint/30 bg-[#0a101d]/95 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,1)] backdrop-blur-xl">
+          <div className="flex items-start gap-3 rounded-[22px] border border-mint/30 bg-[#191512]/95 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,1)] backdrop-blur-xl">
             <Avatar
               name={employee.name}
               src={employee.avatar}

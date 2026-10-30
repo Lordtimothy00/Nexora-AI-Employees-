@@ -189,7 +189,7 @@ export function Conversations() {
                   </Link>
                 </div>
 
-                <div ref={scrollRef} className="scroll-thin flex-1 space-y-3 overflow-y-auto bg-[#080d18]/45 px-4 py-4">
+                <div ref={scrollRef} className="scroll-thin flex-1 space-y-3 overflow-y-auto bg-[#151210]/45 px-4 py-4">
                   <div className="mx-auto mb-4 flex max-w-sm flex-col items-center rounded-xl border border-white/10 bg-white/[0.045] backdrop-blur-xl px-4 py-3 text-center">
                     <Avatar
                       name={person.name}
@@ -272,7 +272,7 @@ export function Conversations() {
                   )}
                 </div>
 
-                <div className="border-t border-white/12 bg-[#070b14]/60 p-3">
+                <div className="border-t border-white/12 bg-[#130f0e]/60 p-3">
                   {thread.length < 4 && (
                     <div className="mb-2 flex flex-wrap gap-1.5">
                       {suggestions.map((suggestion) => (

@@ -20,7 +20,7 @@ const particles = [
 export function AmbientBackground() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-[#05070d]" />
+      <div className="absolute inset-0 bg-[#100e0d]" />
 
       <div className="aurora aurora-blue animate-aurora left-1/2 top-[-22%] size-[760px] -translate-x-1/2 opacity-80" />
       <div
@@ -56,7 +56,7 @@ export function AmbientBackground() {
         ))}
       </div>
 
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,transparent_30%,rgba(5,7,13,0.85)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,transparent_30%,rgba(16,14,13,0.85)_100%)]" />
       <div className="noise absolute inset-0 opacity-60" />
     </div>
   );
