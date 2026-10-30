@@ -266,7 +266,7 @@ function PhaseVisual({ kind }: { kind: string }) {
 export function HowItWorks() {
   return (
     <>
-      <section className="relative overflow-hidden pb-16 pt-28 md:pt-36">
+      <section className="relative overflow-hidden pb-16 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
           <div className="mx-auto max-w-3xl text-center">
@@ -301,7 +301,7 @@ export function HowItWorks() {
           </div>
 
           <Reveal delay={160}>
-            <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 rounded-2xl border border-white/8 bg-white/[0.02] px-6 py-4">
+            <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-6 py-4">
               {[
                 { label: 'Set-up time', value: '4 minutes' },
                 { label: 'First delivery', value: 'Same day' },
@@ -327,7 +327,7 @@ export function HowItWorks() {
           <div className="relative space-y-4">
             {phases.map((phase, index) => (
               <Reveal key={phase.number} delay={index * 40}>
-                <div className="grid gap-6 rounded-2xl border border-white/8 bg-white/[0.02] p-5 transition-colors hover:border-white/14 md:grid-cols-[1.15fr_1fr] md:items-center md:p-7">
+                <div className="grid gap-6 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-5 transition-colors hover:border-white/14 md:grid-cols-[1.15fr_1fr] md:items-center md:p-7">
                   <div className={cn(index % 2 === 1 && 'md:order-2')}>
                     <div className="flex items-center gap-3">
                       <span className="grid size-10 place-items-center rounded-xl border border-[#c8f060]/25 bg-[#c8f060]/10 font-mono text-[11px] text-[#e2fa9e]">
@@ -413,7 +413,7 @@ export function HowItWorks() {
                       <div className="relative z-10 mt-3 grid size-8 shrink-0 place-items-center rounded-full border border-white/10 bg-[#111213]">
                         <item.icon className="size-3.5 text-[#d7f68c]" strokeWidth={1.7} />
                       </div>
-                      <div className="flex-1 rounded-xl border border-white/8 bg-white/[0.02] p-4 transition-colors hover:border-white/14">
+                      <div className="flex-1 rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-4 transition-colors hover:border-white/14">
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-[13px] font-medium text-white">{item.title}</p>
                           <span className="font-mono text-[10px] text-[#8e8f8b]">{item.time}</span>
@@ -441,7 +441,7 @@ export function HowItWorks() {
           <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
             {integrations.map((integration, index) => (
               <Reveal key={integration.name} delay={index * 25}>
-                <div className="group flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2.5 transition-all hover:border-[#c8f060]/30 hover:bg-white/[0.04]">
+                <div className="group flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-3 py-2.5 transition-all hover:border-[#c8f060]/30 hover:bg-white/[0.04]">
                   <span className="grid size-7 shrink-0 place-items-center rounded-md border border-white/10 bg-white/[0.04] font-display text-[11px] font-semibold text-[#e2fa9e]">
                     {integration.name[0]}
                   </span>
@@ -502,7 +502,7 @@ export function HowItWorks() {
             <div className="grid gap-3 sm:grid-cols-2">
               {security.map((item, index) => (
                 <Reveal key={item.title} delay={index * 50}>
-                  <div className="h-full rounded-2xl border border-white/8 bg-white/[0.02] p-5">
+                  <div className="h-full rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-5">
                     <item.icon className="size-4 text-[#dadbd7]" strokeWidth={1.7} />
                     <h3 className="mt-3 font-display text-[14px] font-medium text-white">{item.title}</h3>
                     <p className="mt-1.5 text-[12px] leading-relaxed text-[#a0a19d]">{item.body}</p>
@@ -525,7 +525,7 @@ export function HowItWorks() {
                 description="Still unsure? Talk to a human on our team — we answer in under a day."
               />
               <Reveal delay={100}>
-                <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.02] p-4">
+                <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-4">
                   <div className="flex -space-x-2">
                     {['/team/nova.jpg', '/team/kai.jpg', '/team/atlas.jpg'].map((src) => (
                       <Avatar key={src} name="Nexora team" src={src} initials="NX" accent="violet" size="sm" className="ring-2 ring-[#111213]" />

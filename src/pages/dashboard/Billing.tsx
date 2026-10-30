@@ -213,7 +213,7 @@ export function Billing() {
                   'rounded-xl border p-4',
                   isCurrent
                     ? 'border-[#c8f060]/40 bg-[#c8f060]/[0.07]'
-                    : 'border-white/8 bg-white/[0.02]',
+                    : 'border-white/8 bg-white/[0.045] backdrop-blur-xl',
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -242,7 +242,7 @@ export function Billing() {
             );
           })}
         </div>
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-white/8 bg-white/[0.02] px-3 py-2">
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-white/8 bg-white/[0.045] backdrop-blur-xl px-3 py-2">
           <ReceiptText className="size-3.5 shrink-0 text-[#9d9e9a]" />
           <p className="text-[10px] text-[#8e8f8b]">
             Billing is illustrative in this preview. No payment is collected and no real invoices are issued.

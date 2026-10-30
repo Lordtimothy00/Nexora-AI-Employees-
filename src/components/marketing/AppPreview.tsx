@@ -97,7 +97,7 @@ export function AppPreview() {
         className="absolute -inset-x-10 -top-10 bottom-0 -z-10 rounded-[40px] bg-[radial-gradient(60%_60%_at_50%_20%,rgba(245,245,243,0.14),rgba(200,240,96,0.05)_55%,transparent_72%)] blur-2xl"
       />
 
-      <div className="relative overflow-hidden rounded-[22px] border border-white/12 bg-[#0d0e0f]/90 p-1.5 shadow-[0_50px_130px_-40px_rgba(0,0,0,0.9),0_40px_100px_-50px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(245,245,243,0.12)] backdrop-blur-xl md:rounded-[26px] md:p-2">
+      <div className="relative overflow-hidden rounded-[22px] border border-white/12 bg-[#0d0e0f]/70 p-1.5 shadow-[0_50px_130px_-40px_rgba(0,0,0,0.9),0_40px_100px_-50px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(245,245,243,0.12)] backdrop-blur-xl md:rounded-[26px] md:p-2">
         <div className="pointer-events-none absolute inset-x-16 -top-px h-px bg-gradient-to-r from-transparent via-[#d7f68c] to-transparent" />
         <div className="pointer-events-none absolute inset-x-24 top-0 h-16 bg-[radial-gradient(ellipse_at_top,rgba(245,245,243,0.08),transparent_70%)]" />
         <div className="overflow-hidden rounded-[16px] border border-white/8 bg-[#111213] md:rounded-[20px]">
@@ -120,7 +120,7 @@ export function AppPreview() {
 
           <div className="flex">
             {/* sidebar */}
-            <aside className="hidden w-[178px] shrink-0 flex-col border-r border-white/8 bg-[#0b0c0d] p-3 md:flex">
+            <aside className="hidden w-[178px] shrink-0 flex-col border-r border-white/8 bg-[#0b0c0d]/60 p-3 md:flex">
               <div className="flex items-center gap-2 px-1 py-2">
                 <LogoMark className="size-7 rounded-[8px]" />
                 <div className="leading-tight">
@@ -214,7 +214,7 @@ export function AppPreview() {
               </div>
 
               <div className="mt-2.5 grid gap-2.5 lg:grid-cols-[1.35fr_1fr]">
-                <div className="rounded-xl border border-white/8 bg-white/[0.02] p-3">
+                <div className="rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-3">
                   <div className="mb-1 flex items-center justify-between">
                     <p className="text-[10px] font-medium text-[#d8d9d5]">Tasks completed</p>
                     <span className="flex items-center gap-1 rounded-full border border-white/8 px-1.5 py-0.5 text-[8px] text-[#a0a19d]">
@@ -224,7 +224,7 @@ export function AppPreview() {
                   <AreaChart />
                 </div>
 
-                <div className="rounded-xl border border-white/8 bg-white/[0.02] p-3">
+                <div className="rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-3">
                   <div className="mb-2 flex items-center justify-between">
                     <p className="text-[10px] font-medium text-[#d8d9d5]">Live activity</p>
                     <span className="flex items-center gap-1 text-[8px] text-[#a0a19d]">
@@ -266,7 +266,7 @@ export function AppPreview() {
                 </div>
               </div>
 
-              <div className="mt-2.5 hidden items-center justify-between rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2 sm:flex">
+              <div className="mt-2.5 hidden items-center justify-between rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-3 py-2 sm:flex">
                 <div className="flex items-center gap-4 text-[9px] text-[#a0a19d]">
                   <span className="flex items-center gap-1"><Inbox className="size-3" /> 4 approvals waiting</span>
                   <span className="flex items-center gap-1"><CalendarCheck className="size-3" /> 3 meetings booked</span>

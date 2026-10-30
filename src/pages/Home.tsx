@@ -131,7 +131,7 @@ export function Home() {
   return (
     <>
       {/* ---------------- HERO ---------------- */}
-      <section className="relative overflow-hidden pb-10 pt-28 md:pt-36">
+      <section className="relative overflow-hidden pb-10 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
           <div className="mx-auto max-w-3xl text-center">
@@ -312,7 +312,7 @@ export function Home() {
                 </Link>
               </div>
 
-              <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-[#111213] p-5">
+              <div className="relative overflow-hidden glass rounded-2xl p-5">
                 <div className="absolute inset-0 bg-dots opacity-40" />
                 <div className="relative">
                   <div className="flex items-center justify-between">
@@ -384,7 +384,7 @@ export function Home() {
           </div>
 
           <Reveal delay={100}>
-            <div className="mt-4 flex flex-col items-center justify-between gap-4 rounded-2xl border border-white/8 bg-white/[0.02] px-5 py-4 sm:flex-row">
+            <div className="mt-4 flex flex-col items-center justify-between gap-4 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-5 py-4 sm:flex-row">
               <p className="text-[13px] text-[#a0a19d]">
                 Plus specialists in content, talent, finance, and executive operations.
               </p>
@@ -445,8 +445,8 @@ export function Home() {
               <div className="space-y-3">
                 {steps.map((step, index) => (
                   <Reveal key={step.n} delay={index * 90}>
-                    <div className="group relative flex gap-5 rounded-2xl border border-white/8 bg-white/[0.02] p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.035] sm:p-6">
-                      <div className="relative hidden size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-[#111213] shadow-[inset_0_1px_0_rgba(245,245,243,0.08)] sm:grid">
+                    <div className="group relative flex gap-5 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.035] sm:p-6">
+                      <div className="relative hidden size-14 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.05] shadow-[inset_0_1px_0_rgba(245,245,243,0.08)] backdrop-blur-xl sm:grid">
                         <step.icon className="size-5 text-[#d7f68c]" strokeWidth={1.6} />
                       </div>
                       <div>
@@ -463,7 +463,7 @@ export function Home() {
               </div>
 
               <Reveal delay={200}>
-                <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/8 bg-[#111213] px-5 py-4">
+                <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/8 bg-white/[0.045] px-5 py-4 backdrop-blur-xl">
                   <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#8e8f8b]">
                     Works with
                   </span>
@@ -604,7 +604,7 @@ export function Home() {
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {capabilities.map((capability, index) => (
               <Reveal key={capability.title} delay={index * 60}>
-                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/8 bg-white/[0.02] p-5 transition-all duration-300 hover:border-[#c8f060]/30 hover:bg-white/[0.04]">
+                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-5 transition-all duration-300 hover:border-[#c8f060]/30 hover:bg-white/[0.04]">
                   <div className="pointer-events-none absolute -right-10 -top-10 size-28 rounded-full bg-[#c8f060]/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
                   <capability.icon className="size-5 text-[#d7f68c]" strokeWidth={1.6} />
                   <h3 className="mt-4 font-display text-[15px] font-semibold">{capability.title}</h3>

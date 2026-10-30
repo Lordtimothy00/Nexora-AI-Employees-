@@ -131,11 +131,13 @@ Tokens live in the `@theme` block of `src/index.css`:
 - **Secondary accents** are deliberately desaturated silver (`#d3d5cd`, `#b9bcb4`, `#c8cac2`) so the
   UI reads as monochrome
 - **Type** Sora (display) / Inter (UI) / JetBrains Mono (labels & data)
-- **Primitives** `.panel`, `.panel-hover`, `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`,
-  `.reveal`, `.text-gradient`
-- Depth comes from 1px inset highlights, layered gradients, conic light rings, and low-opacity
-  white borders rather than heavy shadows. Signature surfaces: `.panel-accent` (graphite card with a
-  lime hairline), `.ring-glow`, and `.neon-line`.
+- **Primitives** `.glass` / `.glass-strong` (translucent, blurred surfaces), `.panel`, `.panel-hover`,
+  `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`, `.reveal`, `.text-gradient`
+- Depth comes from frosted translucency (22–34px backdrop blur with saturation), 1px inset
+  highlights, layered gradients, conic light rings, and low-opacity white borders rather than heavy
+  shadows. Signature surfaces: `.panel-accent` (graphite card with a
+  lime hairline), `.ring-glow`, and `.neon-line`. The marketing header is a compact 52–56px floating
+  glass bar.
 - Motion is restrained: scroll reveals (IntersectionObserver), marquee, float, typing dots, and a
   full `prefers-reduced-motion` fallback.
 

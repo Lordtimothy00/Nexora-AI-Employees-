@@ -72,7 +72,7 @@ export function AssignTaskDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="assign-task-title"
-        className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#111213] shadow-[0_40px_120px_-40px_rgba(0,0,0,1)] sm:rounded-2xl"
+        className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#121314]/85 backdrop-blur-2xl shadow-[0_40px_120px_-40px_rgba(0,0,0,1)] sm:rounded-2xl"
       >
         <div className="flex items-start justify-between border-b border-white/8 px-5 py-4">
           <div>
@@ -139,7 +139,7 @@ export function AssignTaskDialog({
                           'flex items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition',
                           active
                             ? 'border-[#c8f060]/50 bg-[#c8f060]/10'
-                            : 'border-white/8 bg-white/[0.02] hover:border-white/16',
+                            : 'border-white/8 bg-white/[0.045] backdrop-blur-xl hover:border-white/16',
                         )}
                       >
                         <Avatar
@@ -163,7 +163,7 @@ export function AssignTaskDialog({
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <p className="text-[11.5px] font-medium text-[#b8b9b5]">Priority</p>
-                  <div className="mt-1.5 flex rounded-lg border border-white/10 bg-white/[0.02] p-0.5">
+                  <div className="mt-1.5 flex rounded-lg border border-white/10 bg-white/[0.045] backdrop-blur-xl p-0.5">
                     {priorities.map((level) => (
                       <button
                         key={level}

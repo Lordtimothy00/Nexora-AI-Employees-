@@ -60,7 +60,7 @@ export function StatCard({
   }[tone];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-[linear-gradient(160deg,rgba(245,245,243,0.045),rgba(245,245,243,0.01))] p-4">
+    <div className="relative overflow-hidden glass relative overflow-hidden rounded-2xl p-4">
       <div className={cn('pointer-events-none absolute -right-10 -top-10 size-28 rounded-full bg-gradient-to-br blur-2xl', tones[tone])} />
       <div className="relative flex items-start justify-between">
         <p className="text-[11px] uppercase tracking-[0.08em] text-[#9d9e9a]">{label}</p>
@@ -116,7 +116,7 @@ export function Panel({
   padded?: boolean;
 }) {
   return (
-    <section className={cn('rounded-2xl border border-white/8 bg-[#111213]', className)}>
+    <section className={cn('glass rounded-2xl', className)}>
       {(title || action) && (
         <div className="flex items-start justify-between gap-3 border-b border-white/6 px-4 py-3.5 md:px-5">
           <div>

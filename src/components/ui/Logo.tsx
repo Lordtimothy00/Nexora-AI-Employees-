@@ -1,15 +1,21 @@
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
-export function LogoMark({ className }: { className?: string }) {
+export function LogoMark({ className, size = 'md' }: { className?: string; size?: 'sm' | 'md' }) {
   return (
     <span
       className={cn(
-        'relative grid size-9 place-items-center rounded-[11px] border border-white/15 bg-[linear-gradient(150deg,#121314,#101112)] shadow-[inset_0_1px_0_rgba(245,245,243,0.14)]',
+        'relative grid place-items-center border border-white/15 bg-[linear-gradient(150deg,#17191b,#101112)] shadow-[inset_0_1px_0_rgba(245,245,243,0.16)]',
+        size === 'sm' ? 'size-8 rounded-[9px]' : 'size-9 rounded-[11px]',
         className,
       )}
     >
-      <span className="absolute inset-0 rounded-[11px] bg-[radial-gradient(circle_at_30%_20%,rgba(200,240,96,0.22),transparent_65%)]" />
+      <span
+        className={cn(
+          'absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(200,240,96,0.22),transparent_65%)]',
+          size === 'sm' ? 'rounded-[9px]' : 'rounded-[11px]',
+        )}
+      />
       <svg viewBox="0 0 64 64" className="relative size-[62%]" aria-hidden="true">
         <defs>
           <linearGradient id="nexora-mark" x1="0" y1="0" x2="1" y2="1">
@@ -36,11 +42,13 @@ export function Logo({
   markClassName,
   to = '/',
   showWordmark = true,
+  size = 'md',
 }: {
   className?: string;
   markClassName?: string;
   to?: string;
   showWordmark?: boolean;
+  size?: 'sm' | 'md';
 }) {
   return (
     <Link
@@ -48,13 +56,23 @@ export function Logo({
       className={cn('group inline-flex items-center gap-2.5', className)}
       aria-label="Nexora home"
     >
-      <LogoMark className={markClassName} />
+      <LogoMark className={markClassName} size={size} />
       {showWordmark && (
         <span className="flex items-start gap-1">
-          <span className="font-display text-[17px] font-semibold tracking-[0.16em] text-white">
+          <span
+            className={cn(
+              'font-display font-semibold tracking-[0.16em] text-white',
+              size === 'sm' ? 'text-[14.5px]' : 'text-[17px]',
+            )}
+          >
             NEXORA
           </span>
-          <span className="mt-1 size-1 rounded-full bg-[#c8f060] shadow-[0_0_8px_1px_rgba(200,240,96,0.7)]" />
+          <span
+            className={cn(
+              'size-1 rounded-full bg-[#c8f060] shadow-[0_0_8px_1px_rgba(200,240,96,0.7)]',
+              size === 'sm' ? 'mt-0.5' : 'mt-1',
+            )}
+          />
         </span>
       )}
     </Link>

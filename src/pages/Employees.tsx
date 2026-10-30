@@ -68,7 +68,7 @@ export function Employees() {
 
   return (
     <>
-      <section className="relative overflow-hidden pb-12 pt-28 md:pt-36">
+      <section className="relative overflow-hidden pb-12 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell">
           <div className="mx-auto max-w-3xl text-center">
@@ -156,7 +156,7 @@ export function Employees() {
                         'group inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[12.5px] transition-all duration-200',
                         isActive
                           ? 'border-[#c8f060]/45 bg-[#c8f060]/15 text-white shadow-[0_0_24px_-10px_rgba(200,240,96,0.9)]'
-                          : 'border-white/8 bg-white/[0.02] text-[#a6a7a3] hover:border-white/16 hover:text-white',
+                          : 'border-white/8 bg-white/[0.045] backdrop-blur-xl text-[#a6a7a3] hover:border-white/16 hover:text-white',
                       )}
                     >
                       {item.name}

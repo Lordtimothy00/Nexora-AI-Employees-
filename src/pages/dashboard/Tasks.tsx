@@ -94,7 +94,7 @@ export function Tasks() {
               'shrink-0 rounded-full border px-3 py-1.5 text-[11.5px] transition',
               filter === 'all'
                 ? 'border-[#c8f060]/40 bg-[#c8f060]/12 text-white'
-                : 'border-white/8 bg-white/[0.02] text-[#a0a19d] hover:text-white',
+                : 'border-white/8 bg-white/[0.045] backdrop-blur-xl text-[#a0a19d] hover:text-white',
             )}
           >
             All team · {tasks.length}
@@ -112,7 +112,7 @@ export function Tasks() {
                   'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11.5px] transition',
                   filter === hire.employeeId
                     ? 'border-[#c8f060]/40 bg-[#c8f060]/12 text-white'
-                    : 'border-white/8 bg-white/[0.02] text-[#a0a19d] hover:text-white',
+                    : 'border-white/8 bg-white/[0.045] backdrop-blur-xl text-[#a0a19d] hover:text-white',
                 )}
               >
                 <Avatar
@@ -154,7 +154,7 @@ export function Tasks() {
                   moveTask(dragging, column.id);
                   setDragging(null);
                 }}
-                className="flex min-h-[220px] flex-col rounded-2xl border border-white/8 bg-[#0b0c0d]"
+                className="flex min-h-[220px] flex-col rounded-2xl border border-white/8 bg-white/[0.03] backdrop-blur-xl"
               >
                 <div className="flex items-center justify-between border-b border-white/6 px-3.5 py-2.5">
                   <div className="flex items-center gap-2">
@@ -319,7 +319,7 @@ export function Tasks() {
                 const person = getEmployeeById(selected.employeeId);
                 if (!person) return null;
                 return (
-                  <div className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.02] p-2.5">
+                  <div className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-2.5">
                     <Avatar
                       name={person.name}
                       src={person.avatar}
@@ -358,7 +358,7 @@ export function Tasks() {
                         'rounded-lg border px-2.5 py-1.5 text-[11px] transition',
                         selected.status === column.id
                           ? 'border-[#c8f060]/40 bg-[#c8f060]/12 text-white'
-                          : 'border-white/8 bg-white/[0.02] text-[#a0a19d] hover:border-white/16 hover:text-white',
+                          : 'border-white/8 bg-white/[0.045] backdrop-blur-xl text-[#a0a19d] hover:border-white/16 hover:text-white',
                       )}
                     >
                       {column.label}

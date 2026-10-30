@@ -31,7 +31,7 @@ export function Pricing() {
 
   return (
     <>
-      <section className="relative overflow-hidden pb-14 pt-28 md:pt-36">
+      <section className="relative overflow-hidden pb-14 pt-24 md:pt-32">
         <HeroBackdrop />
         <div className="shell relative">
           <div className="mx-auto max-w-2xl text-center">
@@ -104,8 +104,8 @@ export function Pricing() {
                     className={cn(
                       'relative flex h-full flex-col rounded-3xl border p-6',
                       plan.popular
-                        ? 'border-[#c8f060]/45 bg-[linear-gradient(165deg,rgba(200,240,96,0.16),rgba(15,16,17,0.92)_55%)] shadow-[0_30px_90px_-40px_rgba(200,240,96,0.7)] lg:-mt-3 lg:pb-8'
-                        : 'border-white/10 bg-white/[0.02]',
+                        ? 'border-[#c8f060]/40 bg-[linear-gradient(165deg,rgba(200,240,96,0.12),rgba(15,16,17,0.55)_55%)] shadow-[0_30px_90px_-40px_rgba(200,240,96,0.45)] backdrop-blur-xl lg:-mt-3 lg:pb-8'
+                        : 'border-white/10 bg-white/[0.035] backdrop-blur-xl',
                     )}
                   >
                     {plan.popular && (
@@ -169,7 +169,7 @@ export function Pricing() {
           </div>
 
           <Reveal delay={100}>
-            <div className="mx-auto mt-6 flex max-w-5xl flex-col items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/[0.02] px-5 py-4 sm:flex-row">
+            <div className="mx-auto mt-6 flex max-w-5xl flex-col items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-5 py-4 sm:flex-row">
               <div className="flex items-center gap-3">
                 <span className="grid size-8 place-items-center rounded-lg bg-[#c8f060]/12 ring-1 ring-inset ring-[#c8f060]/25">
                   <Sparkles className="size-3.5 text-[#e2fa9e]" />
@@ -198,11 +198,11 @@ export function Pricing() {
           />
 
           <Reveal delay={80}>
-            <div className="mt-10 overflow-x-auto rounded-2xl border border-white/8 bg-[#0b0c0d]">
+            <div className="mt-10 overflow-x-auto rounded-2xl border border-white/8 bg-white/[0.03] backdrop-blur-xl">
               <table className="w-full min-w-[720px] border-collapse text-left">
                 <thead>
                   <tr className="border-b border-white/8">
-                    <th scope="col" className="sticky left-0 z-10 bg-[#0b0c0d] px-5 py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#8e8f8b]">
+                    <th scope="col" className="sticky left-0 z-10 bg-[#0e0f10] px-5 py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#8e8f8b]">
                       Feature
                     </th>
                     {plans.map((plan) => (
@@ -233,7 +233,7 @@ export function Pricing() {
                         .filter((row) => (row.group ?? '') === group)
                         .map((row) => (
                           <tr key={row.label} className="border-t border-white/6 transition-colors hover:bg-white/[0.015]">
-                            <th scope="row" className="sticky left-0 z-10 bg-[#0b0c0d] px-5 py-3 text-left text-[12.5px] font-normal text-[#b2b3af]">
+                            <th scope="row" className="sticky left-0 z-10 bg-[#0e0f10] px-5 py-3 text-left text-[12.5px] font-normal text-[#b2b3af]">
                               {row.label}
                             </th>
                             {row.values.map((value, index) => (

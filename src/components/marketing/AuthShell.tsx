@@ -20,7 +20,7 @@ export function AuthShell({
   return (
     <div className="relative grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
       {/* brand panel */}
-      <aside className="relative hidden overflow-hidden border-r border-white/8 bg-[#0b0c0d] p-10 lg:flex lg:flex-col lg:justify-between xl:p-14">
+      <aside className="relative hidden overflow-hidden border-r border-white/8 bg-[#0b0c0d]/55 p-10 backdrop-blur-2xl lg:flex lg:flex-col lg:justify-between xl:p-14">
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-40 [mask-image:radial-gradient(ellipse_at_30%_20%,black,transparent_75%)]" />
         <div className="pointer-events-none absolute -left-32 top-1/4 size-[560px] rounded-full bg-[radial-gradient(circle,rgba(245,245,243,0.08),transparent_65%)]" />
         <div className="pointer-events-none absolute -right-40 bottom-0 size-[620px] rounded-full opacity-50 blur-[40px] [background:conic-gradient(from_200deg_at_50%_50%,transparent_0deg,rgba(245,245,243,0.16)_70deg,transparent_150deg,rgba(200,240,96,0.16)_230deg,transparent_320deg)]" />

@@ -180,7 +180,7 @@ export function Settings() {
                 </Button>
               </div>
             </form>
-            <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-white/8 bg-white/[0.02] p-3">
+            <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-3">
               <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[#e2fa9e]" />
               <div>
                 <p className="text-[11.5px] font-medium text-white">Two-factor authentication</p>

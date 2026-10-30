@@ -67,7 +67,7 @@ export function DashboardLayout() {
   const seatsTotal = 5;
 
   const sidebar = (
-    <div className="flex h-full flex-col border-r border-white/8 bg-[#0b0c0d]">
+    <div className="flex h-full flex-col border-r border-white/8 bg-[#0b0c0d]/55 backdrop-blur-2xl">
       <div className="flex h-16 items-center justify-between px-4">
         <Logo />
         <button
@@ -159,7 +159,7 @@ export function DashboardLayout() {
       </nav>
 
       <div className="border-t border-white/6 p-3">
-        <div className="rounded-xl border border-white/8 bg-white/[0.02] p-3">
+        <div className="rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-3">
           <div className="flex items-center justify-between text-[10.5px]">
             <span className="text-[#a0a19d]">Employee seats</span>
             <span className="font-medium text-white">
@@ -262,7 +262,7 @@ export function DashboardLayout() {
               {showNotifications && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setShowNotifications(false)} />
-                  <div className="absolute right-0 top-11 z-40 w-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#111213] shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
+                  <div className="absolute right-0 top-11 z-40 w-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#121314]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
                     <div className="flex items-center justify-between border-b border-white/8 px-3.5 py-2.5">
                       <p className="text-[12px] font-medium text-white">Activity</p>
                       <span className="text-[10px] text-[#8e8f8b]">{activities.length} updates</span>
@@ -318,7 +318,7 @@ export function DashboardLayout() {
               {showProfile && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setShowProfile(false)} />
-                  <div className="absolute right-0 top-11 z-40 w-[240px] overflow-hidden rounded-xl border border-white/10 bg-[#111213] shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
+                  <div className="absolute right-0 top-11 z-40 w-[240px] overflow-hidden rounded-xl border border-white/10 bg-[#121314]/85 backdrop-blur-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,1)]">
                     <div className="border-b border-white/8 px-3.5 py-3">
                       <p className="truncate text-[12px] font-medium text-white">{user?.name}</p>
                       <p className="truncate text-[10.5px] text-[#8e8f8b]">{user?.email}</p>

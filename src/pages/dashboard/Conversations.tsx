@@ -83,7 +83,7 @@ export function Conversations() {
           action={<ButtonLink to="/employees">Browse employees</ButtonLink>}
         />
       ) : (
-        <div className="grid h-[calc(100vh-240px)] min-h-[520px] overflow-hidden rounded-2xl border border-white/8 bg-[#0b0c0d] lg:grid-cols-[280px_1fr]">
+        <div className="grid h-[calc(100vh-240px)] min-h-[520px] overflow-hidden glass rounded-2xl lg:grid-cols-[280px_1fr]">
           {/* list */}
           <aside className={cn('flex-col border-r border-white/8', mobileChat ? 'hidden lg:flex' : 'flex')}>
             <div className="flex items-center justify-between border-b border-white/8 px-3.5 py-3">
@@ -189,8 +189,8 @@ export function Conversations() {
                   </Link>
                 </div>
 
-                <div ref={scrollRef} className="scroll-thin flex-1 space-y-3 overflow-y-auto bg-[#0d0e0f] px-4 py-4">
-                  <div className="mx-auto mb-4 flex max-w-sm flex-col items-center rounded-xl border border-white/6 bg-white/[0.02] px-4 py-3 text-center">
+                <div ref={scrollRef} className="scroll-thin flex-1 space-y-3 overflow-y-auto bg-[#0d0e0f]/45 px-4 py-4">
+                  <div className="mx-auto mb-4 flex max-w-sm flex-col items-center rounded-xl border border-white/6 bg-white/[0.045] backdrop-blur-xl px-4 py-3 text-center">
                     <Avatar
                       name={person.name}
                       src={person.avatar}
@@ -272,7 +272,7 @@ export function Conversations() {
                   )}
                 </div>
 
-                <div className="border-t border-white/8 bg-[#0b0c0d] p-3">
+                <div className="border-t border-white/8 bg-[#0b0c0d]/60 p-3">
                   {thread.length < 4 && (
                     <div className="mb-2 flex flex-wrap gap-1.5">
                       {suggestions.map((suggestion) => (

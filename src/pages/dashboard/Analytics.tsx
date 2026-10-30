@@ -140,7 +140,7 @@ export function Analytics() {
               title="Delivered over time"
               subtitle="Completed tasks across all employees"
               action={
-                <div className="flex rounded-lg border border-white/8 bg-white/[0.02] p-0.5">
+                <div className="flex rounded-lg border border-white/8 bg-white/[0.045] backdrop-blur-xl p-0.5">
                   {(['7d', '30d'] as const).map((option) => (
                     <button
                       key={option}
@@ -281,7 +281,7 @@ export function Analytics() {
                   );
                 })}
               </div>
-              <div className="rounded-xl border border-white/8 bg-white/[0.02] p-4">
+              <div className="rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-4">
                 <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#8e8f8b]">Recommendation</p>
                 <p className="mt-2 text-[12px] leading-relaxed text-[#c3c4c0]">
                   {tasks.filter((task) => task.status === 'review').length > 2

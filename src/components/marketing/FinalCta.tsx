@@ -10,7 +10,7 @@ export function FinalCta() {
     <section className="relative overflow-hidden py-20 md:py-28">
       <div className="shell">
         <Reveal>
-          <div className="noise relative overflow-hidden rounded-[28px] border border-white/12 bg-[linear-gradient(160deg,#1b1d1f_0%,#121314_52%,#0d0e0f_100%)] px-6 py-14 text-center md:px-16 md:py-20">
+          <div className="noise glass-strong relative overflow-hidden rounded-[28px] px-6 py-14 text-center md:px-16 md:py-20">
             <div className="pointer-events-none absolute inset-x-24 -top-px h-px bg-gradient-to-r from-transparent via-[#d7f68c] to-transparent" />
             <div className="pointer-events-none absolute left-1/2 top-1/2 size-[820px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d7f68c]/10" />
             <div className="pointer-events-none absolute left-1/2 top-1/2 size-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d7f68c]/10" />

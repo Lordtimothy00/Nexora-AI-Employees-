@@ -229,7 +229,7 @@ export function Team() {
                 { label: 'Your Nexora cost', value: `$${hires.length * 49}/mo`, hint: 'billed monthly' },
                 { label: 'Monthly saving', value: `$${(hires.length * 6151).toLocaleString()}`, hint: `${hoursSaved}h of work returned` },
               ].map((row) => (
-                <div key={row.label} className="rounded-xl border border-white/8 bg-white/[0.02] p-3.5">
+                <div key={row.label} className="rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl p-3.5">
                   <p className="text-[10px] uppercase tracking-[0.08em] text-[#8e8f8b]">{row.label}</p>
                   <p className="mt-1 font-display text-[17px] font-semibold text-white">{row.value}</p>
                   <p className="mt-0.5 text-[10px] text-[#7c7d79]">{row.hint}</p>

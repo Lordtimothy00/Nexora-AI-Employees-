@@ -288,7 +288,7 @@ export function EmployeeDetail() {
                     ))}
                   </ul>
 
-                  <div className="mt-5 flex items-center gap-3 rounded-xl border border-white/8 bg-[#111213] px-3.5 py-3">
+                  <div className="mt-5 flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.045] px-3.5 py-3 backdrop-blur-xl">
                     <ShieldCheck className="size-4 shrink-0 text-[#dadbd7]" />
                     <p className="text-[11px] leading-relaxed text-[#a0a19d]">
                       Every action logged and reversible. Data never used to train shared models.
@@ -305,7 +305,7 @@ export function EmployeeDetail() {
                 </div>
               </div>
 
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.02] px-4 py-3">
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.045] backdrop-blur-xl px-4 py-3">
                 <div className="flex items-center gap-2 text-[11.5px] text-[#a0a19d]">
                   <Users className="size-3.5" />
                   Hired by {employee.deployments.toLocaleString()} teams

@@ -137,7 +137,7 @@ export function Overview() {
               title="Work delivered"
               subtitle="Completed tasks per day, across your team"
               action={
-                <div className="flex rounded-lg border border-white/8 bg-white/[0.02] p-0.5">
+                <div className="flex rounded-lg border border-white/8 bg-white/[0.045] backdrop-blur-xl p-0.5">
                   {(['7d', '30d'] as const).map((option) => (
                     <button
                       key={option}

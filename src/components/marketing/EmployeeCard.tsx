@@ -73,7 +73,7 @@ export function EmployeeCard({
         {employee.tags.slice(0, 2).map((tag) => (
           <span
             key={tag}
-            className="rounded-full border border-white/8 bg-white/[0.02] px-2.5 py-1 text-[10.5px] text-[#a0a19d]"
+            className="rounded-full border border-white/8 bg-white/[0.045] backdrop-blur-xl px-2.5 py-1 text-[10.5px] text-[#a0a19d]"
           >
             {tag}
           </span>

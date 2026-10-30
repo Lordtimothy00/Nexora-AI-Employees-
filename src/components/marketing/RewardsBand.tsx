@@ -52,7 +52,7 @@ export function RewardsBand() {
     <section id="rewards" className="relative py-6 md:py-10">
       <div className="shell">
         <Reveal>
-          <div className="noise relative overflow-hidden rounded-[30px] border border-white/12 bg-[linear-gradient(115deg,#1d2022_0%,#121314_45%,#0d0e0f_100%)] p-6 md:p-10">
+          <div className="noise glass-strong relative overflow-hidden rounded-[30px] p-6 md:p-10">
             <div className="pointer-events-none absolute inset-x-28 -top-px h-px bg-gradient-to-r from-transparent via-[#e2fa9e] to-transparent" />
             <div className="pointer-events-none absolute -left-24 -top-28 size-[460px] rounded-full bg-[radial-gradient(circle,rgba(200,240,96,0.12),transparent_65%)]" />
             <div className="pointer-events-none absolute -bottom-40 right-[-80px] size-[420px] rounded-full bg-[radial-gradient(circle,rgba(245,245,243,0.08),transparent_65%)]" />
@@ -149,7 +149,7 @@ export function RewardsBand() {
                 </div>
 
                 {/* reward rows */}
-                <div className="divide-y divide-white/6 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+                <div className="divide-y divide-white/6 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.045] backdrop-blur-xl">
                   {rewards.map((reward) => {
                     const tone = toneStyles[reward.tone];
                     return (
