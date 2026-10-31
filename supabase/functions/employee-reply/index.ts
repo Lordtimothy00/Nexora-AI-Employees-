@@ -15,6 +15,11 @@
 //
 // Model names move under you: gemini-2.5-flash was retired for new keys mid-build. Override
 // any of them with GEMINI_MODEL / OPENAI_MODEL / ANTHROPIC_MODEL instead of redeploying.
+//
+// Who may call this: the project's publishable key is in the browser bundle, so holding it proves
+// nothing. A request must carry a real user JWT (the gateway has already verified its signature),
+// belong to at least one workspace, and stay under REPLY_LIMIT_PER_HOUR answers per workspace —
+// otherwise anyone with the public key could spend the model budget.
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -37,6 +42,61 @@ const ANTHROPIC_MODEL = Deno.env.get('ANTHROPIC_MODEL') ?? 'claude-3-5-haiku-lat
 // A provider that stops answering must not hold the whole reply hostage: cap each attempt so
 // the next provider gets a turn and the caller hears back inside a chat-sized pause.
 const PROVIDER_TIMEOUT_MS = 12_000;
+// Whole-request budget: three providers timing out in turn must not hold a chat bubble for a minute.
+const TOTAL_BUDGET_MS = 20_000;
+const REPLY_LIMIT_PER_HOUR = 60;
+
+function userIdFrom(authorization: string | null): string | null {
+  const token = authorization?.replace(/^Bearer\s+/i, '');
+  const payload = token?.split('.')[1];
+  if (!payload) return null;
+
+  try {
+    const normalised = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const decoded = JSON.parse(atob(normalised));
+    return typeof decoded.sub === 'string' ? decoded.sub : null;
+  } catch {
+    return null;
+  }
+}
+
+async function adminGet(path: string, serviceKey: string) {
+  const url = Deno.env.get('SUPABASE_URL');
+  const response = await fetch(`${url}/rest/v1${path}`, {
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+  });
+  if (!response.ok) return null;
+  return (await response.json()) as unknown;
+}
+
+/**
+ * Replies cost money, so a caller has to be a real person in a real workspace, and a workspace
+ * cannot exceed the hourly ceiling. Fails closed: if the check cannot run, no reply is generated.
+ */
+async function authorize(userId: string, serviceKey: string) {
+  const memberships = await adminGet(
+    `/workspace_members?user_id=eq.${userId}&select=workspace_id`,
+    serviceKey,
+  ) as { workspace_id: string }[] | null;
+  if (!memberships) return { ok: false as const, status: 503, body: { error: 'auth_check_failed' } };
+
+  const ids = memberships.map((row) => row.workspace_id);
+  if (ids.length === 0) return { ok: false as const, status: 403, body: { error: 'no_workspace' } };
+
+  const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const recent = await adminGet(
+    `/messages?workspace_id=in.(${ids.join(',')})&sender=eq.employee&created_at=gte.${since}` +
+      `&select=id&limit=${REPLY_LIMIT_PER_HOUR + 1}`,
+    serviceKey,
+  ) as { id: string }[] | null;
+  if (!recent) return { ok: false as const, status: 503, body: { error: 'auth_check_failed' } };
+
+  if (recent.length > REPLY_LIMIT_PER_HOUR) {
+    return { ok: false as const, status: 429, body: { error: 'rate_limited', limit: REPLY_LIMIT_PER_HOUR } };
+  }
+
+  return { ok: true as const };
+}
 
 type Turn = { from: 'human' | 'employee'; text: string };
 
@@ -186,6 +246,16 @@ Deno.serve(async (request) => {
   }
 
   if (!body?.message?.trim() || !body?.employee?.name) return json({ error: 'bad_request' }, 400);
+  if (body.message.length > 2000) return json({ error: 'message_too_long' }, 400);
+
+  const userId = userIdFrom(request.headers.get('authorization'));
+  if (!userId) return json({ error: 'not_authenticated' }, 401);
+
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!serviceKey) return json({ error: 'not_configured', missing: ['SUPABASE_SERVICE_ROLE_KEY'] }, 501);
+
+  const permission = await authorize(userId, serviceKey);
+  if (!permission.ok) return json(permission.body, permission.status);
 
   // Try every configured provider, not just the first one. An account with no credits
   // left is a billing problem, not a code problem, and the other provider may be fine.
@@ -198,7 +268,14 @@ Deno.serve(async (request) => {
   );
 
   const failures: string[] = [];
+  const deadline = Date.now() + TOTAL_BUDGET_MS;
+
   for (const attempt of attempts) {
+    if (Date.now() >= deadline) {
+      failures.push('stopped: overall time budget reached');
+      break;
+    }
+
     const startedAt = Date.now();
     if ((cooling.get(attempt.provider) ?? 0) > Date.now()) {
       failures.push(`${attempt.provider}: skipped, cooling down after a recent failure`);

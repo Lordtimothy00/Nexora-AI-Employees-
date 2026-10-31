@@ -348,5 +348,7 @@ describe('reply failure messages', () => {
     ).toMatch(/run out of credits/i);
     expect(explainReplyFailure('provider_error', 'openai 401: bad key')).toMatch(/502/);
     expect(explainReplyFailure('not_configured')).toMatch(/no model key is set/i);
+    expect(explainReplyFailure('no_workspace')).toMatch(/does not belong to a workspace/i);
+    expect(explainReplyFailure('rate_limited')).toMatch(/hourly reply limit/i);
   });
 });

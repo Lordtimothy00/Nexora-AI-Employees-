@@ -17,6 +17,8 @@ export type ReplyFailureReason =
   | 'no_backend'
   | 'no_session'
   | 'unauthorized'
+  | 'no_workspace'
+  | 'rate_limited'
   | 'not_configured'
   | 'provider_error'
   | 'unreachable';
@@ -80,7 +82,12 @@ export async function requestEmployeeReply(request: ReplyRequest): Promise<Reply
     const { data, error } = await db.functions.invoke('employee-reply', { body: request });
     if (error) {
       const { status, detail } = await readError(error);
+      // 403 means the session is real but belongs to nobody's workspace; 401 means no session.
+      if (status === 403 && detail === 'no_workspace') {
+        return { ok: false, reply: null, reason: 'no_workspace', detail };
+      }
       if (status === 401 || status === 403) return { ok: false, reply: null, reason: 'unauthorized', detail };
+      if (status === 429) return { ok: false, reply: null, reason: 'rate_limited', detail };
       if (status === 501) return { ok: false, reply: null, reason: 'not_configured' };
       if (status === 502) return { ok: false, reply: null, reason: 'provider_error', detail };
       return { ok: false, reply: null, reason: 'unreachable', detail };
@@ -117,6 +124,10 @@ export function explainReplyFailure(
       return 'Scripted replies — the demo workspace is local-only. Sign in with a real account to reach the model.';
     case 'unauthorized':
       return 'Scripted replies — the function rejected the session (401).';
+    case 'no_workspace':
+      return 'Scripted replies — this account does not belong to a workspace yet (403).';
+    case 'rate_limited':
+      return 'Scripted replies — this workspace hit the hourly reply limit. Live answers resume shortly.';
     case 'not_configured':
       return 'Scripted replies — no model key is set on the project (501).';
     case 'provider_error':
