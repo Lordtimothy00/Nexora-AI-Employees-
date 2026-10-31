@@ -13,12 +13,14 @@ import {
   createHire as createRemoteHire,
   createWorkspace as createRemoteWorkspace,
   createMessage as createRemoteMessage,
+  deleteWorkspace as deleteRemoteWorkspace,
   createTask as createRemoteTask,
   deleteHire as deleteRemoteHire,
   ensureWorkspace,
   fetchWorkspace,
   fetchWorkspaces,
   getWorkspaceId,
+  renameWorkspace as renameRemoteWorkspace,
   setHireStatus,
   setTaskStatus,
   switchWorkspace as switchRemoteWorkspace,
@@ -88,6 +90,10 @@ interface WorkspaceContextValue extends WorkspaceState {
   switching: boolean;
   switchWorkspace: (workspaceId: string) => Promise<void>;
   createWorkspace: (name: string) => Promise<void>;
+  /** Renames the workspace the person is currently in. Owner/admin only, enforced on the server. */
+  renameActiveWorkspace: (name: string) => Promise<void>;
+  /** Deletes the active workspace and everything in it, moving the person to their oldest remaining one. */
+  deleteActiveWorkspace: () => Promise<void>;
 }
 
 const STORAGE_KEY = 'nexora.workspace.v2';
@@ -496,6 +502,34 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     [remote, loadWorkspaces, refresh],
   );
 
+  const renameActiveWorkspace = useCallback(
+    async (name: string) => {
+      if (!remote || !activeId) return;
+      setSwitching(true);
+      try {
+        await renameRemoteWorkspace(activeId, name);
+        await loadWorkspaces();
+      } finally {
+        setSwitching(false);
+      }
+    },
+    [remote, activeId, loadWorkspaces],
+  );
+
+  const deleteActiveWorkspace = useCallback(async () => {
+    if (!remote || !activeId) return;
+    setSwitching(true);
+    try {
+      await deleteRemoteWorkspace(activeId);
+      // The server already moved the profile to the oldest remaining workspace, so reloading the
+      // list (which re-reads my_workspace) and the snapshot lands on the right workspace.
+      await loadWorkspaces();
+      await refresh();
+    } finally {
+      setSwitching(false);
+    }
+  }, [remote, activeId, loadWorkspaces, refresh]);
+
   const completedThisMonth = useMemo(
     () => state.hires.reduce((sum, hire) => sum + Math.round(hire.tasksCompleted * 0.22), 0) + state.tasks.filter((t) => t.status === 'done').length,
     [state.hires, state.tasks],
@@ -542,8 +576,10 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       switching,
       switchWorkspace,
       createWorkspace,
+      renameActiveWorkspace,
+      deleteActiveWorkspace,
     }),
-    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace],
+    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace, renameActiveWorkspace, deleteActiveWorkspace],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

@@ -1,13 +1,16 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Check, KeyRound, LogOut, RotateCcw, ShieldCheck, SlidersHorizontal, User } from 'lucide-react';
+import { AlertTriangle, Check, KeyRound, LogOut, RotateCcw, ShieldCheck, SlidersHorizontal, Trash2, User } from 'lucide-react';
 import { PageHeader, Panel, Toast } from '@/components/dashboard/ui';
 import { Button } from '@/components/ui/Button';
 import { Field, PasswordField } from '@/components/ui/Field';
 import { Avatar } from '@/components/ui/Avatar';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
+import { backendConfigured } from '@/lib/supabase';
 import { cn, initialsOf } from '@/lib/utils';
+
+const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`;
 
 function Toggle({
   checked,
@@ -50,8 +53,31 @@ function Toggle({
 
 export function Settings() {
   const { user, updateProfile, logout } = useAuth();
-  const { hires } = useWorkspace();
+  const {
+    hires,
+    tasks,
+    messages,
+    workspaces,
+    activeWorkspace,
+    switching,
+    renameActiveWorkspace,
+    deleteActiveWorkspace,
+  } = useWorkspace();
   const navigate = useNavigate();
+  // Local demo accounts have no workspaces table behind them, so the rename and delete controls
+  // stay hidden rather than pretending to work.
+  const remote = backendConfigured && !!user && !user.id.startsWith('usr_');
+  const workspaceName = activeWorkspace?.name ?? user?.company ?? 'Workspace';
+  const memberCount = activeWorkspace?.members ?? 1;
+  const teammates = Math.max(memberCount - 1, 0);
+  const [wsName, setWsName] = useState(workspaceName);
+  const [savingName, setSavingName] = useState(false);
+  const [nameDirty, setNameDirty] = useState(false);
+  const [renameError, setRenameError] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const [confirmName, setConfirmName] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [name, setName] = useState(user?.name ?? '');
   const [email, setEmail] = useState(user?.email ?? '');
   const [company, setCompany] = useState(user?.company ?? '');
@@ -69,6 +95,11 @@ export function Settings() {
     setTimeout(() => setToast(null), 3800);
   };
 
+  // The active workspace arrives after the first render; follow it until the field is edited.
+  useEffect(() => {
+    if (!nameDirty) setWsName(workspaceName);
+  }, [workspaceName, nameDirty]);
+
   const saveProfile = (event: FormEvent) => {
     event.preventDefault();
     updateProfile({ name: name.trim(), email: email.trim(), company: company.trim(), role: role.trim() });
@@ -79,6 +110,38 @@ export function Settings() {
     event.preventDefault();
     showToast('Password updated (preview only — no credentials are stored).');
     (event.target as HTMLFormElement).reset();
+  };
+
+  const saveWorkspaceName = (event: FormEvent) => {
+    event.preventDefault();
+    const next = wsName.trim();
+    if (!next) {
+      setRenameError('Give the workspace a name.');
+      return;
+    }
+    setRenameError(null);
+    setSavingName(true);
+    void renameActiveWorkspace(next)
+      .then(() => {
+        setWsName(next);
+        setNameDirty(false);
+        showToast(`Workspace renamed to “${next}”.`);
+      })
+      .catch((error: Error) => setRenameError(error.message))
+      .finally(() => setSavingName(false));
+  };
+
+  const deleteWorkspace = () => {
+    setDeleteError(null);
+    setDeleting(true);
+    void deleteActiveWorkspace()
+      .then(() => {
+        setConfirming(false);
+        setConfirmName('');
+        showToast('Workspace deleted. You are now in another of your workspaces.');
+      })
+      .catch((error: Error) => setDeleteError(error.message))
+      .finally(() => setDeleting(false));
   };
 
   const resetDemo = () => {
@@ -193,19 +256,54 @@ export function Settings() {
         </div>
 
         <div className="space-y-3">
-          <Panel title="Workspace">
+          <Panel title="Workspace" subtitle={remote ? 'Rename the one you are in' : 'Local demo workspace'}>
             <div className="space-y-3">
-              {[
-                { label: 'Workspace', value: company || '—' },
-                { label: 'Plan', value: 'Growth · monthly' },
-                { label: 'AI employees', value: `${hires.length} of 5` },
-                { label: 'Member since', value: user ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '—' },
-              ].map((row) => (
-                <div key={row.label} className="flex items-center justify-between border-b border-white/5 pb-2.5 last:border-0 last:pb-0">
-                  <span className="text-[11px] text-[#9aaab3]">{row.label}</span>
-                  <span className="text-[11px] font-medium text-[#d8e4e4]">{row.value}</span>
+              {remote && (
+                <div>
+                  <form onSubmit={saveWorkspaceName} className="flex items-start gap-2">
+                    <label className="sr-only" htmlFor="workspace-name">
+                      Workspace name
+                    </label>
+                    <input
+                      id="workspace-name"
+                      value={wsName}
+                      maxLength={60}
+                      disabled={!activeWorkspace}
+                      onChange={(event) => {
+                        setWsName(event.target.value);
+                        setNameDirty(true);
+                        setRenameError(null);
+                      }}
+                      className="min-w-0 flex-1 rounded-lg border border-white/12 bg-white/[0.04] px-2.5 py-2 text-[12px] text-white placeholder:text-[#7d909a] focus:border-[#0bd39a]/50 focus:outline-none disabled:opacity-60"
+                    />
+                    <Button
+                      type="submit"
+                      size="sm"
+                      disabled={!activeWorkspace || switching || savingName || !nameDirty || !wsName.trim()}
+                    >
+                      {savingName ? 'Saving…' : 'Rename'}
+                    </Button>
+                  </form>
+                  {renameError && <p className="mt-1.5 text-[10px] text-[#e8a1a1]">{renameError}</p>}
+                  <p className="mt-1.5 text-[10px] text-[#8d9ea7]">
+                    Shown in the sidebar and to everyone you invite. Owners and admins can change it.
+                  </p>
                 </div>
-              ))}
+              )}
+
+              <div className="space-y-3">
+                {[
+                  { label: 'Your role', value: activeWorkspace ? activeWorkspace.role : '—' },
+                  { label: 'Members', value: remote ? `${memberCount}` : '1' },
+                  { label: 'AI employees', value: `${hires.length}` },
+                  { label: 'Member since', value: user ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '—' },
+                ].map((row) => (
+                  <div key={row.label} className="flex items-center justify-between border-b border-white/5 pb-2.5 capitalize last:border-0 last:pb-0">
+                    <span className="text-[11px] text-[#9aaab3]">{row.label}</span>
+                    <span className="text-[11px] font-medium text-[#d8e4e4]">{row.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </Panel>
 
@@ -235,19 +333,100 @@ export function Settings() {
               <AlertTriangle className="size-4 text-[#deeaea]" />
               <p className="text-[12px] font-medium text-white">Danger zone</p>
             </div>
-            <p className="mt-1.5 text-[10.5px] leading-relaxed text-[#b9c9cf]">
-              Reset the demo workspace to its original hires, tasks, and conversations. This clears
-              local data for this browser only.
-            </p>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-3 w-full border border-rose-400/20 text-[#deeaea] hover:bg-rose-500/10 hover:text-white"
-              onClick={resetDemo}
-              iconLeft={<RotateCcw className="size-3.5" />}
-            >
-              Reset demo workspace
-            </Button>
+
+            {remote ? (
+              <>
+                <p className="mt-1.5 text-[10.5px] leading-relaxed text-[#b9c9cf]">
+                  Deleting <span className="text-white">{workspaceName}</span> permanently removes{' '}
+                  {count(hires.length, 'hired employee')}, {count(tasks.length, 'task')},{' '}
+                  {count(messages.length, 'message')} and the activity history
+                  {teammates > 0
+                    ? `, and takes access away from ${count(teammates, 'teammate')}`
+                    : ''}
+                  . AI employees cannot be restored afterwards.
+                </p>
+
+                {workspaces.length <= 1 ? (
+                  <p className="mt-2 rounded-lg border border-white/12 bg-white/[0.04] px-2.5 py-2 text-[10px] leading-relaxed text-[#b9c9cf]">
+                    This is your only workspace. Create another one from the workspace menu first.
+                  </p>
+                ) : activeWorkspace && activeWorkspace.role !== 'owner' ? (
+                  <p className="mt-2 rounded-lg border border-white/12 bg-white/[0.04] px-2.5 py-2 text-[10px] leading-relaxed text-[#b9c9cf]">
+                    Only the workspace owner can delete it.
+                  </p>
+                ) : confirming ? (
+                  <div className="mt-2.5">
+                    <label
+                      htmlFor="confirm-workspace-name"
+                      className="block text-[10px] leading-relaxed text-[#d8e4e8]"
+                    >
+                      Type <span className="font-medium text-white">{workspaceName}</span> to confirm.
+                    </label>
+                    <input
+                      id="confirm-workspace-name"
+                      value={confirmName}
+                      autoFocus
+                      onChange={(event) => {
+                        setConfirmName(event.target.value);
+                        setDeleteError(null);
+                      }}
+                      className="mt-1.5 w-full rounded-lg border border-rose-400/25 bg-white/[0.04] px-2.5 py-2 text-[11.5px] text-white focus:border-rose-400/60 focus:outline-none"
+                    />
+                    {deleteError && <p className="mt-1.5 text-[10px] text-[#e8a1a1]">{deleteError}</p>}
+                    <div className="mt-1.5 flex gap-1.5">
+                      <button
+                        type="button"
+                        disabled={deleting || confirmName.trim() !== workspaceName}
+                        onClick={deleteWorkspace}
+                        className="flex-1 rounded-lg border border-rose-400/40 bg-rose-500/15 px-2.5 py-1.5 text-[11px] font-medium text-white transition hover:bg-rose-500/25 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        {deleting ? 'Deleting…' : 'Delete permanently'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setConfirming(false);
+                          setConfirmName('');
+                          setDeleteError(null);
+                        }}
+                        className="rounded-lg border border-white/12 px-2.5 py-1.5 text-[11px] text-[#b9c9cf] transition hover:text-white"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-3 w-full border border-rose-400/20 text-[#deeaea] hover:bg-rose-500/10 hover:text-white"
+                    onClick={() => {
+                      setConfirming(true);
+                      setConfirmName('');
+                    }}
+                    iconLeft={<Trash2 className="size-3.5" />}
+                  >
+                    Delete workspace
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="mt-1.5 text-[10.5px] leading-relaxed text-[#b9c9cf]">
+                  Reset the demo workspace to its original hires, tasks, and conversations. This clears
+                  local data for this browser only.
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="mt-3 w-full border border-rose-400/20 text-[#deeaea] hover:bg-rose-500/10 hover:text-white"
+                  onClick={resetDemo}
+                  iconLeft={<RotateCcw className="size-3.5" />}
+                >
+                  Reset demo workspace
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

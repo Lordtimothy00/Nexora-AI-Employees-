@@ -254,7 +254,6 @@ export interface WorkspaceSummary {
   id: string;
   name: string;
   role: string;
-  plan: string;
   members: number;
 }
 
@@ -264,13 +263,12 @@ export async function fetchWorkspaces(): Promise<WorkspaceSummary[]> {
   const { data, error } = await db.rpc('my_workspaces');
   if (error) throw new Error(error.message);
 
-  type Row = { id: string; name: string | null; role: string | null; plan: string | null; members: number | null };
+  type Row = { id: string; name: string | null; role: string | null; members: number | null };
 
   return ((data ?? []) as Row[]).map((row) => ({
     id: row.id,
     name: row.name || 'Workspace',
     role: (row.role as string) || 'member',
-    plan: (row.plan as string) || 'growth',
     members: (row.members as number) ?? 1,
   }));
 }
@@ -296,6 +294,29 @@ export async function switchWorkspace(workspaceId: string): Promise<void> {
   const { error } = await db.rpc('switch_workspace', { p_workspace: workspaceId });
   if (error) throw new Error(error.message);
   resetWorkspaceCache();
+}
+
+/**
+ * Renames a workspace. The server trims the name and throws on empty or 60+ characters, and it
+ * refuses anyone who is not an owner or admin of that workspace.
+ */
+export async function renameWorkspace(workspaceId: string, name: string): Promise<string> {
+  const db = await client();
+  const { data, error } = await db.rpc('rename_workspace', { p_workspace: workspaceId, p_name: name });
+  if (error) throw new Error(error.message);
+  return (data as string) ?? name.trim();
+}
+
+/**
+ * Deletes a workspace and everything inside it, then returns the workspace the caller is moved to.
+ * The server refuses this for anyone but the owner, and for an account's only workspace.
+ */
+export async function deleteWorkspace(workspaceId: string): Promise<string> {
+  const db = await client();
+  const { data, error } = await db.rpc('delete_workspace', { p_workspace: workspaceId });
+  if (error) throw new Error(error.message);
+  resetWorkspaceCache();
+  return data as string;
 }
 
 export async function fetchMembers(): Promise<WorkspaceMember[]> {

@@ -48,7 +48,7 @@ scroll reveals are hand-built so the visual language stays consistent and the bu
 | `/dashboard/conversations`| Team chat with canned AI replies, typing indicator, suggestion prompts           |
 | `/dashboard/analytics`    | Charts, department mix, employee scorecard, CSV export, insights                 |
 | `/dashboard/billing`      | Plan, usage meters, payment method, invoices (downloadable), plan switching      |
-| `/dashboard/settings`     | Profile, workspace preferences, security, reset demo, sign out                   |
+| `/dashboard/settings`     | Profile, workspace rename/delete, preferences, security, sign out               |
 | `/404`                    | Branded not-found page                                                           |
 
 ---
@@ -158,7 +158,7 @@ A workspace is a first-class thing now, not just one person's row.
   with that exact email can redeem it (`accept_invite(token)`), and redeeming switches the
   workspace to the one they were invited to. Nothing is emailed — wire an SMTP provider before
   calling this production-ready.
-- **Switching workspaces.** `my_workspaces()` lists every membership (name, role, plan, member
+- **Switching workspaces.** `my_workspaces()` lists every membership (name, role, member
   count) and the sidebar's workspace card becomes a menu when you belong to more than one;
   picking one calls `switch_workspace(id)`, which validates membership, stores the choice on
   `profiles.active_workspace_id` and refetches the workspace. Half of this already existed and
@@ -167,6 +167,17 @@ A workspace is a first-class thing now, not just one person's row.
   `owner` and sets it active. The menu's *New workspace* row takes a name inline; the function
   trims it, rejects empty or 60+ character names, and caps an account at 10 workspaces. The
   sidebar menu therefore appears for every backend account, not only multi-workspace ones.
+- **Renaming workspaces.** `rename_workspace(id, name)` trims the name and rejects empty or 60+
+  character ones exactly like creation, and refuses anyone who is not an `owner` or `admin` of that
+  workspace. Settings → *Workspace* renames the one you are in; the sidebar label follows.
+- **Deleting workspaces.** `delete_workspace(id)` is owner-only and refuses to remove your only
+  workspace — `ensure_workspace()` would otherwise quietly recreate a shell on your next sign-in.
+  Everything workspace-scoped cascades (hires, tasks, messages, activities, invites, the roster)
+  and the caller is moved to their oldest remaining workspace; teammates whose profile pointed at
+  the deleted workspace fall back through `my_workspace()`. The danger zone makes you type the
+  workspace name before the button enables.
+- Settings reports your role, members and hires instead of a plan; it used to print
+  **“Plan · Growth · monthly”** for an account that never checked out.
 - The sidebar card shows seats and people, never a plan name: `workspaces.plan` defaults to
   `growth` for every new row whether or not anyone paid, so the only screen that mentions a tier is
   Billing, where the copy says plainly that Stripe is not connected.

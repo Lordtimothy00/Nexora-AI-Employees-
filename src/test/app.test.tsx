@@ -302,6 +302,12 @@ describe('empty workspace', () => {
 
     const settings = renderAt('/dashboard/settings');
     expect(await screen.findByRole('heading', { name: /^Settings/i })).toBeInTheDocument();
+    // The sidebar used to promise a Growth plan that nobody had paid for; no screen claims a tier now.
+    expect(screen.queryByText(/Growth · monthly/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Plan$/i)).not.toBeInTheDocument();
+    // Renaming and deleting a workspace need the workspaces table, so the local demo only offers a reset.
+    expect(screen.getByRole('button', { name: /Reset demo workspace/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Delete workspace/i })).not.toBeInTheDocument();
     settings.unmount();
 
     expect(errorSpy).not.toHaveBeenCalled();
