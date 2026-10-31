@@ -48,7 +48,13 @@ function siteMeta(): Plugin {
       this.emitFile({
         type: 'asset',
         fileName: 'robots.txt',
-        source: `User-agent: *\nAllow: /\nDisallow: /dashboard\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
+        source:
+          'User-agent: *\nAllow: /\n' +
+          'Disallow: /dashboard\n' +
+          'Disallow: /invite\n' +
+          'Disallow: /forgot-password\n' +
+          'Disallow: /reset-password\n\n' +
+          `Sitemap: ${siteUrl}/sitemap.xml\n`,
       });
     },
   };

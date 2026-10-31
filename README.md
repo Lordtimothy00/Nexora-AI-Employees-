@@ -387,7 +387,8 @@ Live on Vercel as `nexora-ai-employees` → **https://nexora-ai-employees.vercel
 - `VITE_SITE_URL` sets the host used for `sitemap.xml`, `robots.txt`, canonical and social tags.
   It defaults to the production alias above — set it once a custom domain exists.
 - `sitemap.xml` and `robots.txt` are generated at build time from the route list in
-  `vite.config.ts`; `/dashboard` is excluded and disallowed.
+  `vite.config.ts`; `/dashboard`, `/invite` and the password pages are excluded from the sitemap,
+  disallowed in `robots.txt`, and get `noindex, nofollow` at runtime.
 
 ## Project structure
 
@@ -424,20 +425,26 @@ src/
 Tokens live in the `@theme` block of `src/index.css`:
 
 - **Canvas** deep teal-black `#051718` → **surface** `#092128` → **panel** `#0a252c`
-- **Monochrome** cool-slate surfaces, silver borders (`rgba(226,236,247,0.10)`) and a near-white
-  text ramp from `#f6f8fa` down to `#5f666d`
-- **Single accent** lime `#c8f060` (soft `#e2fa9e`, deep `#8fae2f`), used sparingly: live dots,
-  active states, chart marks, one highlighted phrase per section. Primary buttons are near-white
-  with ink text rather than an accent fill.
-- **Secondary accents** are deliberately desaturated silver (`#d3d5cd`, `#b9bcb4`, `#c8cac2`) so the
-  UI reads as monochrome
+- **Accent** emerald `#0bd39a`, with mint `#12e3c0`, soft `#9df7c2` and deep `#06795a`. It is used
+  sparingly: live dots, active states, chart marks, one highlighted phrase per section. Primary
+  buttons stay near-white with ink text rather than an accent fill.
+- **Token aliases are decorative names now.** `--color-blue`, `--color-violet`, `--color-lime`,
+  `--color-ember` and `--color-olive` are all remapped onto the teal values above, so old utility
+  class names keep working. There is no lime (`#c8f060`) and no blue-violet cast left in the theme —
+  do not reintroduce either.
+- **Borders and text** are cool on the teal canvas: hairlines `rgba(186,255,228,0.1)`, text ramp from
+  `#eef7f5` (white token) down through `#b9c9cf`/`#8d9ea7`.
+- **Section wash** every page section paints `.page-section` — `rgba(255, 255, 255, 0.03)` on the
+  canvas, so the glass has depth without lifting the page off its near-black. The rule behind that
+  value is a white wash at low alpha (`rgba(255,255,255,0.1)` is the ceiling); never retint it blue or
+  emerald, and do not raise the alpha without looking at every section.
 - **Type** Sora (display) / Inter (UI) / JetBrains Mono (labels & data)
 - **Primitives** `.glass` / `.glass-strong` (translucent, blurred surfaces), `.panel`, `.panel-hover`,
   `.card-sheen`, `.eyebrow`, `.bg-grid`, `.mask-fade-*`, `.reveal`, `.text-gradient`
 - Depth comes from frosted glass (34–44px backdrop blur, 185–195% saturation), layered emerald/teal aurora glows, drifting particles and a masked hairline grid, 1px inset
   highlights, layered gradients, conic light rings, and low-opacity white borders rather than heavy
-  shadows. Signature surfaces: `.panel-accent` (graphite card with a
-  lime hairline), `.ring-glow`, and `.neon-line`. The marketing header is a compact 52–56px floating
+  shadows. Signature surfaces: `.panel-accent` (graphite card with an
+  emerald hairline), `.ring-glow`, and `.neon-line`. The marketing header is a compact 52–56px floating
   glass bar.
 - Motion is restrained: scroll reveals (IntersectionObserver), marquee, float, typing dots, and a
   full `prefers-reduced-motion` fallback.
@@ -450,9 +457,15 @@ text on the dark canvas.
 
 ## Production notes
 
-- **Auth, persistence, replies and invites are real** — `supabase.auth`, workspace-scoped tables,
-  and the `employee-reply` / `invite-member` edge functions. Email deliverability needs custom SMTP
-  (`supabase/email-templates/README.md`), and Billing/Stripe is the remaining seam.
+- **Auth, persistence, replies, invites and billing are real** — `supabase.auth`, workspace-scoped
+  tables, and the `employee-reply`, `invite-member`, `run-task`, `create-checkout-session`,
+  `billing-portal` and `stripe-webhook` edge functions.
+- **Billing is built but inert until the Stripe secrets exist** (see *Billing (Stripe)* above). That
+  is the one seam: with no `STRIPE_*` secrets, checkout answers `501 not_configured` and the Billing
+  page names what is missing instead of pretending.
+- **Email needs a real sender.** Signup is auto-confirmed, but invites and password resets go through
+  Supabase's shared mailer (a couple of messages an hour, often spam) until custom SMTP is set —
+  `supabase/email-templates/README.md` has the fields and the templates.
 - **Only the publishable key ships.** It is safe in a browser bundle; RLS is what protects the data.
 - **No secrets or network calls** are required to run the app — without env vars it is fully local.
 - **Vercel:** `vercel.json` is included with SPA rewrites and asset caching; `npm run build` outputs
@@ -463,7 +476,15 @@ text on the dark canvas.
 
 ### Sensible next steps
 
-1. Stream real employee responses (SSE) into Conversations.
-2. Add Stripe Checkout for the three plans.
-3. Add per-route Open Graph images and a sitemap once a production domain is chosen.
-4. Add team/seat sharing (multi-member orgs) on top of the current per-user RLS model.
+1. **Stripe secrets, then live mode.** The seven secrets in *Billing (Stripe)*, a test-mode buy-through,
+   then `sk_live_…` plus the six live price ids and a live webhook endpoint.
+2. **Custom SMTP**, so invites and password resets are not throttled by the shared mailer.
+3. **A custom domain.** Add it in Vercel, set `VITE_SITE_URL` and redeploy, and — easy to miss — add
+   the new origin to Supabase → Authentication → URL configuration (`site_url` + redirect allow
+   list), or invite and recovery links keep pointing at the vercel.app host.
+4. **Per-route Open Graph images.** One `public/og.png` serves every route today; per-employee and
+   per-guide cards are the remaining polish. The generator already absolutises `og:image`, so this
+   is a file-per-route problem, not a tag problem.
+5. **Streaming replies.** Conversations wait for the whole reply; SSE would make it feel immediate.
+6. **Background execution.** `run-task` is synchronous and single-shot by design; a queue is the next
+   step if runs ever take longer than a request.

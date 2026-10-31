@@ -140,7 +140,13 @@ function RouteMeta() {
     const description = entry?.description ?? DEFAULT_DESCRIPTION;
     const origin = (import.meta.env.VITE_SITE_URL ?? window.location.origin).replace(/\/+$/, '');
     const url = `${origin}${pathname === '/' ? '/' : pathname.replace(/\/+$/, '')}`;
-    const isPrivate = pathname.startsWith('/dashboard') || pathname.startsWith('/invite');
+    // Anything behind a session, plus the token-bearing utility pages, stays out of the index:
+    // there is nothing to rank, and a reset link is not a landing page.
+    const isPrivate =
+      pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/invite') ||
+      pathname.startsWith('/forgot-password') ||
+      pathname.startsWith('/reset-password');
 
     document.title = title;
     setMeta('name', 'description', description);
