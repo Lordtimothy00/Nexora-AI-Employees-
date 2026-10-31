@@ -57,7 +57,7 @@ These were configured in Checkout Studio and are now set on the session.
 | `submit_type` | `auto` — **only sent when `mode` is `payment`.** Stripe rejects `submit_type` on subscription and setup sessions, so with this app's recurring plans it is deliberately not on the wire. The value is kept in the function so it applies if a one-time product is ever sold. |
 | `integration_identifier` | `hosted_mobile_app_0001` |
 | `origin_context` | `mobile_app` |
-| `subscription_data.trial_period_days` | `3` — a new workspace is free for exactly three days |
+| `subscription_data.trial_period_days` | `3` — a new account is free for exactly three days, once |
 | `payment_method_collection` | `always` — required for a trial, and why a card is taken up front |
 
 **Preserved wiring (not Checkout Studio settings, but this app cannot run without them):**
@@ -67,9 +67,12 @@ decide which workspace is upgraded to which plan; `customer` is the one Stripe c
 workspace (`workspaces.stripe_customer_id`) and is what the billing portal opens. Removing them
 would take the money and never change the plan.
 
-**The 3-day trial:** it is granted only when `workspaces.stripe_subscription_id` is empty, i.e. a
-workspace that has never held a subscription — once per workspace, not once per attempt. Stripe
-enforces the length because the number is sent on the session, not read from the dashboard. If you
+**The 3-day trial:** it belongs to the *account*, not the workspace. `profiles.trial_started_at` is
+the claim: `stripe-webhook` stamps it the first time a subscription with a `trial_end` arrives for
+that `user_id`, and `create-checkout-session` only asks Stripe for trial days while the column is
+null. So one person gets one trial across every workspace they ever create, and cancelling does not
+re-open it. Stripe enforces the length because the number is sent on the session, not read from the
+dashboard. If you
 want a *shorter* trial, change `TRIAL_DAYS` in
 [supabase/functions/create-checkout-session/index.ts](supabase/functions/create-checkout-session/index.ts)
 and `TRIAL_DAYS` in [src/lib/billing.ts](src/lib/billing.ts) together and redeploy both the function
@@ -78,6 +81,11 @@ and the site; do not go above 3 — the product and the marketing pages both pro
 
 If you configure a trial on the *price* in the Stripe dashboard it is ignored here, because the
 session parameter wins. Leave the price's own trial at zero so there is only one place that decides.
+
+**Where the trial claim lives:** `profiles.trial_started_at`, written only by `stripe-webhook` (the
+service role). The column is excluded from the client's Postgres grants, so nobody can clear it from
+a browser session and start a second trial. The `workspace_billing()` RPC returns it alongside the
+workspace fields so Billing can hide the trial offer once it is spent.
 
 **`ui_mode` version note:** `hosted_page` is what the current Stripe API versions accept (`hosted`
 was the older spelling, and `custom` was replaced by `elements`). This project talks to

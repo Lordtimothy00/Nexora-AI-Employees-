@@ -520,6 +520,7 @@ describe('free trial', () => {
 
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/department/i);
     const intro = screen.getByText(/Start with 3 days free/i);
+    expect(intro).toHaveTextContent(/once per account/i);
     expect(intro).toHaveTextContent(/card is required/i);
     expect(intro).toHaveTextContent(/charged\s*when the trial ends/i);
     // Nothing anywhere on the page may still promise the old two-week trial.
@@ -532,6 +533,9 @@ describe('free trial', () => {
     const trial = faqs.find((entry) => /trial/i.test(entry.q));
     expect(trial?.a).toMatch(/3 days/);
     expect(trial?.a).toMatch(/card is required/i);
-    expect(trial?.a).not.toMatch(/14 days|no card required/i);
+    // The trial is per account, so the answer must not read like a per-workspace gift.
+    expect(trial?.a).toMatch(/new account/i);
+    expect(trial?.a).toMatch(/second workspace does not start another trial/i);
+    expect(trial?.a).not.toMatch(/14 days|no card required|new workspace gets/i);
   });
 });

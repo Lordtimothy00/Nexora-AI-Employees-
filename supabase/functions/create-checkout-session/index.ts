@@ -38,8 +38,9 @@ const ACTIVE_STATUSES = ['active', 'trialing', 'past_due'];
  * (payment_method_collection=always), which is both what Stripe requires for a trial and what
  * makes the first charge land on day four instead of failing silently.
  *
- * Granted once per workspace: the subscription id survives a cancellation, so a workspace that
- * has ever subscribed is charged from its first invoice rather than farming trials.
+ * Granted once per account, not once per workspace: the claim is recorded on the caller's
+ * `profiles.trial_started_at`, so starting a second workspace does not buy a second trial. A
+ * workspace that somehow already holds a subscription never gets one either.
  */
 const TRIAL_DAYS = 3;
 
@@ -140,8 +141,14 @@ Deno.serve(async (request) => {
   const userId = userIdFrom(request.headers.get('authorization'));
   if (!userId) return json({ error: 'not_authenticated' }, 401);
 
-  const profile = await rest(`/profiles?id=eq.${userId}&select=active_workspace_id,company`, serviceKey);
-  const workspaceId = (profile.rows as { active_workspace_id: string | null }[] | null)?.[0]?.active_workspace_id;
+  const profileResponse = await rest(
+    `/profiles?id=eq.${userId}&select=active_workspace_id,company,trial_started_at`,
+    serviceKey,
+  );
+  const profile = (
+    profileResponse.rows as { active_workspace_id: string | null; trial_started_at: string | null }[] | null
+  )?.[0];
+  const workspaceId = profile?.active_workspace_id;
   if (!workspaceId) return json({ error: 'no_workspace' }, 409);
 
   const member = await rest(
@@ -171,7 +178,9 @@ Deno.serve(async (request) => {
     return json({ error: 'already_subscribed' }, 409);
   }
 
-  const trialAvailable = !workspace.stripe_subscription_id;
+  // One trial per person for the life of the account: the flag lives on the profile, so a second
+  // workspace is charged from its first invoice instead of handing out three more free days.
+  const trialAvailable = !profile?.trial_started_at && !workspace.stripe_subscription_id;
 
   // One Stripe customer per workspace, created lazily and remembered on the row.
   let customerId = workspace.stripe_customer_id;

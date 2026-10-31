@@ -247,15 +247,22 @@ Setting it up in test mode, in order:
    secrets exist the same page shows *Stripe is connected* state and the buttons work.
 5. `billing-status` answers the same question over HTTP if the page is not handy.
 
-**The 3-day trial.** A workspace that has never held a subscription gets three days free and no
-more: `create-checkout-session` sends `subscription_data[trial_period_days]=3`, so Stripe — not the
-UI — is the thing enforcing the length. Because a trial is worthless without a card, the same call
-keeps `payment_method_collection=always`: the card is taken when Checkout opens and is charged when
-the three days end unless the customer cancels first. It is granted once per workspace —
-`stripe_subscription_id` survives a cancellation, so a returning workspace is charged from its first
-invoice instead of farming trials. While `subscription_status` is `trialing`, Billing shows the date
-the trial ends and that the card is used then, and the plan card's button reads *Start 3-day free
-trial*. The number lives in two places on purpose (the edge function and `TRIAL_DAYS` in
+**The 3-day trial.** A new *account* gets three days free, once, and no more: `create-checkout-session`
+sends `subscription_data[trial_period_days]=3`, so Stripe — not the UI — is the thing enforcing the
+length. Because a trial is worthless without a card, the same call keeps
+`payment_method_collection=always`: the card is taken when Checkout opens and is charged when the
+three days end unless the customer cancels first.
+
+The trial belongs to the person, not the workspace. The claim is `profiles.trial_started_at`, stamped
+by `stripe-webhook` the first time any subscription with a `trial_end` arrives for that `user_id`, and
+checked (with `=is.null`, so it can only be burned once) before a session ever asks for trial days.
+Starting a second workspace therefore buys nothing, and neither does cancelling and re-subscribing.
+While `subscription_status` is `trialing`, Billing shows the date the trial ends and that the card is
+used then, and the plan card's button reads *Start 3-day free trial* — but only for an account that
+still has one. `profiles.trial_started_at` is deliberately outside the client's column grants
+(`revoke update, insert … grant update (name, company, role, plan, prefs, active_workspace_id)`), so a
+signed-in user can still edit their profile but cannot clear the flag and farm another three days —
+attempting it is a `42501` from Postgres. The number lives in two places on purpose (the edge function and `TRIAL_DAYS` in
 `src/lib/billing.ts`), and a test pins `TRIAL_DAYS` to 3 so the interface cannot promise a trial
 longer than the function grants.
 

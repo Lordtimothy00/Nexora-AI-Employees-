@@ -150,9 +150,10 @@ export function Billing() {
     : 0;
   const priceReady = (planId: CheckoutPlanId) => status?.prices?.[planId]?.[interval] ?? false;
   const checkoutEnabled = remote && Boolean(status?.configured);
-  // Exactly the rule create-checkout-session applies: a workspace that has never held a
-  // subscription still gets its three days, one that has ever subscribed does not.
-  const trialAvailable = remote && !billing?.subscriptionId;
+  // Exactly the rule create-checkout-session applies: the three days belong to the account, so a
+  // second workspace does not re-open them, and a workspace that already holds a subscription never
+  // gets a trial.
+  const trialAvailable = remote && !billing?.trialStartedAt && !billing?.subscriptionId;
   const trialing = billing?.status === 'trialing';
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
   const webhookUrl = supabaseUrl ? `${supabaseUrl}/functions/v1/stripe-webhook` : null;
@@ -314,8 +315,8 @@ export function Billing() {
               <p className="text-[13px] font-medium text-white">No plan yet</p>
               <p className="mt-1 max-w-[420px] text-[11.5px] leading-relaxed text-[#aabbc2]">
                 This workspace has never been through checkout, so there is no plan, no renewal date and no
-                invoice to show. New workspaces get {TRIAL_DAYS} days free on any plan — a card is required to
-                start, and the first charge lands when the trial ends.
+                invoice to show. Every account gets {TRIAL_DAYS} days free once, on any plan — a card is
+                required to start, and the first charge lands when the trial ends.
               </p>
               <Button
                 size="sm"

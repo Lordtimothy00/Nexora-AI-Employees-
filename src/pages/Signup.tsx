@@ -66,9 +66,9 @@ export function Signup() {
       title="Build your team."
       subtitle={
         <>
-          Create a workspace, hire your first AI employee, and get 3 days free. A card is
-          required to start, because the plan continues without a gap once the trial ends. Already
-          have an account?{' '}
+          Create a workspace, hire your first AI employee, and get 3 days free — once per account.
+          A card is required to start, because the plan continues without a gap once the trial ends.
+          Already have an account?{' '}
           <Link to="/login" className="font-medium text-[#9df7c2] hover:text-white">
             Sign in
           </Link>

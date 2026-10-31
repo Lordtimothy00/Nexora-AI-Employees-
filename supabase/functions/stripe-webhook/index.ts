@@ -26,6 +26,7 @@ type Subscription = {
   customer?: string;
   status?: string;
   current_period_end?: number;
+  trial_end?: number;
   cancel_at_period_end?: boolean;
   metadata?: Record<string, string | undefined>;
   items?: {
@@ -110,6 +111,22 @@ function workspaceFromMetadata(subscription: Subscription) {
   return subscription.metadata?.workspace_id ?? null;
 }
 
+/**
+ * The 3-day trial belongs to the person, so the first trial any account starts burns its one free
+ * run — whichever workspace it happened in. Written only if it is still empty, so a later
+ * subscription cannot move the date or re-open the trial after a cancellation.
+ */
+async function markTrialUsed(subscription: Subscription, serviceKey: string) {
+  const userId = subscription.metadata?.user_id;
+  if (!userId || !subscription.trial_end) return;
+
+  await rest(`/profiles?id=eq.${userId}&trial_started_at=is.null`, serviceKey, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ trial_started_at: new Date().toISOString() }),
+  });
+}
+
 async function applySubscription(subscription: Subscription, serviceKey: string) {
   const price = subscription.items?.data?.[0]?.price;
   const planFromMetadata = subscription.metadata?.plan;
@@ -148,6 +165,8 @@ async function applySubscription(subscription: Subscription, serviceKey: string)
     headers: { Prefer: 'return=representation' },
     body: JSON.stringify(patch),
   });
+
+  await markTrialUsed(subscription, serviceKey);
 
   const updated = Array.isArray(result.rows) ? result.rows.length : 0;
   return { ok: result.status >= 200 && result.status < 300 && updated > 0, updated };

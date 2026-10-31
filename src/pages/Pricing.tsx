@@ -52,8 +52,8 @@ export function Pricing() {
             <Reveal delay={130}>
               <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#b8c8cd] md:text-base">
                 Flat monthly pricing. Every plan includes playbooks, integrations, approvals, and
-                unlimited human seats. Start with 3 days free — a card is required, and it is charged
-                when the trial ends.
+                unlimited human seats. Start with 3 days free — once per account, a card is required,
+                and it is charged when the trial ends.
               </p>
             </Reveal>
 

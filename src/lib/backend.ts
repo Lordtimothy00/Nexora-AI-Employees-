@@ -274,6 +274,8 @@ export interface WorkspaceBilling {
   cancelAtPeriodEnd: boolean;
   hasCustomer: boolean;
   subscriptionId: string | null;
+  /** When this *account* first started its 3-day trial. Null means the trial is still unused. */
+  trialStartedAt: string | null;
 }
 
 /**
@@ -293,6 +295,7 @@ export async function fetchWorkspaceBilling(): Promise<WorkspaceBilling | null> 
     cancel_at_period_end: boolean | null;
     has_customer: boolean | null;
     subscription_id: string | null;
+    trial_started_at: string | null;
   };
 
   const row = ((data ?? []) as Row[])[0];
@@ -306,6 +309,7 @@ export async function fetchWorkspaceBilling(): Promise<WorkspaceBilling | null> 
     cancelAtPeriodEnd: Boolean(row.cancel_at_period_end),
     hasCustomer: Boolean(row.has_customer),
     subscriptionId: row.subscription_id ?? null,
+    trialStartedAt: row.trial_started_at ?? null,
   };
 }
 

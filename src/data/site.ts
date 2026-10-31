@@ -148,7 +148,7 @@ export const faqs = [
   },
   {
     q: 'Do you offer a trial?',
-    a: 'Every new workspace gets 3 days free on any plan. A card is required to start, because the plan continues without a gap — the first charge lands when the 3 days end, and you can cancel any time before then. You keep every deliverable your employees produced, even if you decide not to continue.',
+    a: 'Every new account gets 3 days free once, on any plan, in whichever workspace you start it. A card is required to start, because the plan continues without a gap — the first charge lands when the 3 days end, and you can cancel any time before then. Creating a second workspace does not start another trial. You keep every deliverable your employees produced, even if you decide not to continue.',
   },
 ];
 
