@@ -167,6 +167,9 @@ A workspace is a first-class thing now, not just one person's row.
   `owner` and sets it active. The menu's *New workspace* row takes a name inline; the function
   trims it, rejects empty or 60+ character names, and caps an account at 10 workspaces. The
   sidebar menu therefore appears for every backend account, not only multi-workspace ones.
+- The sidebar card shows seats and people, never a plan name: `workspaces.plan` defaults to
+  `growth` for every new row whether or not anyone paid, so the only screen that mentions a tier is
+  Billing, where the copy says plainly that Stripe is not connected.
 
 ### Demo access
 

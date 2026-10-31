@@ -81,7 +81,9 @@ export function DashboardLayout() {
   const [newName, setNewName] = useState('');
   const [createError, setCreateError] = useState<string | null>(null);
   const workspaceName = activeWorkspace?.name ?? user?.company ?? 'Workspace';
-  const planLabel = `${activeWorkspace?.plan ?? user?.plan ?? 'growth'} plan`;
+  // No plan claim here: every workspace row carries a default of "growth" whether or not anyone
+  // has paid, and billing is not connected yet. Seats and people are facts; the tier is not.
+  const memberCount = activeWorkspace?.members ?? 0;
 
   const sidebar = (
     <div className="flex h-full flex-col border-r border-white/12 bg-[#071b1e]/55 backdrop-blur-2xl">
@@ -116,8 +118,9 @@ export function DashboardLayout() {
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[12px] font-medium text-white">{workspaceName}</p>
-            <p className="text-[10px] capitalize text-[#a7b7be]">
-              {planLabel} · {seatsUsed} {seatsUsed === 1 ? 'seat' : 'seats'}
+            <p className="text-[10px] text-[#a7b7be]">
+              {seatsUsed} {seatsUsed === 1 ? 'seat' : 'seats'}
+              {memberCount > 1 && ` · ${memberCount} people`}
             </p>
           </div>
           {canSwitch && (
