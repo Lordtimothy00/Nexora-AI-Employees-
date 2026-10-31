@@ -43,7 +43,7 @@ export function EmployeeDetail() {
   const employee = getEmployeeBySlug(slug);
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { hires, hire, release } = useWorkspace();
+  const { hires, hire, release, aiLocked } = useWorkspace();
   const [tab, setTab] = useState<TabId>('overview');
   const [justHired, setJustHired] = useState(false);
 
@@ -90,6 +90,12 @@ export function EmployeeDetail() {
   const tone = accentClasses[employee.accent];
 
   const handleHire = () => {
+    // Hiring is paused while the subscription is unpaid — the database refuses the row, so send
+    // people to the one page that can fix it instead of showing a hire that silently disappears.
+    if (aiLocked) {
+      navigate('/dashboard/billing');
+      return;
+    }
     if (!user) {
       try {
         sessionStorage.setItem('nexora.pendingHire', employee.id);

@@ -11,10 +11,15 @@
 // Who may call it: any member of the workspace that owns the task. The task is read from the
 // database, never trusted from the body, and the writes go through the service role.
 //
+// Who may NOT call it: a workspace whose subscription stopped being paid. A deliverable costs model
+// tokens, so a lapsed plan pauses its employees until billing is settled. The same rule is enforced
+// in Postgres (see the ai_locked triggers), so this check is the friendly message, not the only gate.
+//
 // Request:  { workspaceId, taskId, employee: { name, role, tagline?, deliverables?, skills?, tools? } }
 // Response: { deliverable, provider, ms, taskStatus: 'review' }
 //           400 bad_request | 401 not_authenticated | 403 not_member | 404 task_not_found
-//           429 rate_limited | 501 not_configured | 502 provider_error | 503 workspace_check_failed
+//           402 payment_required | 429 rate_limited | 501 not_configured | 502 provider_error
+//           503 workspace_check_failed | 503 billing_check_failed
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -242,7 +247,30 @@ Deno.serve(async (request) => {
   if (!membership) return json({ error: 'workspace_check_failed' }, 503);
   if (membership.length === 0) return json({ error: 'not_member' }, 403);
 
-  // 2. The task is the source of truth — never take its text from the request.
+  // 2. A lapsed subscription pauses the team. Fails closed: if the check itself cannot run, no
+  // tokens are spent — an unread billing state is not permission to work.
+  let locked: unknown = null;
+  try {
+    const response = await rest('/rpc/workspace_ai_locked', {
+      method: 'POST',
+      body: JSON.stringify({ p_workspace: workspaceId }),
+    });
+    locked = response.ok ? await response.json() : null;
+  } catch {
+    locked = null;
+  }
+  if (typeof locked !== 'boolean') return json({ error: 'billing_check_failed' }, 503);
+  if (locked) {
+    return json(
+      {
+        error: 'payment_required',
+        detail: 'This workspace has an unpaid or cancelled subscription. Update payment in Billing to unlock AI employees.',
+      },
+      402,
+    );
+  }
+
+  // 3. The task is the source of truth — never take its text from the request.
   let task: TaskRow | null = null;
   try {
     const response = await rest(
@@ -257,7 +285,7 @@ Deno.serve(async (request) => {
   }
   if (!task) return json({ error: 'task_not_found' }, 404);
 
-  // 3. One workspace cannot run tasks in a loop all day.
+  // 4. One workspace cannot run tasks in a loop all day.
   try {
     const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const response = await rest(
@@ -308,7 +336,7 @@ Deno.serve(async (request) => {
         continue;
       }
 
-      // 4. Write it back: the thread sees the work, the feed records it, the board shows it
+      // 5. Write it back: the thread sees the work, the feed records it, the board shows it
       // waiting for a human. A partial write is worse than none, so bail on the first failure.
       const message = await rest('/messages', {
         method: 'POST',

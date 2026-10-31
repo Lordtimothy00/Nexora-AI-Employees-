@@ -10,6 +10,7 @@ import { fetchWorkspaceBilling, type WorkspaceBilling } from '@/lib/backend';
 import {
   fetchBillingStatus,
   openBillingPortal,
+  lockExplanation,
   startCheckout,
   TRIAL_DAYS,
   type BillingInterval,
@@ -183,6 +184,42 @@ export function Billing() {
           </ButtonLink>
         }
       />
+
+      {billing?.aiLocked && (
+        <div className="rounded-[18px] border border-amber-400/30 bg-amber-400/[0.07] p-4 backdrop-blur-xl">
+          <div className="flex items-start gap-2.5">
+            <CreditCard className="mt-0.5 size-4 shrink-0 text-amber-200" />
+            <div className="min-w-0">
+              <p className="text-[12px] font-medium text-amber-50">
+                {lockExplanation(billing.status).title}
+              </p>
+              <p className="mt-1 max-w-[78ch] text-[11px] leading-relaxed text-[#d6e2e4]">
+                {lockExplanation(billing.status).body}
+              </p>
+              <p className="mt-1 text-[10px] text-[#9aaab3]">
+                Running a task, sending a message to an employee, and hiring a new one are all paused.
+                Reading tasks, conversations, and finished deliverables still works.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => void manageBilling()}
+                  loading={portalBusy}
+                  disabled={!billing.hasCustomer}
+                  iconLeft={<CreditCard className="size-3.5" />}
+                >
+                  Update payment method
+                </Button>
+                {!billing.hasCustomer && (
+                  <span className="self-center text-[10px] text-[#8d9ea7]">
+                    No Stripe customer on this workspace yet — start a plan below.
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {(!remote || (status && !status.configured)) && (
         <div className="flex items-start gap-2.5 rounded-[18px] border border-white/12 bg-white/[0.045] p-3.5 backdrop-blur-xl">

@@ -7,6 +7,7 @@ import { ButtonLink } from '@/components/ui/Button';
 import { useWorkspace, replyFor } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
 import { explainReplyFailure, requestEmployeeReply, type ReplyOutcome } from '@/lib/replies';
+import { lockExplanation } from '@/lib/billing';
 import { cn } from '@/lib/utils';
 
 const suggestions = [
@@ -16,7 +17,7 @@ const suggestions = [
 ];
 
 export function Conversations() {
-  const { hires, messages, appendMessage } = useWorkspace();
+  const { hires, messages, appendMessage, aiLocked, billingStatus } = useWorkspace();
   const [selectedId, setSelectedId] = useState<string | null>(hires[0]?.employeeId ?? null);
   const [draft, setDraft] = useState('');
   const [typing, setTyping] = useState(false);
@@ -65,6 +66,19 @@ export function Conversations() {
 
     appendMessage(employeeId, content);
     setDraft('');
+
+    // Paused: the note is saved so nothing is lost, but no answer is invented. A scripted reply
+    // here would look like the employee was still working while the plan is unpaid.
+    if (aiLocked) {
+      setOutcome({
+        ok: false,
+        reply: null,
+        reason: 'payment_required',
+        detail: lockExplanation(billingStatus).body,
+      });
+      return;
+    }
+
     setTyping(true);
 
     const startedAt = Date.now();
@@ -207,8 +221,10 @@ export function Conversations() {
                         </span>
                       </p>
                       <p className="flex items-center gap-1.5 truncate text-[10px] text-[#9aaab3]">
-                        <span className="size-1.5 rounded-full bg-mint" />
-                        Active · replies {person.responseTime.toLowerCase()}
+                        <span
+                          className={cn('size-1.5 rounded-full', aiLocked ? 'bg-amber-400' : 'bg-mint')}
+                        />
+                        {aiLocked ? 'Paused · billing needs attention' : `Active · replies ${person.responseTime.toLowerCase()}`}
                       </p>
                     </div>
                   </div>
@@ -232,7 +248,11 @@ export function Conversations() {
                           outcome.ok ? 'bg-mint' : 'bg-[#8d9ea7]',
                         )}
                       />
-                      {outcome.ok ? `Live · ${outcome.provider}` : 'Scripted'}
+                      {outcome.ok
+                        ? `Live · ${outcome.provider}`
+                        : outcome.reason === 'payment_required'
+                          ? 'Paused'
+                          : 'Scripted'}
                     </span>
                   )}
                   <Link
@@ -327,6 +347,20 @@ export function Conversations() {
                 </div>
 
                 <div className="border-t border-white/12 bg-[#071b1e]/60 p-3">
+                  {aiLocked && (
+                    <div className="mb-2 rounded-lg border border-amber-400/25 bg-amber-400/[0.06] px-2.5 py-2">
+                      <p className="text-[10.5px] font-medium text-amber-100">
+                        {lockExplanation(billingStatus).title}
+                      </p>
+                      <p className="mt-0.5 text-[9.5px] leading-relaxed text-[#b9c9cf]">
+                        Your messages are saved, but no employee answers while the plan is unpaid.{' '}
+                        <Link to="/dashboard/billing" className="text-[#9df7c2] underline-offset-2 hover:underline">
+                          Fix it in Billing
+                        </Link>
+                        .
+                      </p>
+                    </div>
+                  )}
                   {outcome && !outcome.ok && (
                     <p className="mb-2 text-[10px] leading-relaxed text-[#8d9ea7]">
                       {explainReplyFailure(outcome.reason, outcome.detail)}

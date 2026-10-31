@@ -18,6 +18,7 @@ import {
   deleteHire as deleteRemoteHire,
   ensureWorkspace,
   fetchWorkspace,
+  fetchWorkspaceBilling,
   fetchWorkspaces,
   getWorkspaceId,
   leaveWorkspace as leaveRemoteWorkspace,
@@ -25,6 +26,7 @@ import {
   setHireStatus,
   setTaskStatus,
   switchWorkspace as switchRemoteWorkspace,
+  type WorkspaceBilling,
   type WorkspaceSummary,
 } from '@/lib/backend';
 import { backendConfigured } from '@/lib/supabase';
@@ -97,6 +99,17 @@ interface WorkspaceContextValue extends WorkspaceState {
   deleteActiveWorkspace: () => Promise<void>;
   /** Leaves the active workspace. Ownership passes on if the caller owned it. */
   leaveActiveWorkspace: () => Promise<void>;
+  /** Stripe's own view of the active workspace. Null in the local demo. */
+  billing: WorkspaceBilling | null;
+  /**
+   * True when the subscription is no longer paying, so the AI employees are paused. Set from
+   * `workspace_billing()`, which derives it server-side; the browser never decides this itself.
+   */
+  aiLocked: boolean;
+  /** `past_due`, `unpaid`, `canceled`, … Null before any subscription exists. */
+  billingStatus: string | null;
+  /** Re-reads billing alone. Used after returning from the Stripe portal. */
+  refreshBilling: () => Promise<void>;
   /**
    * Re-reads the workspace from Postgres. Used after something server-side changed rows the
    * browser did not write itself — running a task writes a message, an activity and a status.
@@ -316,13 +329,29 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [switching, setSwitching] = useState(false);
 
+  const [billing, setBilling] = useState<WorkspaceBilling | null>(null);
+
+  const refreshBilling = useCallback(async () => {
+    if (!remote) return;
+    try {
+      setBilling(await fetchWorkspaceBilling());
+    } catch {
+      /* no backend, or a demo account: nothing is billed, so nothing is locked */
+    }
+  }, [remote]);
+
   const refresh = useCallback(async () => {
+    // Nothing to re-read in the demo workspace, and no billing to ask about.
+    if (!remote) return;
     try {
       setState(await fetchWorkspace());
     } catch {
       /* keep the optimistic state; the next mutation retries */
     }
-  }, []);
+    // A webhook can change the subscription between two page loads, so the lock travels with the
+    // snapshot rather than waiting for someone to open Billing.
+    await refreshBilling();
+  }, [remote, refreshBilling]);
 
   const loadWorkspaces = useCallback(async () => {
     try {
@@ -353,6 +382,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         const snapshot = await fetchWorkspace();
         if (!cancelled) setState(snapshot);
         if (!cancelled) void loadWorkspaces();
+        if (!cancelled) void refreshBilling();
       } catch {
         if (!cancelled) setState({ hires: [], tasks: [], messages: [], activities: [] });
       } finally {
@@ -377,6 +407,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const hire = useCallback((employeeId: string) => {
     const person = getEmployeeById(employeeId);
     if (!person) return;
+    // A paused workspace cannot add employees; the hires trigger would reject the row anyway.
+    if (billing?.aiLocked) return;
     if (remote) {
       void createRemoteHire(employeeId, `${person.name} joined your workspace as ${person.role}`)
         .then(refresh)
@@ -402,7 +434,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         ],
       };
     });
-  }, [remote, refresh]);
+  }, [remote, refresh, billing?.aiLocked]);
 
   const release = useCallback((employeeId: string) => {
     if (remote) void deleteRemoteHire(employeeId).then(refresh).catch(() => null);
@@ -593,6 +625,10 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       hoursSaved,
       utilization,
       monthlySpend,
+      billing,
+      aiLocked: Boolean(billing?.aiLocked),
+      billingStatus: billing?.status ?? null,
+      refreshBilling,
       workspaces,
       activeWorkspace: workspaces.find((workspace) => workspace.id === activeId) ?? null,
       switching,
@@ -603,7 +639,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       leaveActiveWorkspace,
       refreshWorkspace: refresh,
     }),
-    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace, renameActiveWorkspace, deleteActiveWorkspace, leaveActiveWorkspace, refresh],
+    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, billing, refreshBilling, workspaces, activeId, switching, switchWorkspace, createWorkspace, renameActiveWorkspace, deleteActiveWorkspace, leaveActiveWorkspace, refresh],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

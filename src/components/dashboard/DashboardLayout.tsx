@@ -24,6 +24,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
+import { lockExplanation } from '@/lib/billing';
 import { cn, initialsOf } from '@/lib/utils';
 import { PanelFallback } from '@/components/ui/RouteFallback';
 
@@ -52,7 +53,7 @@ const pageTitles: Record<string, string> = {
 
 export function DashboardLayout() {
   const { user, logout } = useAuth();
-  const { hires, activities, workspaces, activeWorkspace, switching, switchWorkspace, createWorkspace } =
+  const { hires, activities, workspaces, activeWorkspace, switching, switchWorkspace, createWorkspace, aiLocked, billingStatus } =
     useWorkspace();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showWorkspaces, setShowWorkspaces] = useState(false);
@@ -512,6 +513,30 @@ export function DashboardLayout() {
         </header>
 
         <div className="mx-auto max-w-[1280px] px-4 py-6 md:px-6 md:py-8">
+          {aiLocked && (
+            <div
+              role="status"
+              className="mb-5 flex flex-col gap-2.5 rounded-xl border border-amber-400/30 bg-amber-400/[0.07] px-3.5 py-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div className="flex items-start gap-2.5">
+                <CreditCard className="mt-0.5 size-4 shrink-0 text-amber-200" />
+                <div>
+                  <p className="text-[12px] font-medium text-amber-50">
+                    {lockExplanation(billingStatus).title}
+                  </p>
+                  <p className="mt-0.5 max-w-[70ch] text-[10.5px] leading-relaxed text-[#cbd7db]">
+                    {lockExplanation(billingStatus).body}
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/dashboard/billing"
+                className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-amber-300/40 bg-amber-300/10 px-2.5 py-1.5 text-[11px] font-medium text-amber-50 transition hover:bg-amber-300/20"
+              >
+                Update payment <ArrowUpRight className="size-3" />
+              </Link>
+            </div>
+          )}
           <Suspense fallback={<PanelFallback />}>
             <Outlet />
           </Suspense>

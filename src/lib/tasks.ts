@@ -23,6 +23,7 @@ export type RunFailureReason =
   | 'unauthorized'
   | 'not_member'
   | 'task_not_found'
+  | 'payment_required'
   | 'rate_limited'
   | 'not_configured'
   | 'provider_error'
@@ -86,6 +87,7 @@ export async function runTask(task: RunSeed, employee: RunEmployee): Promise<Run
 
     if (error) {
       const { status, detail } = await readError(error);
+      if (status === 402) return { ok: false, reason: 'payment_required', detail };
       if (status === 429) return { ok: false, reason: 'rate_limited', detail };
       if (status === 404) return { ok: false, reason: 'task_not_found', detail };
       if (status === 403) return { ok: false, reason: 'not_member', detail };
@@ -154,6 +156,8 @@ export function explainRunFailure(reason: RunFailureReason, detail?: string): st
       return 'Only members of this workspace can run its tasks.';
     case 'task_not_found':
       return 'That task no longer exists in this workspace.';
+    case 'payment_required':
+      return 'AI employees are paused until billing is settled — update payment in Billing to unlock them.';
     case 'rate_limited':
       return 'This workspace hit the hourly run limit — try again shortly.';
     case 'not_configured':

@@ -1,4 +1,5 @@
 import type { Employee } from '@/data/employees';
+import { getWorkspaceId } from './backend';
 import { getSupabase } from './supabase';
 
 export type ReplySeed = Pick<
@@ -10,6 +11,11 @@ export interface ReplyRequest {
   employee: ReplySeed;
   history: { from: 'human' | 'employee'; text: string }[];
   message: string;
+  /**
+   * The workspace the thread belongs to. The function needs it to tell whether this workspace is
+   * still paying; omitted, the server falls back to the person's active workspace.
+   */
+  workspaceId?: string;
 }
 
 /** Why a real reply did not arrive. Each one has a different remedy, so we keep them apart. */
@@ -18,6 +24,7 @@ export type ReplyFailureReason =
   | 'no_session'
   | 'unauthorized'
   | 'no_workspace'
+  | 'payment_required'
   | 'rate_limited'
   | 'not_configured'
   | 'provider_error'
@@ -78,8 +85,20 @@ export async function requestEmployeeReply(request: ReplyRequest): Promise<Reply
     return { ok: false, reply: null, reason: 'no_session' };
   }
 
+  // The server uses this to tell whether the workspace is still paying. If it cannot be read the
+  // field is omitted and the function falls back to the caller's active workspace.
+  let workspaceId = request.workspaceId;
+  if (!workspaceId) {
+    try {
+      workspaceId = await getWorkspaceId();
+    } catch {
+      /* leave it out; the function decides */
+    }
+  }
+  const body = workspaceId ? { ...request, workspaceId } : request;
+
   try {
-    const { data, error } = await db.functions.invoke('employee-reply', { body: request });
+    const { data, error } = await db.functions.invoke('employee-reply', { body });
     if (error) {
       const { status, detail } = await readError(error);
       // 403 means the session is real but belongs to nobody's workspace; 401 means no session.
@@ -87,6 +106,7 @@ export async function requestEmployeeReply(request: ReplyRequest): Promise<Reply
         return { ok: false, reply: null, reason: 'no_workspace', detail };
       }
       if (status === 401 || status === 403) return { ok: false, reply: null, reason: 'unauthorized', detail };
+      if (status === 402) return { ok: false, reply: null, reason: 'payment_required', detail };
       if (status === 429) return { ok: false, reply: null, reason: 'rate_limited', detail };
       if (status === 501) return { ok: false, reply: null, reason: 'not_configured' };
       if (status === 502) return { ok: false, reply: null, reason: 'provider_error', detail };
@@ -126,6 +146,8 @@ export function explainReplyFailure(
       return 'Scripted replies — the function rejected the session (401).';
     case 'no_workspace':
       return 'Scripted replies — this account does not belong to a workspace yet (403).';
+    case 'payment_required':
+      return 'AI employees are paused until billing is settled — update payment in Billing to unlock them.';
     case 'rate_limited':
       return 'Scripted replies — this workspace hit the hourly reply limit. Live answers resume shortly.';
     case 'not_configured':

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,6 +21,7 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { useWorkspace, type Task, type TaskStatus } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
 import { explainRunFailure, runTask, scriptedDeliverable } from '@/lib/tasks';
+import { lockExplanation } from '@/lib/billing';
 import { cn } from '@/lib/utils';
 
 const columns: {
@@ -44,7 +46,7 @@ const priorityStyles: Record<Task['priority'], string> = {
 const order: TaskStatus[] = ['backlog', 'in_progress', 'review', 'done'];
 
 export function Tasks() {
-  const { tasks, hires, moveTask, appendMessage, refreshWorkspace } = useWorkspace();
+  const { tasks, hires, moveTask, appendMessage, refreshWorkspace, aiLocked, billingStatus } = useWorkspace();
   const [filter, setFilter] = useState<string>('all');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selected, setSelected] = useState<Task | null>(null);
@@ -76,6 +78,12 @@ export function Tasks() {
   const run = async (task: Task) => {
     const person = getEmployeeById(task.employeeId);
     if (!person || runningId) return;
+
+    // A paused workspace cannot spend model tokens. Say why, point at Billing, write nothing.
+    if (aiLocked) {
+      showToast(`${lockExplanation(billingStatus).title} — update payment in Billing to unlock the team.`);
+      return;
+    }
 
     setRunningId(task.id);
     setDeliverable(null);
@@ -266,9 +274,13 @@ export function Tasks() {
                             <button
                               type="button"
                               onClick={() => void run(task)}
-                              disabled={runningId === task.id}
+                              disabled={runningId === task.id || aiLocked}
                               aria-label={`Run ${task.title}`}
-                              title={`Ask ${person?.name ?? 'the employee'} to deliver this`}
+                              title={
+                                aiLocked
+                                  ? 'AI employees are paused until billing is settled'
+                                  : `Ask ${person?.name ?? 'the employee'} to deliver this`
+                              }
                               className="grid size-5 place-items-center rounded text-[#9df7c2] hover:bg-white/8 hover:text-white disabled:opacity-40"
                             >
                               {runningId === task.id ? (
@@ -447,13 +459,25 @@ export function Tasks() {
             )}
 
             <div className="flex items-center justify-between gap-3 border-t border-white/12 bg-white/[0.015] px-5 py-3">
-              <p className="text-[10px] text-[#8d9ea7]">Auto-saved to your workspace</p>
+              <p className="text-[10px] text-[#8d9ea7]">
+                {aiLocked ? (
+                  <span className="text-amber-200/90">
+                    AI employees are paused —{' '}
+                    <Link to="/dashboard/billing" className="underline underline-offset-2 hover:text-amber-100">
+                      settle billing
+                    </Link>{' '}
+                    to run this task.
+                  </span>
+                ) : (
+                  'Auto-saved to your workspace'
+                )}
+              </p>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
                   onClick={() => void run(selected)}
                   loading={runningId === selected.id}
-                  disabled={Boolean(runningId) && runningId !== selected.id}
+                  disabled={aiLocked || (Boolean(runningId) && runningId !== selected.id)}
                   iconLeft={<Play className="size-3.5" />}
                 >
                   {deliverable?.taskId === selected.id ? 'Run again' : 'Run task'}

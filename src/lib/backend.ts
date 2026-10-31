@@ -276,6 +276,11 @@ export interface WorkspaceBilling {
   subscriptionId: string | null;
   /** When this *account* first started its 3-day trial. Null means the trial is still unused. */
   trialStartedAt: string | null;
+  /**
+   * True when Stripe says the subscription is no longer active or trialing, so the workspace's AI
+   * employees are paused. Derived on the server (`workspace_ai_locked`), never stored.
+   */
+  aiLocked: boolean;
 }
 
 /**
@@ -296,6 +301,7 @@ export async function fetchWorkspaceBilling(): Promise<WorkspaceBilling | null> 
     has_customer: boolean | null;
     subscription_id: string | null;
     trial_started_at: string | null;
+    ai_locked: boolean | null;
   };
 
   const row = ((data ?? []) as Row[])[0];
@@ -310,6 +316,7 @@ export async function fetchWorkspaceBilling(): Promise<WorkspaceBilling | null> 
     hasCustomer: Boolean(row.has_customer),
     subscriptionId: row.subscription_id ?? null,
     trialStartedAt: row.trial_started_at ?? null,
+    aiLocked: Boolean(row.ai_locked),
   };
 }
 

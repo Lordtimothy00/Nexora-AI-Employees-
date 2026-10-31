@@ -20,6 +20,9 @@
 // nothing. A request must carry a real user JWT (the gateway has already verified its signature),
 // belong to at least one workspace, and stay under REPLY_LIMIT_PER_HOUR answers per workspace —
 // otherwise anyone with the public key could spend the model budget.
+//
+// The workspace the reply is for must also still be paying. A lapsed subscription answers 402 and
+// the app shows the paused state instead of a scripted reply pretending to be the employee.
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -72,8 +75,11 @@ async function adminGet(path: string, serviceKey: string) {
 /**
  * Replies cost money, so a caller has to be a real person in a real workspace, and a workspace
  * cannot exceed the hourly ceiling. Fails closed: if the check cannot run, no reply is generated.
+ *
+ * `requested` is the workspace the conversation belongs to. When it is missing (older clients) the
+ * person's active workspace stands in, so omitting the field is not a way around the payment lock.
  */
-async function authorize(userId: string, serviceKey: string) {
+async function authorize(userId: string, serviceKey: string, requested?: string) {
   const memberships = await adminGet(
     `/workspace_members?user_id=eq.${userId}&select=workspace_id`,
     serviceKey,
@@ -82,6 +88,18 @@ async function authorize(userId: string, serviceKey: string) {
 
   const ids = memberships.map((row) => row.workspace_id);
   if (ids.length === 0) return { ok: false as const, status: 403, body: { error: 'no_workspace' } };
+
+  let target = requested?.trim() || '';
+  if (target && !ids.includes(target)) {
+    return { ok: false as const, status: 403, body: { error: 'not_member' } };
+  }
+  if (!target) {
+    const profiles = await adminGet(
+      `/profiles?id=eq.${userId}&select=active_workspace_id`,
+      serviceKey,
+    ) as { active_workspace_id: string | null }[] | null;
+    target = profiles?.[0]?.active_workspace_id ?? ids[0];
+  }
 
   const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   const recent = await adminGet(
@@ -93,6 +111,34 @@ async function authorize(userId: string, serviceKey: string) {
 
   if (recent.length > REPLY_LIMIT_PER_HOUR) {
     return { ok: false as const, status: 429, body: { error: 'rate_limited', limit: REPLY_LIMIT_PER_HOUR } };
+  }
+
+  // adminGet only does GETs and the RPC takes a body, so this one is a plain fetch.
+  const lockResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/rest/v1/rpc/workspace_ai_locked`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ p_workspace: target }),
+  });
+  if (!lockResponse.ok) {
+    return { ok: false as const, status: 503, body: { error: 'auth_check_failed' } };
+  }
+  const isLocked = (await lockResponse.json().catch(() => null)) as boolean | null;
+  if (typeof isLocked !== 'boolean') {
+    return { ok: false as const, status: 503, body: { error: 'auth_check_failed' } };
+  }
+  if (isLocked) {
+    return {
+      ok: false as const,
+      status: 402,
+      body: {
+        error: 'payment_required',
+        detail: 'This workspace has an unpaid or cancelled subscription. Update payment in Billing to unlock AI employees.',
+      },
+    };
   }
 
   return { ok: true as const };
@@ -113,6 +159,8 @@ interface Body {
   employee: EmployeeSeed;
   history?: Turn[];
   message: string;
+  /** Which workspace the thread belongs to — used for the payment lock. */
+  workspaceId?: string;
 }
 
 function systemPrompt(employee: EmployeeSeed) {
@@ -254,7 +302,7 @@ Deno.serve(async (request) => {
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!serviceKey) return json({ error: 'not_configured', missing: ['SUPABASE_SERVICE_ROLE_KEY'] }, 501);
 
-  const permission = await authorize(userId, serviceKey);
+  const permission = await authorize(userId, serviceKey, body.workspaceId);
   if (!permission.ok) return json(permission.body, permission.status);
 
   // Try every configured provider, not just the first one. An account with no credits

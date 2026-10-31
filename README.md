@@ -272,6 +272,32 @@ a plan is something Stripe said, not something assumed on insert, and `workspace
 back for the current workspace. Clients can no longer write those columns: the table grant is
 `update (name)` only, so an admin can rename a workspace but nobody can self-assign Scale.
 
+**A failed payment pauses the team.** AI employees cost model tokens on every run, so a workspace
+whose subscription is no longer `active` or `trialing` stops working. `public.workspace_ai_locked(uuid)`
+is the single rule: a workspace with a `stripe_subscription_id` whose `subscription_status` is
+`past_due`, `unpaid`, `canceled`, `incomplete`, `incomplete_expired` or `paused` is locked. It is
+derived, never stored, so there is no flag to get out of sync with Stripe. A workspace that never
+subscribed is untouched — the demo and the pre-checkout state still work.
+
+Enforcement is in three places, deliberately:
+
+- `run-task` and `employee-reply` answer `402 payment_required` before spending anything, and fail
+  closed (`503`) if the billing state cannot be read. `run-task` explains it; `employee-reply` uses
+  the request's `workspaceId`, falling back to the caller's active workspace, so omitting the field
+  is not an escape hatch.
+- Postgres refuses the write: `messages` (only `sender = 'employee'`) and `hires` carry a
+  `BEFORE INSERT` trigger that raises `23514 ai_locked`. The browser holds the publishable key, so
+  a client-side check alone would be decoration.
+- The app says so plainly. A banner sits above every dashboard page, Billing shows the paused state
+  with *Update payment method* (the Stripe portal), run buttons are disabled with a title, and a
+  locked conversation stores your message but never fabricates an employee reply — the "Scripted"
+  badge would be a lie there.
+
+Nothing is deleted by a lock: tasks, threads, and delivered work stay readable, and paying again
+unlocks the same team. Tasks can still be queued, because planning is free; only employee output is
+stopped. Copy for each Stripe state lives in `lockExplanation()` in `src/lib/billing.ts`, and a test
+pins `LOCKED_STATUSES` to the SQL list so the two cannot drift.
+
 The Billing page shows only confirmed state: no plan means *no plan*, with no renewal date and no
 invoices. While the keys are missing it names them. Returning from Checkout lands on
 `/dashboard/billing?checkout=success`, which polls `workspace_billing()` for ~15s because the

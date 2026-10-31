@@ -147,6 +147,10 @@ export const faqs = [
     a: 'Monthly plans are month to month and cancel in one click. Annual plans save two months and can be upgraded mid-term with prorated billing. No setup fees, ever.',
   },
   {
+    q: 'What happens if a payment fails?',
+    a: 'Your AI employees pause. A failed charge, an unpaid invoice, or a cancelled plan stops new work from starting and stops employees from answering, because every run costs model time. Nothing is deleted: tasks, conversations, and delivered work stay in the workspace, and the team unlocks the moment billing is settled in Billing.',
+  },
+  {
     q: 'Do you offer a trial?',
     a: 'Every new account gets 3 days free once, on any plan, in whichever workspace you start it. A card is required to start, because the plan continues without a gap — the first charge lands when the 3 days end, and you can cancel any time before then. Creating a second workspace does not start another trial. You keep every deliverable your employees produced, even if you decide not to continue.',
   },

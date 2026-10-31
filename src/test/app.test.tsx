@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '@/App';
 import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
-import { explainBillingError, TRIAL_DAYS } from '@/lib/billing';
+import { explainBillingError, LOCKED_STATUSES, lockExplanation, TRIAL_DAYS } from '@/lib/billing';
 import { faqs } from '@/data/site';
 import { describeInviteOutcome, explainInviteFailure } from '@/lib/invites';
 import { explainRunFailure, scriptedDeliverable } from '@/lib/tasks';
@@ -537,5 +537,52 @@ describe('free trial', () => {
     expect(trial?.a).toMatch(/new account/i);
     expect(trial?.a).toMatch(/second workspace does not start another trial/i);
     expect(trial?.a).not.toMatch(/14 days|no card required|new workspace gets/i);
+  });
+});
+
+describe('paused when payment fails', () => {
+  it('pauses the team for every state Stripe uses for an unpaid plan', () => {
+    // The same list the workspace_ai_locked() SQL function enforces, so the copy and the database
+    // cannot drift apart.
+    expect([...LOCKED_STATUSES]).toEqual([
+      'past_due',
+      'unpaid',
+      'canceled',
+      'incomplete',
+      'incomplete_expired',
+      'paused',
+    ]);
+    expect(LOCKED_STATUSES).not.toContain('active');
+    expect(LOCKED_STATUSES).not.toContain('trialing');
+  });
+
+  it('says what happened, what to do, and that nothing was deleted', () => {
+    const failed = lockExplanation('past_due');
+    expect(failed.title).toMatch(/paused/i);
+    expect(failed.title).toMatch(/payment failed/i);
+    expect(failed.body).toMatch(/update the payment method/i);
+    expect(failed.body).toMatch(/all delivered work stays/i);
+
+    const cancelled = lockExplanation('canceled');
+    expect(cancelled.title).toMatch(/cancelled/i);
+    expect(cancelled.body).toMatch(/still here/i);
+    expect(cancelled.body).not.toMatch(/deleted/i);
+
+    // An unknown status still pauses rather than silently letting work through.
+    expect(lockExplanation(null).title).toMatch(/paused/i);
+  });
+
+  it('refuses work instead of faking it', () => {
+    expect(explainRunFailure('payment_required')).toMatch(/paused/i);
+    expect(explainRunFailure('payment_required')).toMatch(/billing/i);
+    expect(explainReplyFailure('payment_required')).toMatch(/paused/i);
+    // A paused workspace must never claim a scripted answer came from the employee.
+    expect(explainReplyFailure('payment_required')).not.toMatch(/scripted/i);
+  });
+
+  it('tells visitors what a failed payment means before they sign up', () => {
+    const answer = faqs.find((entry) => /payment fails/i.test(entry.q));
+    expect(answer?.a).toMatch(/pause/i);
+    expect(answer?.a).toMatch(/nothing is deleted/i);
   });
 });

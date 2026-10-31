@@ -8,6 +8,60 @@ import { getSupabase } from './supabase';
  */
 export const TRIAL_DAYS = 3;
 
+/**
+ * Subscription states that stop the team from working — the same list `workspace_ai_locked()`
+ * enforces in Postgres. `past_due` is here on purpose: a charge that failed has not been paid,
+ * and AI employees cost model tokens the moment they run.
+ */
+export const LOCKED_STATUSES = [
+  'past_due',
+  'unpaid',
+  'canceled',
+  'incomplete',
+  'incomplete_expired',
+  'paused',
+] as const;
+
+/**
+ * What to show a person whose workspace is paused. One sentence for what happened, one for what
+ * to do, and a reminder that nothing they already received disappears.
+ */
+export function lockExplanation(status?: string | null): { title: string; body: string } {
+  switch (status) {
+    case 'past_due':
+      return {
+        title: 'AI employees paused — the last payment failed',
+        body: 'The card on file was declined, so the team stopped working. Update the payment method and every employee unlocks immediately; all delivered work stays in the workspace.',
+      };
+    case 'unpaid':
+      return {
+        title: 'AI employees paused — the invoice is unpaid',
+        body: 'Stripe ran out of retries on the last invoice. Pay the outstanding balance in Billing and the team picks up where it left off.',
+      };
+    case 'canceled':
+      return {
+        title: 'AI employees paused — the plan was cancelled',
+        body: 'The subscription has ended, so the team stopped working. Start a plan again to unlock them; their history, tasks, and deliverables are all still here.',
+      };
+    case 'incomplete':
+    case 'incomplete_expired':
+      return {
+        title: 'AI employees paused — the first payment did not complete',
+        body: 'Checkout was started but the payment never finished, so the team never unlocked. Start a plan in Billing to put them to work.',
+      };
+    case 'paused':
+      return {
+        title: 'AI employees paused — the subscription is on hold',
+        body: 'Stripe has paused this subscription, usually after a payment problem. Resolve it in Billing and the team unlocks again.',
+      };
+    default:
+      return {
+        title: 'AI employees paused — billing needs attention',
+        body: 'This workspace has a subscription that is not active. Check Billing to see what Stripe needs and unlock the team.',
+      };
+  }
+}
+
 export type CheckoutPlanId = Plan['id'];
 export type BillingInterval = 'month' | 'year';
 

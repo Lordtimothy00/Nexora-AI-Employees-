@@ -82,6 +82,11 @@ and the site; do not go above 3 — the product and the marketing pages both pro
 If you configure a trial on the *price* in the Stripe dashboard it is ignored here, because the
 session parameter wins. Leave the price's own trial at zero so there is only one place that decides.
 
+**Failed payments:** the webhook stores whatever status Stripe sends, and
+`workspace_ai_locked()` turns `past_due` / `unpaid` / `canceled` / `incomplete*` / `paused` into a
+lock. `run-task` and `employee-reply` return `402 payment_required`, and Postgres refuses employee
+messages and new hires. Nothing needs configuring for this beyond the webhook itself.
+
 **Where the trial claim lives:** `profiles.trial_started_at`, written only by `stripe-webhook` (the
 service role). The column is excluded from the client's Postgres grants, so nobody can clear it from
 a browser session and start a second trial. The `workspace_billing()` RPC returns it alongside the
