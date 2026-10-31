@@ -210,6 +210,15 @@ A workspace is a first-class thing now, not just one person's row.
   `owner` and sets it active. The menu's *New workspace* row takes a name inline; the function
   trims it, rejects empty or 60+ character names, and caps an account at 10 workspaces. The
   sidebar menu therefore appears for every backend account, not only multi-workspace ones.
+- **Leaving and the roster.** `leave_workspace(id)` lets anyone exit a workspace they were invited
+  to. If the caller owns it, ownership passes to the oldest admin (else the oldest member) and that
+  person is promoted, so a workspace can never be orphaned; the sole member is told to delete the
+  workspace instead. `remove_member(id, user)` and `set_member_role(id, user, role)` are the
+  server-side guards for the roster: admins can remove people, only the owner can change roles, and
+  neither can touch the owner's row. The RLS policies on `workspace_members` were tightened to
+  match, so an admin cannot demote or evict the owner with a direct table write either.
+- **Invite roles.** The invite form picks `member` or `admin`, and only owners/admins see it at all
+  (the insert policy already required that, so a plain member used to get a raw RLS error).
 - **Renaming workspaces.** `rename_workspace(id, name)` trims the name and rejects empty or 60+
   character ones exactly like creation, and refuses anyone who is not an `owner` or `admin` of that
   workspace. Settings → *Workspace* renames the one you are in; the sidebar label follows.

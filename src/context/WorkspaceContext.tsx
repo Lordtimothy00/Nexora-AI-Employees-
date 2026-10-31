@@ -20,6 +20,7 @@ import {
   fetchWorkspace,
   fetchWorkspaces,
   getWorkspaceId,
+  leaveWorkspace as leaveRemoteWorkspace,
   renameWorkspace as renameRemoteWorkspace,
   setHireStatus,
   setTaskStatus,
@@ -94,6 +95,8 @@ interface WorkspaceContextValue extends WorkspaceState {
   renameActiveWorkspace: (name: string) => Promise<void>;
   /** Deletes the active workspace and everything in it, moving the person to their oldest remaining one. */
   deleteActiveWorkspace: () => Promise<void>;
+  /** Leaves the active workspace. Ownership passes on if the caller owned it. */
+  leaveActiveWorkspace: () => Promise<void>;
 }
 
 const STORAGE_KEY = 'nexora.workspace.v2';
@@ -530,6 +533,20 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     }
   }, [remote, activeId, loadWorkspaces, refresh]);
 
+  const leaveActiveWorkspace = useCallback(async () => {
+    if (!remote || !activeId) return;
+    setSwitching(true);
+    try {
+      await leaveRemoteWorkspace(activeId);
+      // The server cleared or moved the profile's workspace, so re-reading both lands on whatever
+      // is left — and ensure_workspace() hands a fresh empty one to someone who has none.
+      await loadWorkspaces();
+      await refresh();
+    } finally {
+      setSwitching(false);
+    }
+  }, [remote, activeId, loadWorkspaces, refresh]);
+
   const completedThisMonth = useMemo(
     () => state.hires.reduce((sum, hire) => sum + Math.round(hire.tasksCompleted * 0.22), 0) + state.tasks.filter((t) => t.status === 'done').length,
     [state.hires, state.tasks],
@@ -578,8 +595,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       createWorkspace,
       renameActiveWorkspace,
       deleteActiveWorkspace,
+      leaveActiveWorkspace,
     }),
-    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace, renameActiveWorkspace, deleteActiveWorkspace],
+    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace, renameActiveWorkspace, deleteActiveWorkspace, leaveActiveWorkspace],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

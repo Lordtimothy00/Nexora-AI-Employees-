@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   ArrowUpRight,
   Clock,
+  LogOut,
   MessageSquare,
   Pause,
   Play,
@@ -23,7 +24,9 @@ import {
   createInvite,
   fetchInvites,
   fetchMembers,
+  removeMember,
   revokeInvite,
+  setMemberRole,
   type WorkspaceInvite,
   type WorkspaceMember,
 } from '@/lib/backend';
@@ -41,15 +44,31 @@ const initials = (name: string) =>
 const inviteUrl = (token: string) => `${window.location.origin}/invite/${token}`;
 
 export function Team() {
-  const { hires, togglePause, release, utilization, hoursSaved, monthlySpend } = useWorkspace();
+  const {
+    hires,
+    togglePause,
+    release,
+    utilization,
+    hoursSaved,
+    monthlySpend,
+    activeWorkspace,
+    workspaces,
+    leaveActiveWorkspace,
+  } = useWorkspace();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [confirming, setConfirming] = useState<string | null>(null);
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const [busyMember, setBusyMember] = useState<string | null>(null);
+  const [confirmLeave, setConfirmLeave] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [toast, setToast] = useState<string | null>(() => null);
 
   const remote = backendConfigured && !!user && !user.id.startsWith('usr_');
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [invites, setInvites] = useState<WorkspaceInvite[]>([]);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState<'member' | 'admin'>('member');
   const [inviting, setInviting] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -85,11 +104,11 @@ export function Team() {
 
     setInviting(true);
     try {
-      const token = await createInvite(address);
+      const token = await createInvite(address, inviteRole);
       await copyLink(token);
       await loadPeople();
       setInviteEmail('');
-      showToast(`Invite for ${address} created — the link is on your clipboard.`);
+      showToast(`Invite for ${address} created as ${inviteRole} — the link is on your clipboard.`);
     } catch (caught) {
       showToast(caught instanceof Error ? caught.message : 'Could not create that invite.');
     } finally {
@@ -106,11 +125,54 @@ export function Team() {
     }
   };
 
+  const removePerson = async (member: WorkspaceMember) => {
+    setBusyMember(member.userId);
+    try {
+      await removeMember(member.userId);
+      setConfirmRemove(null);
+      await loadPeople();
+      showToast(`${member.name} no longer has access to this workspace.`);
+    } catch (caught) {
+      showToast(caught instanceof Error ? caught.message : 'Could not remove that person.');
+    } finally {
+      setBusyMember(null);
+    }
+  };
+
+  const changeRole = async (member: WorkspaceMember, role: 'admin' | 'member') => {
+    setBusyMember(member.userId);
+    try {
+      await setMemberRole(member.userId, role);
+      await loadPeople();
+      showToast(`${member.name} is now ${role === 'admin' ? 'an admin' : 'a member'}.`);
+    } catch (caught) {
+      showToast(caught instanceof Error ? caught.message : 'Could not change that role.');
+    } finally {
+      setBusyMember(null);
+    }
+  };
+
+  const leave = async () => {
+    setLeaving(true);
+    try {
+      await leaveActiveWorkspace();
+      showToast('You left the workspace.');
+      navigate('/dashboard');
+    } catch (caught) {
+      showToast(caught instanceof Error ? caught.message : 'Could not leave the workspace.');
+    } finally {
+      setLeaving(false);
+      setConfirmLeave(false);
+    }
+  };
+
   const showToast = (message: string) => {
     setToast(message);
     setTimeout(() => setToast(null), 4000);
   };
 
+  const myRole = activeWorkspace?.role;
+  const canManagePeople = myRole === 'owner' || myRole === 'admin';
   const active = hires.filter((hire) => hire.status === 'active').length;
   const totalTasks = hires.reduce((sum, hire) => sum + hire.tasksCompleted, 0);
 
@@ -337,33 +399,139 @@ export function Team() {
             ) : (
               <div className="space-y-4">
                 <ul className="space-y-2">
-                  {members.map((member) => (
-                    <li
-                      key={member.userId}
-                      className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
-                    >
-                      <div className="flex min-w-0 items-center gap-2.5">
-                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#0bd39a]/12 text-[11px] font-semibold text-[#9df7c2]">
-                          {initials(member.name)}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="truncate text-[12.5px] font-medium text-white">
-                            {member.name}
-                            {member.userId === user?.id && (
-                              <span className="ml-1.5 text-[10px] text-[#8d9ea7]">you</span>
-                            )}
-                          </p>
-                          <p className="truncate text-[10.5px] text-[#8d9ea7]">
-                            {member.company || 'Workspace member'}
-                          </p>
+                  {members.map((member) => {
+                    const isMe = member.userId === user?.id;
+                    const isOwnerRow = member.role === 'owner';
+                    const canChangeRole = myRole === 'owner' && !isMe && !isOwnerRow;
+                    const canRemove = canManagePeople && !isMe && !isOwnerRow;
+                    const busy = busyMember === member.userId;
+
+                    return (
+                      <li
+                        key={member.userId}
+                        className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
+                      >
+                        <div className="flex min-w-0 items-center gap-2.5">
+                          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#0bd39a]/12 text-[11px] font-semibold text-[#9df7c2]">
+                            {initials(member.name)}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="truncate text-[12.5px] font-medium text-white">
+                              {member.name}
+                              {isMe && <span className="ml-1.5 text-[10px] text-[#8d9ea7]">you</span>}
+                            </p>
+                            <p className="truncate text-[10.5px] text-[#8d9ea7]">
+                              {member.company || 'Workspace member'}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-[#b2c2c8]">
-                        {member.role}
-                      </span>
-                    </li>
-                  ))}
+
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          {canChangeRole ? (
+                            <select
+                              value={member.role}
+                              disabled={busy}
+                              aria-label={`Role for ${member.name}`}
+                              onChange={(event) =>
+                                void changeRole(member, event.target.value as 'admin' | 'member')
+                              }
+                              className="rounded-lg border border-white/12 bg-[#0a1e21] px-1.5 py-1 font-mono text-[9.5px] uppercase tracking-[0.1em] text-[#b2c2c8] focus:border-[#0bd39a]/50 focus:outline-none disabled:opacity-50"
+                            >
+                              <option value="member">member</option>
+                              <option value="admin">admin</option>
+                            </select>
+                          ) : (
+                            <span className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-[#b2c2c8]">
+                              {member.role}
+                            </span>
+                          )}
+
+                          {canRemove &&
+                            (confirmRemove === member.userId ? (
+                              <span className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  disabled={busy}
+                                  onClick={() => void removePerson(member)}
+                                  className="rounded-md bg-rose-500/20 px-2 py-0.5 text-[10px] text-rose-100 transition hover:bg-rose-500/30 disabled:opacity-50"
+                                >
+                                  {busy ? 'Removing…' : 'Remove'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setConfirmRemove(null)}
+                                  className="rounded-md px-1.5 py-0.5 text-[10px] text-[#b9c9cf] transition hover:text-white"
+                                >
+                                  Cancel
+                                </button>
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                aria-label={`Remove ${member.name}`}
+                                onClick={() => setConfirmRemove(member.userId)}
+                                className="grid size-6 place-items-center rounded-lg text-[#8d9ea7] transition hover:bg-white/10 hover:text-white"
+                              >
+                                <X className="size-3" />
+                              </button>
+                            ))}
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
+
+                <div className="rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2.5">
+                  {members.length <= 1 ? (
+                    <p className="text-[10.5px] leading-relaxed text-[#8d9ea7]">
+                      You are the only member of this workspace. To get rid of it, delete it from
+                      Settings → Danger zone instead of leaving it.
+                    </p>
+                  ) : confirmLeave ? (
+                    <div>
+                      <p className="text-[11px] leading-relaxed text-[#d8e4e4]">
+                        Leave <span className="text-white">{activeWorkspace?.name}</span>? You lose access to
+                        its AI employees, tasks and conversations.
+                        {myRole === 'owner' &&
+                          ' You own this workspace, so ownership passes to the oldest admin, or the oldest member.'}
+                        {workspaces.length <= 1 &&
+                          ' You have no other workspace, so a fresh empty one is created for you.'}
+                      </p>
+                      <div className="mt-2 flex gap-1.5">
+                        <button
+                          type="button"
+                          disabled={leaving}
+                          onClick={() => void leave()}
+                          className="rounded-lg border border-rose-400/40 bg-rose-500/15 px-2.5 py-1.5 text-[11px] font-medium text-white transition hover:bg-rose-500/25 disabled:opacity-50"
+                        >
+                          {leaving ? 'Leaving…' : 'Leave workspace'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmLeave(false)}
+                          className="rounded-lg border border-white/12 px-2.5 py-1.5 text-[11px] text-[#b9c9cf] transition hover:text-white"
+                        >
+                          Stay
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[10.5px] leading-relaxed text-[#8d9ea7]">
+                        You were invited to this workspace and can leave whenever you like.
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="shrink-0 text-[#a7b7be] hover:text-white"
+                        onClick={() => setConfirmLeave(true)}
+                        iconLeft={<LogOut className="size-3.5" />}
+                      >
+                        Leave
+                      </Button>
+                    </div>
+                  )}
+                </div>
 
                 {invites.length > 0 && (
                   <div className="space-y-2">
@@ -398,20 +566,35 @@ export function Team() {
                   </div>
                 )}
 
-                <form onSubmit={sendInvite} className="flex flex-col gap-2 sm:flex-row">
-                  <input
-                    type="email"
-                    required
-                    value={inviteEmail}
-                    onChange={(event) => setInviteEmail(event.target.value)}
-                    placeholder="teammate@company.com"
-                    aria-label="Teammate email address"
-                    className="h-9 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-[12.5px] text-white placeholder:text-[#7d8f96] focus:border-[#0bd39a]/50 focus:outline-none"
-                  />
-                  <Button type="submit" size="sm" loading={inviting} iconLeft={<UserPlus className="size-3.5" />}>
-                    Create invite
-                  </Button>
-                </form>
+                {canManagePeople ? (
+                  <form onSubmit={sendInvite} className="flex flex-col gap-2 sm:flex-row">
+                    <input
+                      type="email"
+                      required
+                      value={inviteEmail}
+                      onChange={(event) => setInviteEmail(event.target.value)}
+                      placeholder="teammate@company.com"
+                      aria-label="Teammate email address"
+                      className="h-9 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-[12.5px] text-white placeholder:text-[#7d8f96] focus:border-[#0bd39a]/50 focus:outline-none"
+                    />
+                    <select
+                      value={inviteRole}
+                      onChange={(event) => setInviteRole(event.target.value as 'member' | 'admin')}
+                      aria-label="Invite role"
+                      className="h-9 rounded-xl border border-white/10 bg-[#0a1e21] px-2 text-[11px] text-[#cfdcde] focus:border-[#0bd39a]/50 focus:outline-none"
+                    >
+                      <option value="member">Member</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                    <Button type="submit" size="sm" loading={inviting} iconLeft={<UserPlus className="size-3.5" />}>
+                      Create invite
+                    </Button>
+                  </form>
+                ) : (
+                  <p className="text-[10.5px] leading-relaxed text-[#8d9ea7]">
+                    Only owners and admins can invite people or change the roster.
+                  </p>
+                )}
 
                 <p className="text-[10.5px] leading-relaxed text-[#8d9ea7]">
                   Invites are links you copy and send yourself — no email is sent. The person must sign in

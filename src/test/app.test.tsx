@@ -169,6 +169,16 @@ describe('route health', () => {
 });
 
 describe('authentication and dashboard', () => {
+  it('keeps roster controls out of the local demo', async () => {
+    seedSession();
+    renderAt('/dashboard/team');
+
+    // Membership lives in Postgres; with no backend there is nobody to invite, promote or leave.
+    expect(await screen.findByText(/This browser only/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Leave/i })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Invite role/i)).not.toBeInTheDocument();
+  });
+
   it('protects dashboard routes from guests', async () => {
     renderAt('/dashboard/team');
     expect(

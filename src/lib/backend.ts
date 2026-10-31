@@ -412,6 +412,36 @@ export async function fetchInvites(): Promise<WorkspaceInvite[]> {
   }));
 }
 
+/** Removes someone else from the current workspace. Owner/admin only, enforced server-side. */
+export async function removeMember(userId: string): Promise<void> {
+  const db = await client();
+  const ws = await getWorkspaceId();
+  const { error } = await db.rpc('remove_member', { p_workspace: ws, p_user: userId });
+  if (error) throw new Error(error.message);
+}
+
+/** Promotes or demotes a teammate. Only the workspace owner may do this. */
+export async function setMemberRole(userId: string, role: 'admin' | 'member'): Promise<string> {
+  const db = await client();
+  const ws = await getWorkspaceId();
+  const { data, error } = await db.rpc('set_member_role', { p_workspace: ws, p_user: userId, p_role: role });
+  if (error) throw new Error(error.message);
+  return (data as string) ?? role;
+}
+
+/**
+ * Leaves a workspace. If the caller owned it, ownership passes to the oldest admin (else the oldest
+ * member). The server moves their profile to the oldest workspace they still belong to and returns
+ * that id, or null when they have none left.
+ */
+export async function leaveWorkspace(workspaceId: string): Promise<string | null> {
+  const db = await client();
+  const { data, error } = await db.rpc('leave_workspace', { p_workspace: workspaceId });
+  if (error) throw new Error(error.message);
+  resetWorkspaceCache();
+  return (data as string | null) ?? null;
+}
+
 export async function createInvite(email: string, role: WorkspaceInvite['role'] = 'member') {
   const db = await client();
   const ws = await getWorkspaceId();
