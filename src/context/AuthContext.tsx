@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { fetchProfile, updateProfile as updateRemoteProfile } from '@/lib/backend';
+import { DEFAULT_PREFS, normalisePrefs, type NotificationPrefs } from '@/lib/prefs';
 import { backendConfigured, getSupabase } from '@/lib/supabase';
 
 export interface User {
@@ -10,6 +11,7 @@ export interface User {
   company: string;
   role: string;
   plan: 'launch' | 'growth' | 'scale';
+  prefs: NotificationPrefs;
   createdAt: string;
 }
 
@@ -26,7 +28,9 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<User>;
   signup: (input: SignupInput) => Promise<User>;
   logout: () => void;
-  updateProfile: (patch: Partial<Pick<User, 'name' | 'email' | 'company' | 'role'>>) => void;
+  updateProfile: (
+    patch: Partial<Pick<User, 'name' | 'email' | 'company' | 'role' | 'prefs'>>,
+  ) => void;
   /** Emails a recovery link that lands on /reset-password. */
   requestPasswordReset: (email: string) => Promise<void>;
   /** Sets a new password for the signed-in (or recovered) session. */
@@ -52,6 +56,7 @@ const demoUser: User = {
   company: 'Northwind Labs',
   role: 'Founder & CEO',
   plan: 'growth',
+  prefs: DEFAULT_PREFS,
   createdAt: demoCreatedAt,
 };
 
@@ -60,7 +65,8 @@ const readStoredUser = (): User | null => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as { user?: User };
-    return parsed.user ?? null;
+    // Summaries written before preferences existed have no `prefs` key; fill it in on read.
+    return parsed.user ? { ...parsed.user, prefs: normalisePrefs(parsed.user.prefs) } : null;
   } catch {
     return null;
   }
@@ -103,6 +109,7 @@ function mapRemoteUser(authUser: SupabaseUser, profile: Awaited<ReturnType<typeo
     company: profile?.company || meta.company || 'New workspace',
     role: profile?.role || 'Workspace owner',
     plan: profile?.plan ?? 'growth',
+    prefs: normalisePrefs(profile?.prefs),
     createdAt: profile?.created_at ?? authUser.created_at ?? new Date().toISOString(),
   };
 }
@@ -238,6 +245,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         company: company.trim() || 'New workspace',
         role: 'Workspace owner',
         plan: 'growth',
+        prefs: DEFAULT_PREFS,
         createdAt: new Date().toISOString(),
       };
       persist(next);
@@ -255,7 +263,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [persist, user]);
 
   const updateProfile = useCallback(
-    (patch: Partial<Pick<User, 'name' | 'email' | 'company' | 'role'>>) => {
+    (patch: Partial<Pick<User, 'name' | 'email' | 'company' | 'role' | 'prefs'>>) => {
       setUser((current) => {
         if (!current) return current;
         if (backendConfigured && !current.id.startsWith('usr_')) {

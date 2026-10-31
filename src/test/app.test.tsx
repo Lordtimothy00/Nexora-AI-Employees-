@@ -6,6 +6,7 @@ import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
 import { explainBillingError } from '@/lib/billing';
 import { describeInviteOutcome, explainInviteFailure } from '@/lib/invites';
+import { DEFAULT_PREFS, normalisePrefs, prefsEqual } from '@/lib/prefs';
 import { explainReplyFailure } from '@/lib/replies';
 
 beforeEach(() => {
@@ -298,6 +299,43 @@ describe('invite copy', () => {
     expect(
       describeInviteOutcome('ada@acme.co', { emailed: false, link: 'https://x/invite/1', reason: 'send_failed' }),
     ).toMatch(/clipboard/i);
+  });
+});
+
+describe('notification preferences', () => {
+  it('keeps the shape whatever the profile returns', () => {
+    expect(normalisePrefs(undefined)).toEqual(DEFAULT_PREFS);
+    expect(normalisePrefs('nonsense')).toEqual(DEFAULT_PREFS);
+    expect(normalisePrefs([true, false])).toEqual(DEFAULT_PREFS);
+    // A partial row keeps the stored keys and fills the rest from the defaults.
+    expect(normalisePrefs({ digest: false, approvals: 'yes' })).toEqual({
+      ...DEFAULT_PREFS,
+      digest: false,
+    });
+    expect(prefsEqual(DEFAULT_PREFS, normalisePrefs({ ...DEFAULT_PREFS }))).toBe(true);
+  });
+
+  it('persists a toggle instead of forgetting it on reload', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    renderAt('/dashboard/settings');
+
+    const digest = await screen.findByRole('switch', { name: 'Morning digest' });
+    expect(digest).toHaveAttribute('aria-checked', 'true');
+    // Nothing to save until something changes.
+    expect(screen.getByRole('button', { name: /^Saved$/ })).toBeDisabled();
+
+    await user.click(digest);
+    expect(digest).toHaveAttribute('aria-checked', 'false');
+
+    await user.click(screen.getByRole('button', { name: /Save preferences/ }));
+
+    // Written through the profile, which the demo keeps in localStorage.
+    await waitFor(() => {
+      const stored = JSON.parse(localStorage.getItem('nexora.auth.v1') ?? '{}');
+      expect(stored.user?.prefs?.digest).toBe(false);
+    });
+    expect(screen.getByRole('button', { name: /^Saved$/ })).toBeDisabled();
   });
 });
 

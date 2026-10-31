@@ -89,7 +89,11 @@ cp .env.example .env    # then fill in your project URL + publishable key
 Schema (already applied to the project, kept as a migration record):
 
 - `profiles` — one row per `auth.users` row, created by the `handle_new_user` trigger from the
-  signup metadata (`name`, `company`). Holds `role` and `plan`.
+  signup metadata (`name`, `company`). Holds `role`, `plan`, `active_workspace_id` and `prefs`
+  (the notification toggles from Settings, so they survive a reload). An **invited** user gets a
+  profile but no workspace of their own — they are joining someone else's, and an invite nobody
+  accepts no longer leaves an empty workspace behind; one is created lazily if they ever sign in
+  without accepting.
 - `hires` — which employee someone has hired, their status, tasks completed, utilisation.
 - `tasks`, `messages`, `activities` — the task board, conversations, and the activity feed.
 

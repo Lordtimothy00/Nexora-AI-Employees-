@@ -1,6 +1,7 @@
 import type { Activity, ChatMessage, Hire, Priority, Task, TaskStatus } from '@/context/WorkspaceContext';
 import { getSupabase } from './supabase';
 import { explainInviteFailure, type InviteOutcome } from './invites';
+import type { NotificationPrefs } from './prefs';
 
 export interface WorkspaceSnapshot {
   hires: Hire[];
@@ -218,7 +219,13 @@ export async function createMessage(employeeId: string, body: string, from: 'hum
 }
 
 export async function updateProfile(
-  patch: Partial<{ name: string; company: string; role: string; plan: string }>,
+  patch: Partial<{
+    name: string;
+    company: string;
+    role: string;
+    plan: string;
+    prefs: NotificationPrefs;
+  }>,
 ) {
   const db = await client();
   const { data: session } = await db.auth.getUser();
@@ -233,6 +240,7 @@ export interface RemoteProfile {
   company: string;
   role: string;
   plan: 'launch' | 'growth' | 'scale';
+  prefs?: unknown;
   created_at: string;
 }
 
@@ -243,7 +251,7 @@ export async function fetchProfile(): Promise<RemoteProfile | null> {
 
   const { data, error } = await db
     .from('profiles')
-    .select('name, company, role, plan, created_at')
+    .select('name, company, role, plan, prefs, created_at')
     .eq('id', auth.user.id)
     .maybeSingle();
 

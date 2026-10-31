@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Check, KeyRound, LogOut, RotateCcw, ShieldCheck, SlidersHorizontal, Trash2, User } from 'lucide-react';
 import { PageHeader, Panel, Toast } from '@/components/dashboard/ui';
@@ -7,6 +7,7 @@ import { Field, PasswordField } from '@/components/ui/Field';
 import { Avatar } from '@/components/ui/Avatar';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
+import { normalisePrefs, prefsEqual, type NotificationPrefs } from '@/lib/prefs';
 import { backendConfigured } from '@/lib/supabase';
 import { cn, initialsOf } from '@/lib/utils';
 
@@ -88,12 +89,12 @@ export function Settings() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSaved, setPasswordSaved] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
-  const [prefs, setPrefs] = useState({
-    digest: true,
-    approvals: true,
-    autoAssign: false,
-    weeklyReport: true,
-  });
+  // Preferences live on the profile now, so the saved value is the source of truth and the panel
+  // is only "dirty" when it differs from it.
+  const storedPrefs = useMemo(() => normalisePrefs(user?.prefs), [user?.prefs]);
+  const [prefs, setPrefs] = useState<NotificationPrefs>(storedPrefs);
+  const prefDirty = !prefsEqual(prefs, storedPrefs);
+  const [savingPrefs, setSavingPrefs] = useState(false);
 
   const showToast = (message: string) => {
     setToast(message);
@@ -104,6 +105,25 @@ export function Settings() {
   useEffect(() => {
     if (!nameDirty) setWsName(workspaceName);
   }, [workspaceName, nameDirty]);
+
+  // Same as the workspace name: follow the profile until the person edits something.
+  useEffect(() => {
+    if (!prefDirty) setPrefs(storedPrefs);
+  }, [storedPrefs, prefDirty]);
+
+  const savePrefs = () => {
+    setSavingPrefs(true);
+    try {
+      const next = normalisePrefs(prefs);
+      updateProfile({ prefs: next });
+      setPrefs(next);
+      showToast('Preferences saved to your profile.');
+    } catch (caught) {
+      showToast(caught instanceof Error ? caught.message : 'Could not save preferences.');
+    } finally {
+      setSavingPrefs(false);
+    }
+  };
 
   const saveProfile = (event: FormEvent) => {
     event.preventDefault();
@@ -247,15 +267,21 @@ export function Settings() {
                 description="Friday summary of tasks delivered, hours saved, and utilisation per employee."
               />
             </div>
-            <div className="border-t border-white/12 px-4 py-3 md:px-5">
+            <div className="flex flex-col gap-2 border-t border-white/12 px-4 py-3 md:px-5">
               <Button
                 size="sm"
                 variant="secondary"
-                onClick={() => showToast('Preferences saved for this preview session.')}
+                onClick={savePrefs}
+                loading={savingPrefs}
+                disabled={!prefDirty}
                 iconLeft={<SlidersHorizontal className="size-3.5" />}
               >
-                Save preferences
+                {prefDirty ? 'Save preferences' : 'Saved'}
               </Button>
+              <p className="text-[10px] leading-relaxed text-[#8d9ea7]">
+                Stored on your profile. Digest emails and Slack pings begin once those integrations
+                are connected — nothing is delivered yet.
+              </p>
             </div>
           </Panel>
 
