@@ -52,7 +52,7 @@ function Toggle({
 }
 
 export function Settings() {
-  const { user, updateProfile, logout } = useAuth();
+  const { user, updateProfile, logout, setPassword } = useAuth();
   const {
     hires,
     tasks,
@@ -83,6 +83,11 @@ export function Settings() {
   const [company, setCompany] = useState(user?.company ?? '');
   const [role, setRole] = useState(user?.role ?? '');
   const [toast, setToast] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSaved, setPasswordSaved] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
   const [prefs, setPrefs] = useState({
     digest: true,
     approvals: true,
@@ -106,10 +111,34 @@ export function Settings() {
     showToast('Profile updated.');
   };
 
-  const updatePassword = (event: FormEvent) => {
+  // A real password change goes through Supabase auth, so the demo workspace (no account behind
+  // it) keeps the form disabled rather than accepting a value it would silently drop.
+  const updatePassword = async (event: FormEvent) => {
     event.preventDefault();
-    showToast('Password updated (preview only — no credentials are stored).');
-    (event.target as HTMLFormElement).reset();
+    setPasswordError(null);
+    setPasswordSaved(false);
+
+    if (newPassword.length < 8) {
+      setPasswordError('Use at least 8 characters for your password.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Both passwords must match.');
+      return;
+    }
+
+    setSavingPassword(true);
+    try {
+      await setPassword(newPassword);
+      setNewPassword('');
+      setConfirmPassword('');
+      setPasswordSaved(true);
+      showToast('Password updated.');
+    } catch (caught) {
+      setPasswordError(caught instanceof Error ? caught.message : 'Could not update the password.');
+    } finally {
+      setSavingPassword(false);
+    }
   };
 
   const saveWorkspaceName = (event: FormEvent) => {
@@ -231,14 +260,56 @@ export function Settings() {
           </Panel>
 
           <Panel title="Security" subtitle="Protect your workspace">
-            <form onSubmit={updatePassword} className="space-y-3">
+            <form onSubmit={updatePassword} className="space-y-3" noValidate>
               <div className="grid gap-3 sm:grid-cols-2">
-                <PasswordField label="New password" placeholder="At least 8 characters" icon={<KeyRound className="size-4" />} required />
-                <PasswordField label="Confirm password" placeholder="Repeat password" required />
+                <PasswordField
+                  label="New password"
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  icon={<KeyRound className="size-4" />}
+                  value={newPassword}
+                  disabled={!remote}
+                  onChange={(event) => {
+                    setNewPassword(event.target.value);
+                    setPasswordError(null);
+                    setPasswordSaved(false);
+                  }}
+                  required
+                />
+                <PasswordField
+                  label="Confirm password"
+                  autoComplete="new-password"
+                  placeholder="Repeat password"
+                  value={confirmPassword}
+                  disabled={!remote}
+                  onChange={(event) => {
+                    setConfirmPassword(event.target.value);
+                    setPasswordError(null);
+                    setPasswordSaved(false);
+                  }}
+                  required
+                />
               </div>
-              <div className="flex items-center justify-between">
-                <p className="text-[10px] text-[#8d9ea7]">Demo preview — passwords are never stored.</p>
-                <Button type="submit" size="sm" variant="secondary">
+
+              {passwordError && (
+                <p className="flex items-start gap-1.5 text-[10.5px] leading-relaxed text-[#e8a1a1]">
+                  <AlertTriangle className="mt-0.5 size-3 shrink-0" />
+                  {passwordError}
+                </p>
+              )}
+              {passwordSaved && (
+                <p className="flex items-center gap-1.5 text-[10.5px] text-[#9df7c2]">
+                  <Check className="size-3" /> Password updated — use it the next time you sign in.
+                </p>
+              )}
+
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10px] text-[#8d9ea7]">
+                  {remote
+                    ? 'Takes effect immediately. Other devices keep their session until it refreshes.'
+                    : 'The local demo has no account, so there is no password to change.'}
+                </p>
+                <Button type="submit" size="sm" variant="secondary" disabled={!remote} loading={savingPassword}>
                   Update password
                 </Button>
               </div>
@@ -248,7 +319,8 @@ export function Settings() {
               <div>
                 <p className="text-[11.5px] font-medium text-white">Two-factor authentication</p>
                 <p className="mt-0.5 text-[10.5px] leading-relaxed text-[#9aaab3]">
-                  Required on Scale workspaces. Available now for your team and enforced at org level.
+                  Required on Scale workspaces. Enrolment is not switched on in this build yet — the
+                  password above and your Supabase account are what protect this workspace today.
                 </p>
               </div>
             </div>

@@ -27,10 +27,18 @@ interface AuthContextValue {
   signup: (input: SignupInput) => Promise<User>;
   logout: () => void;
   updateProfile: (patch: Partial<Pick<User, 'name' | 'email' | 'company' | 'role'>>) => void;
+  /** Emails a recovery link that lands on /reset-password. */
+  requestPasswordReset: (email: string) => Promise<void>;
+  /** Sets a new password for the signed-in (or recovered) session. */
+  setPassword: (password: string) => Promise<void>;
 }
 
 const STORAGE_KEY = 'nexora.auth.v1';
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+/** Shown wherever a password action is attempted against the browser-only demo workspace. */
+export const DEMO_RESET_COPY =
+  'Passwords live in Supabase, not in this browser — the demo workspace has no password to reset. Sign in with the demo account or create a real workspace.';
 
 // The demo workspace is meant to look established: three months of history so the
 // billing and analytics screens have something real to show. Fresh signups start at
@@ -70,6 +78,18 @@ function friendlyAuthError(message: string) {
   if (/password should be at least/i.test(message)) {
     return 'Use at least 8 characters for your password.';
   }
+  // Recovery links and password changes both hit this when the session has gone stale.
+  if (/auth session missing|session.*expired|invalid.*(token|jwt)|token.*expired/i.test(message)) {
+    return 'This reset link has expired. Request a new one.';
+  }
+  // Supabase throttles recovery emails per address and hides the real reason behind timing advice.
+  if (/for security purposes|rate limit|too many requests/i.test(message)) {
+    return 'Too many attempts — wait a minute and try again.';
+  }
+  if (/should be different from the old password/i.test(message)) {
+    return 'Choose a password you have not used here before.';
+  }
+  if (/weak|pwned|breach/i.test(message)) return 'That password is too easy to guess. Try another.';
   return message;
 }
 
@@ -253,9 +273,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  /**
+   * Recovery is the one flow the local demo cannot fake: there is no account behind it, so the
+   * link would go nowhere. Say that plainly instead of showing a "check your inbox" that lies.
+   */
+  const requestPasswordReset = useCallback(async (address: string) => {
+    const email = address.trim();
+    if (!email.includes('@')) throw new Error('Enter a valid email address.');
+
+    const db = backendConfigured ? await getSupabase() : null;
+    if (!db) {
+      throw new Error(DEMO_RESET_COPY);
+    }
+
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw new Error(friendlyAuthError(error.message));
+  }, []);
+
+  const setPassword = useCallback(async (password: string) => {
+    if (password.length < 8) throw new Error('Use at least 8 characters for your password.');
+
+    const db = backendConfigured ? await getSupabase() : null;
+    if (!db) {
+      throw new Error(DEMO_RESET_COPY);
+    }
+
+    const { error } = await db.auth.updateUser({ password });
+    if (error) throw new Error(friendlyAuthError(error.message));
+  }, []);
+
   const value = useMemo(
-    () => ({ user, isReady, login, signup, logout, updateProfile }),
-    [user, isReady, login, signup, logout, updateProfile],
+    () => ({
+      user,
+      isReady,
+      login,
+      signup,
+      logout,
+      updateProfile,
+      requestPasswordReset,
+      setPassword,
+    }),
+    [user, isReady, login, signup, logout, updateProfile, requestPasswordReset, setPassword],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

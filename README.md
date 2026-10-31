@@ -42,6 +42,7 @@ scroll reveals are hand-built so the visual language stays consistent and the bu
 | `/how-it-works`           | Five phases with mini-visuals, day-in-the-life timeline, integrations grid, security model, FAQ |
 | `/pricing`                | Monthly/annual toggle, three tiers, full comparison table, testimonials, pricing FAQ |
 | `/login` `/signup`        | Split-screen auth with validation, password strength, plan context, pending-hire intent |
+| `/forgot-password` `/reset-password` | Password recovery: single-use email link, neutral confirmation, session-scoped password change |
 | `/dashboard`              | Authenticated overview: KPIs, delivery chart, live activity, team, approval queue, assign-task modal |
 | `/dashboard/team`         | Employee cards with pause/resume, remove, utilisation, team economics             |
 | `/dashboard/tasks`        | Kanban board with drag & drop, filters, task detail, assign-task flow            |
@@ -98,6 +99,25 @@ write their own rows. The browser uses the publishable key; no service-role key 
 
 If the env vars are absent (or `MODE === 'test'`), `getSupabase()` returns `null` and the app falls
 back to the localStorage workspace below — `npm run dev` and `npm test` work with no backend at all.
+
+### Password recovery
+
+`/forgot-password` calls `auth.resetPasswordForEmail`, and the email links to `/reset-password`,
+where the recovery session it carries sets a new password through `auth.updateUser`. Supabase
+only redirects to URLs on its allow list, so **Authentication → URL Configuration** must include
+every origin that serves the app:
+
+```
+https://nexora-ai-employees.vercel.app/**
+https://*-apex-e377.vercel.app/**      # preview deploys
+http://localhost:5173/**               # local dev
+```
+
+Both values are already set on the project (`Site URL` = the production domain). Two limits worth
+knowing: the built-in mailer is rate-limited to a couple of messages an hour and is not meant for
+production traffic — configure a custom SMTP provider before relying on recovery with real users.
+The `/reset-password` page never claims a link exists when no backend is configured, and the demo
+workspace's password form stays disabled because there is no account behind it to change.
 
 ### Employee replies
 
@@ -286,7 +306,7 @@ src/
     dashboard/            # dashboard layout, protected route, charts, assign-task modal, primitives
     ErrorBoundary.tsx
   context/
-    AuthContext.tsx       # mock auth with persistence
+    AuthContext.tsx       # auth state, profile, password recovery
     WorkspaceContext.tsx  # hires, tasks, messages, activity, analytics helpers
   data/
     employees.ts          # 8 richly modelled AI employees

@@ -18,7 +18,6 @@ export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -27,7 +26,6 @@ export function Login() {
 
   const complete = async (nextEmail: string, nextPassword: string) => {
     setError(null);
-    setNotice(null);
     setLoading(true);
     try {
       await login(nextEmail, nextPassword);
@@ -91,37 +89,21 @@ export function Login() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
-          hint="Forgot?"
         />
 
-        <div className="flex items-center justify-between pt-0.5">
-          <label className="inline-flex cursor-pointer items-center gap-2 text-[12px] text-[#aabbc2]">
-            <input
-              type="checkbox"
-              defaultChecked
-              className="size-3.5 rounded border-white/20 bg-white/5 accent-[#0bd39a]"
-            />
-            Keep me signed in
-          </label>
-          <button
-            type="button"
-            onClick={() => setNotice('Password reset is disabled in this preview. Use the demo account below.')}
+        <div className="flex items-center justify-end pt-0.5">
+          <Link
+            to="/forgot-password"
             className="text-[12px] text-[#aabbc2] transition-colors hover:text-white"
           >
-            Reset password
-          </button>
+            Forgot your password?
+          </Link>
         </div>
 
         {error && (
           <div className="flex items-start gap-2 rounded-xl border border-rose-400/25 bg-rose-500/[0.07] px-3 py-2.5">
             <AlertCircle className="mt-0.5 size-3.5 shrink-0 text-rose-300" />
             <p className="text-[12px] leading-relaxed text-rose-200">{error}</p>
-          </div>
-        )}
-
-        {notice && (
-          <div className="rounded-xl border border-[#0bd39a]/25 bg-[#0bd39a]/[0.08] px-3 py-2.5 text-[12px] leading-relaxed text-[#e6efec]">
-            {notice}
           </div>
         )}
 

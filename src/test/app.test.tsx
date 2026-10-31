@@ -81,7 +81,10 @@ describe('marketing pages', () => {
     const nav = screen.getByRole('navigation', { name: 'Main' });
     await user.click(within(nav).getByRole('link', { name: 'Pricing' }));
 
-    expect(await screen.findByRole('heading', { name: /Hire a department/i })).toBeInTheDocument();
+    // Pricing is a lazy route: give the chunk room to arrive before asserting on it.
+    expect(
+      await screen.findByRole('heading', { name: /Hire a department/i }, { timeout: 4000 }),
+    ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Back to Home/i }));
 
     await waitFor(() =>
@@ -154,6 +157,8 @@ describe('route health', () => {
       '/dashboard/settings',
       '/login',
       '/signup',
+      '/forgot-password',
+      '/reset-password',
       '/missing-page',
     ];
 
@@ -211,6 +216,52 @@ describe('authentication and dashboard', () => {
     await user.type(screen.getByLabelText('Create password'), 'supersecret1');
     await user.click(screen.getByRole('button', { name: /Create workspace/i }));
     expect(screen.getByText(/Please accept the terms/i)).toBeInTheDocument();
+  });
+});
+
+describe('password recovery', () => {
+  it('offers the real recovery route from the sign-in form', async () => {
+    renderAt('/login');
+    await screen.findByRole('heading', { name: /Welcome back/i });
+
+    const link = screen.getByRole('link', { name: /Forgot your password/i });
+    expect(link).toHaveAttribute('href', '/forgot-password');
+    // The old build had a button that only apologised; there is nothing left to click that lies.
+    expect(screen.queryByRole('button', { name: /^Reset password$/i })).not.toBeInTheDocument();
+  });
+
+  it('will not promise an email the local demo cannot send', async () => {
+    const user = userEvent.setup();
+    renderAt('/forgot-password');
+
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/reset your password/i);
+    await user.type(screen.getByLabelText(/work email/i), 'someone@example.com');
+    await user.click(screen.getByRole('button', { name: /send reset link/i }));
+
+    expect(
+      await screen.findByText(/demo workspace has no password to reset/i),
+    ).toBeInTheDocument();
+    // No false "check your inbox" while nothing was sent.
+    expect(screen.queryByText(/check your inbox/i)).not.toBeInTheDocument();
+  });
+
+  it('explains a reset page opened without a live link', async () => {
+    renderAt('/reset-password');
+
+    expect(
+      await screen.findByText(/demo workspace has no password to reset/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Back to sign in/i })).toHaveAttribute('href', '/login');
+  });
+
+  it('keeps the settings password form read-only in the local demo', async () => {
+    seedSession();
+    renderAt('/dashboard/settings');
+
+    expect(
+      await screen.findByText(/no account, so there is no password to change/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Update password/i })).toBeDisabled();
   });
 });
 

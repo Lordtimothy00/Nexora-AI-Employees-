@@ -19,6 +19,12 @@ const Resources = lazy(() => import('@/pages/Resources').then((m) => ({ default:
 const ResourceArticle = lazy(() => import('@/pages/ResourceArticle').then((m) => ({ default: m.ResourceArticle })));
 const Login = lazy(() => import('@/pages/Login').then((m) => ({ default: m.Login })));
 const Signup = lazy(() => import('@/pages/Signup').then((m) => ({ default: m.Signup })));
+const ForgotPassword = lazy(() =>
+  import('@/pages/ForgotPassword').then((m) => ({ default: m.ForgotPassword })),
+);
+const ResetPassword = lazy(() =>
+  import('@/pages/ResetPassword').then((m) => ({ default: m.ResetPassword })),
+);
 const NotFound = lazy(() => import('@/pages/NotFound').then((m) => ({ default: m.NotFound })));
 const Invite = lazy(() => import('@/pages/Invite').then((m) => ({ default: m.Invite })));
 
@@ -81,6 +87,16 @@ const routes: { match: RegExp; title: string; description: string }[] = [
     match: /^\/signup$/,
     title: 'Create your workspace',
     description: 'Create a Nexora workspace and hire your first AI employee in minutes.',
+  },
+  {
+    match: /^\/forgot-password$/,
+    title: 'Reset your password',
+    description: 'Get a single-use link to choose a new Nexora password.',
+  },
+  {
+    match: /^\/reset-password$/,
+    title: 'Choose a new password',
+    description: 'Finish resetting your Nexora password.',
   },
   { match: /^\/dashboard\/?$/, title: 'Dashboard', description: 'Your AI workforce at a glance.' },
   { match: /^\/dashboard\/team$/, title: 'My team', description: 'Your hired AI employees.' },
@@ -167,6 +183,8 @@ export default function App() {
 
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} />
 
             <Route element={<RequireAuth />}>
               <Route path="invite/:token" element={<Invite />} />
