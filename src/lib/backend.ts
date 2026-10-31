@@ -1,5 +1,6 @@
 import type { Activity, ChatMessage, Hire, Priority, Task, TaskStatus } from '@/context/WorkspaceContext';
 import { getSupabase } from './supabase';
+import { explainInviteFailure, type InviteOutcome } from './invites';
 
 export interface WorkspaceSnapshot {
   hires: Hire[];
@@ -389,6 +390,25 @@ export async function fetchMembers(): Promise<WorkspaceMember[]> {
   }));
 }
 
+type FunctionErrorBody = { error?: unknown; detail?: unknown; token?: unknown; link?: unknown };
+
+/** `functions.invoke` wraps non-2xx replies in `error.context`, a Response we can read once. */
+async function readFunctionError(
+  error: unknown,
+): Promise<{ status?: number; body: FunctionErrorBody | null }> {
+  const context = (error as { context?: Response })?.context;
+  if (!context || typeof context.clone !== 'function') return { body: null };
+
+  let body: FunctionErrorBody | null = null;
+  try {
+    body = (await context.clone().json()) as FunctionErrorBody;
+  } catch {
+    /* not JSON; the status still narrows it down */
+  }
+
+  return { status: context.status, body };
+}
+
 export async function fetchInvites(): Promise<WorkspaceInvite[]> {
   const db = await client();
   const ws = await getWorkspaceId();
@@ -442,18 +462,48 @@ export async function leaveWorkspace(workspaceId: string): Promise<string | null
   return (data as string | null) ?? null;
 }
 
-export async function createInvite(email: string, role: WorkspaceInvite['role'] = 'member') {
+/**
+ * Invites someone into the current workspace and asks the `invite-member` function to email them.
+ *
+ * The row is written server-side (the function checks the caller is an owner or admin first), so
+ * this cannot be done by a browser that skipped the UI. Resolves with `emailed: false` when the
+ * invite exists but no mail went out — the caller then hands over the link instead.
+ */
+export async function inviteMember(
+  email: string,
+  role: WorkspaceInvite['role'] = 'member',
+): Promise<InviteOutcome> {
   const db = await client();
   const ws = await getWorkspaceId();
+  const origin = window.location.origin;
 
-  const { data, error } = await db
-    .from('workspace_invites')
-    .insert({ workspace_id: ws, email: email.trim().toLowerCase(), role })
-    .select('token')
-    .single();
+  const { data, error } = await db.functions.invoke('invite-member', {
+    body: { workspaceId: ws, email: email.trim().toLowerCase(), role, origin },
+  });
 
-  if (error) throw new Error(error.message);
-  return data.token as string;
+  if (error) {
+    const { status, body } = await readFunctionError(error);
+    const link = typeof body?.link === 'string' ? body.link : '';
+
+    // The invite row exists and only the mail failed; the link is still worth having.
+    if (body?.error === 'send_failed' && link) {
+      return { emailed: false, link, reason: 'send_failed' };
+    }
+
+    throw new Error(explainInviteFailure(status, typeof body?.error === 'string' ? body.error : undefined));
+  }
+
+  const payload = data as { emailed?: unknown; link?: unknown; token?: unknown; reason?: unknown } | null;
+  const link =
+    typeof payload?.link === 'string' && payload.link
+      ? payload.link
+      : `${origin}/invite/${typeof payload?.token === 'string' ? payload.token : ''}`;
+
+  return {
+    emailed: payload?.emailed === true,
+    link,
+    reason: payload?.reason === 'has_account' ? 'has_account' : undefined,
+  };
 }
 
 export async function revokeInvite(id: string) {

@@ -5,6 +5,7 @@ import App from '@/App';
 import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
 import { explainBillingError } from '@/lib/billing';
+import { describeInviteOutcome, explainInviteFailure } from '@/lib/invites';
 import { explainReplyFailure } from '@/lib/replies';
 
 beforeEach(() => {
@@ -271,6 +272,34 @@ const seedEmptyWorkspace = () => {
     JSON.stringify({ hires: [], tasks: [], messages: [], activities: [] }),
   );
 };
+
+describe('invite copy', () => {
+  it('names the reason an invite was refused', () => {
+    expect(explainInviteFailure(403, 'not_admin')).toMatch(/only owners and admins/i);
+    expect(explainInviteFailure(429, 'invite_rate_limited')).toMatch(/last hour/i);
+    expect(explainInviteFailure(501, 'not_configured')).toMatch(/not configured/i);
+    expect(explainInviteFailure(503, 'membership_check_failed')).toMatch(/try again/i);
+    // An unrecognised body falls back to the status, then to a plain apology.
+    expect(explainInviteFailure(403, 'who_knows')).toMatch(/only owners and admins/i);
+    expect(explainInviteFailure(undefined, 'who_knows')).toMatch(/could not create/i);
+  });
+
+  it('never claims an email went out when it did not', () => {
+    expect(describeInviteOutcome('ada@acme.co', { emailed: true, link: 'https://x/invite/1' })).toMatch(
+      /emailed to ada@acme\.co/i,
+    );
+    expect(
+      describeInviteOutcome('ada@acme.co', { emailed: false, link: 'https://x/invite/1', reason: 'has_account' }),
+    ).toMatch(/already has a Nexora account/i);
+    expect(
+      describeInviteOutcome('ada@acme.co', { emailed: false, link: 'https://x/invite/1', reason: 'send_failed' }),
+    ).toMatch(/did not send/i);
+    // Both no-email cases promise the link is on the clipboard, because that is the only way in.
+    expect(
+      describeInviteOutcome('ada@acme.co', { emailed: false, link: 'https://x/invite/1', reason: 'send_failed' }),
+    ).toMatch(/clipboard/i);
+  });
+});
 
 describe('empty workspace', () => {
   beforeEach(() => {

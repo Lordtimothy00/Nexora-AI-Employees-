@@ -44,7 +44,7 @@ scroll reveals are hand-built so the visual language stays consistent and the bu
 | `/login` `/signup`        | Split-screen auth with validation, password strength, plan context, pending-hire intent |
 | `/forgot-password` `/reset-password` | Password recovery: single-use email link, neutral confirmation, session-scoped password change |
 | `/dashboard`              | Authenticated overview: KPIs, delivery chart, live activity, team, approval queue, assign-task modal |
-| `/dashboard/team`         | Employee cards with pause/resume, remove, utilisation, team economics             |
+| `/dashboard/team`         | Employee cards with pause/resume, remove, utilisation, team economics; roster with emailed invites |
 | `/dashboard/tasks`        | Kanban board with drag & drop, filters, task detail, assign-task flow            |
 | `/dashboard/conversations`| Team chat with canned AI replies, typing indicator, suggestion prompts           |
 | `/dashboard/analytics`    | Charts, department mix, employee scorecard, CSV export, insights                 |
@@ -115,9 +115,29 @@ http://localhost:5173/**               # local dev
 
 Both values are already set on the project (`Site URL` = the production domain). Two limits worth
 knowing: the built-in mailer is rate-limited to a couple of messages an hour and is not meant for
-production traffic — configure a custom SMTP provider before relying on recovery with real users.
+production traffic — see `supabase/email-templates/README.md` for the custom SMTP setup that fixes
+deliverability for invites and recovery at once.
 The `/reset-password` page never claims a link exists when no backend is configured, and the demo
 workspace's password form stays disabled because there is no account behind it to change.
+
+### Team invites
+
+Inviting a teammate happens in `invite-member` (`supabase/functions/invite-member`), not in the
+browser: the function checks the caller is an **owner or admin** of that workspace, writes the
+`workspace_invites` row with the service-role key, and asks GoTrue to email the invite, so the mail
+comes from the same sender as password resets.
+
+- Request `{ workspaceId, email, role, origin }`; the link is `<origin>/invite/<token>`, which is
+  the page that claims the membership server-side.
+- `200 { emailed: true }` — sent. `200 { emailed: false, reason: 'has_account' }` — the address
+  already belongs to a Nexora account, so no invite mail is possible; the admin gets the link.
+  `502 send_failed` — the invite exists but the mail did not go (mailer rate limit, unverified
+  sender, invalid domain); the response still carries the token so the UI copies the link.
+- 20 invites per workspace per hour, on top of whatever the mailer allows. `403 not_admin`,
+  `401 not_authenticated`, `503 membership_check_failed`.
+- When no email was sent the Team page copies the link and says so instead of claiming delivery.
+  This is also the fallback while SMTP is unset — see `supabase/email-templates/README.md` for the
+  dashboard steps that turn real email on.
 
 ### Employee replies
 
@@ -350,8 +370,9 @@ text on the dark canvas.
 
 ## Production notes
 
-- **Auth, persistence and employee replies are real** — `supabase.auth`, workspace-scoped tables,
-  and the `employee-reply` edge function. Billing/Stripe is the remaining seam.
+- **Auth, persistence, replies and invites are real** — `supabase.auth`, workspace-scoped tables,
+  and the `employee-reply` / `invite-member` edge functions. Email deliverability needs custom SMTP
+  (`supabase/email-templates/README.md`), and Billing/Stripe is the remaining seam.
 - **Only the publishable key ships.** It is safe in a browser bundle; RLS is what protects the data.
 - **No secrets or network calls** are required to run the app — without env vars it is fully local.
 - **Vercel:** `vercel.json` is included with SPA rewrites and asset caching; `npm run build` outputs

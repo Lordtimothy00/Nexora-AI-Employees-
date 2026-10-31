@@ -21,15 +21,16 @@ import { useWorkspace } from '@/context/WorkspaceContext';
 import { useAuth } from '@/context/AuthContext';
 import { getEmployeeById } from '@/data/employees';
 import {
-  createInvite,
   fetchInvites,
   fetchMembers,
+  inviteMember,
   removeMember,
   revokeInvite,
   setMemberRole,
   type WorkspaceInvite,
   type WorkspaceMember,
 } from '@/lib/backend';
+import { describeInviteOutcome } from '@/lib/invites';
 import { backendConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
@@ -104,11 +105,18 @@ export function Team() {
 
     setInviting(true);
     try {
-      const token = await createInvite(address, inviteRole);
-      await copyLink(token);
+      const outcome = await inviteMember(address, inviteRole);
+      // When no email went out the link is the only way in, so put it on the clipboard.
+      if (!outcome.emailed && outcome.link) {
+        try {
+          await navigator.clipboard?.writeText(outcome.link);
+        } catch {
+          /* clipboard can be blocked; the pending invite row still has a copy button */
+        }
+      }
       await loadPeople();
       setInviteEmail('');
-      showToast(`Invite for ${address} created as ${inviteRole} — the link is on your clipboard.`);
+      showToast(describeInviteOutcome(address, outcome));
     } catch (caught) {
       showToast(caught instanceof Error ? caught.message : 'Could not create that invite.');
     } finally {
@@ -587,7 +595,7 @@ export function Team() {
                       <option value="admin">Admin</option>
                     </select>
                     <Button type="submit" size="sm" loading={inviting} iconLeft={<UserPlus className="size-3.5" />}>
-                      Create invite
+                      Send invite
                     </Button>
                   </form>
                 ) : (
@@ -597,8 +605,9 @@ export function Team() {
                 )}
 
                 <p className="text-[10.5px] leading-relaxed text-[#8d9ea7]">
-                  Invites are links you copy and send yourself — no email is sent. The person must sign in
-                  with that exact address to join.
+                  We email the invite from the project’s mailer. If the address already has an account —
+                  or the mailer is not configured yet — you get the link to copy instead. The person
+                  must sign in with that exact address to join.
                 </p>
               </div>
             )}
