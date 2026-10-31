@@ -6,6 +6,7 @@ import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
 import { explainBillingError } from '@/lib/billing';
 import { describeInviteOutcome, explainInviteFailure } from '@/lib/invites';
+import { explainRunFailure, scriptedDeliverable } from '@/lib/tasks';
 import { DEFAULT_PREFS, normalisePrefs, prefsEqual } from '@/lib/prefs';
 import { explainReplyFailure } from '@/lib/replies';
 
@@ -336,6 +337,45 @@ describe('notification preferences', () => {
       expect(stored.user?.prefs?.digest).toBe(false);
     });
     expect(screen.getByRole('button', { name: /^Saved$/ })).toBeDisabled();
+  });
+});
+
+describe('running a task', () => {
+  it('delivers a template in the demo and labels it as one', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    renderAt('/dashboard/tasks');
+
+    const runButtons = await screen.findAllByRole('button', { name: /^Run /i });
+    await user.click(runButtons[0]);
+
+    // The panel opens on the deliverable, and nothing pretends a model wrote it.
+    expect(await screen.findByText(/Scripted deliverable for/i)).toBeInTheDocument();
+    expect(screen.getByText('Scripted')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Run again/i })).toBeInTheDocument();
+    // It also lands in the conversation, so the thread and the board agree.
+    expect(screen.getByText(/Also posted to the conversation/i)).toBeInTheDocument();
+  });
+
+  it('names the reason a run produced nothing', () => {
+    expect(explainRunFailure('rate_limited')).toMatch(/hourly run limit/i);
+    expect(explainRunFailure('not_member')).toMatch(/members of this workspace/i);
+    expect(explainRunFailure('task_not_found')).toMatch(/no longer exists/i);
+    expect(explainRunFailure('not_configured')).toMatch(/no model key/i);
+    expect(explainRunFailure('provider_error')).toMatch(/nothing was written/i);
+    expect(explainRunFailure('provider_error', 'insufficient_quota')).toMatch(/out of credits/i);
+  });
+
+  it('builds the scripted deliverable from the brief, not invented results', () => {
+    const draft = scriptedDeliverable(
+      { id: 't1', title: 'Draft the launch email', detail: 'One email, two paragraphs.', priority: 'High', due: 'Fri' },
+      { name: 'Ava', role: 'Sales Development Rep' },
+    );
+
+    expect(draft).toMatch(/Ava/);
+    expect(draft).toMatch(/Draft the launch email/);
+    expect(draft).toContain('One email, two paragraphs.');
+    expect(draft).toMatch(/no model was called/i);
   });
 });
 

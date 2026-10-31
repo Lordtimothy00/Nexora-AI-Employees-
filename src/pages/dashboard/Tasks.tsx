@@ -8,7 +8,9 @@ import {
   Eye,
   Inbox,
   ListChecks,
+  Play,
   Plus,
+  Sparkles,
   X,
 } from 'lucide-react';
 import { EmptyState, PageHeader, Toast } from '@/components/dashboard/ui';
@@ -17,6 +19,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { useWorkspace, type Task, type TaskStatus } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
+import { explainRunFailure, runTask, scriptedDeliverable } from '@/lib/tasks';
 import { cn } from '@/lib/utils';
 
 const columns: {
@@ -41,12 +44,19 @@ const priorityStyles: Record<Task['priority'], string> = {
 const order: TaskStatus[] = ['backlog', 'in_progress', 'review', 'done'];
 
 export function Tasks() {
-  const { tasks, hires, moveTask } = useWorkspace();
+  const { tasks, hires, moveTask, appendMessage, refreshWorkspace } = useWorkspace();
   const [filter, setFilter] = useState<string>('all');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selected, setSelected] = useState<Task | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
+  const [runningId, setRunningId] = useState<string | null>(null);
+  // What came back from the last run, kept against the task so the sheet can show it.
+  const [deliverable, setDeliverable] = useState<{
+    taskId: string;
+    text: string;
+    provider: string | null;
+  } | null>(null);
 
   const filtered = useMemo(
     () => (filter === 'all' ? tasks : tasks.filter((task) => task.employeeId === filter)),
@@ -56,6 +66,40 @@ export function Tasks() {
   const showToast = (message: string) => {
     setToast(message);
     setTimeout(() => setToast(null), 3800);
+  };
+
+  /**
+   * Runs one task. With no backend (the local demo) the employee produces a template that says so;
+   * with a backend the edge function does the work and writes it into the thread, the feed and the
+   * board. A real failure never fabricates a deliverable — it reports why and leaves the task alone.
+   */
+  const run = async (task: Task) => {
+    const person = getEmployeeById(task.employeeId);
+    if (!person || runningId) return;
+
+    setRunningId(task.id);
+    setDeliverable(null);
+    try {
+      const outcome = await runTask(task, person);
+
+      if (outcome.ok) {
+        setDeliverable({ taskId: task.id, text: outcome.deliverable, provider: outcome.provider });
+        setSelected({ ...task, status: 'review' });
+        await refreshWorkspace();
+        showToast(`${person.name} delivered “${task.title}” — now in review.`);
+      } else if (outcome.reason === 'no_backend') {
+        const text = scriptedDeliverable(task, person);
+        appendMessage(task.employeeId, text, 'employee');
+        moveTask(task.id, 'review');
+        setDeliverable({ taskId: task.id, text, provider: null });
+        setSelected({ ...task, status: 'review' });
+        showToast(explainRunFailure(outcome.reason));
+      } else {
+        showToast(explainRunFailure(outcome.reason, outcome.detail));
+      }
+    } finally {
+      setRunningId(null);
+    }
   };
 
   const advance = (task: Task, direction: 1 | -1) => {
@@ -221,6 +265,20 @@ export function Tasks() {
                           <div className="flex items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
                             <button
                               type="button"
+                              onClick={() => void run(task)}
+                              disabled={runningId === task.id}
+                              aria-label={`Run ${task.title}`}
+                              title={`Ask ${person?.name ?? 'the employee'} to deliver this`}
+                              className="grid size-5 place-items-center rounded text-[#9df7c2] hover:bg-white/8 hover:text-white disabled:opacity-40"
+                            >
+                              {runningId === task.id ? (
+                                <span className="size-2.5 animate-spin rounded-full border border-current border-t-transparent" />
+                              ) : (
+                                <Play className="size-2.5" />
+                              )}
+                            </button>
+                            <button
+                              type="button"
                               onClick={() => advance(task, -1)}
                               disabled={task.status === 'backlog'}
                               aria-label="Move back"
@@ -367,11 +425,42 @@ export function Tasks() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between border-t border-white/12 bg-white/[0.015] px-5 py-3">
+            {deliverable?.taskId === selected.id && (
+              <div className="border-t border-white/12 bg-[#0bd39a]/[0.04] px-5 py-4">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9df7c2]">
+                    <Sparkles className="size-3" /> Deliverable
+                  </p>
+                  <span className="font-mono text-[9px] text-[#8d9ea7]">
+                    {deliverable.provider ? `Live · ${deliverable.provider}` : 'Scripted'}
+                  </span>
+                </div>
+                <p className="scroll-thin mt-2 max-h-56 overflow-y-auto whitespace-pre-wrap text-[12px] leading-relaxed text-[#dbe7e8]">
+                  {deliverable.text}
+                </p>
+                <p className="mt-2 text-[10px] text-[#8d9ea7]">
+                  Also posted to the conversation and the activity feed. Approve it there when you are
+                  happy — nothing leaves the workspace without you.
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between gap-3 border-t border-white/12 bg-white/[0.015] px-5 py-3">
               <p className="text-[10px] text-[#8d9ea7]">Auto-saved to your workspace</p>
-              <Button size="sm" variant="secondary" onClick={() => setSelected(null)}>
-                Close
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => void run(selected)}
+                  loading={runningId === selected.id}
+                  disabled={Boolean(runningId) && runningId !== selected.id}
+                  iconLeft={<Play className="size-3.5" />}
+                >
+                  {deliverable?.taskId === selected.id ? 'Run again' : 'Run task'}
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setSelected(null)}>
+                  Close
+                </Button>
+              </div>
             </div>
           </div>
         </div>

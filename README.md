@@ -169,6 +169,37 @@ deployed with JWT verification on.
 - Replies are written back through the normal `messages` table, so they are workspace-scoped and
   visible to every member.
 
+### Running a task
+
+The one piece of real execution: the Play button on a task card (or **Run task** in the detail
+sheet) calls the `run-task` edge function (`supabase/functions/run-task`, JWT verification on) and
+the employee hands back finished work.
+
+- The browser sends `{ workspaceId, taskId, employee }` only. The brief is read from `tasks` with
+  the id **and** the workspace id, so a caller cannot have an employee deliver something that was
+  never assigned to it, and the request body is never trusted for task text.
+- Membership is checked first (`workspace_members`), and the check fails closed: if it cannot be
+  answered the function returns `503 workspace_check_failed` rather than assuming a member.
+- One run writes three rows: a `messages` entry from the employee, an `activities` entry
+  (`kind: delivery`) for the feed, and `tasks.status = 'review'`. Nothing is auto-approved — a
+  person still moves the card on.
+- 20 runs per workspace per hour, counted from `activities` rather than memory so cold starts
+  cannot reset the budget. Over the limit returns `429 rate_limited`.
+- Same provider chain and cooldown as `employee-reply` (gemini → openai → anthropic), 20 s per
+  attempt and 30 s overall. A failed run writes nothing: a half-written run would be worse than a
+  refusal, so the first failed write returns `502 write_failed`.
+- Errors are typed and the UI turns each into one plain sentence: `400 bad_request`,
+  `401 not_authenticated`, `403 not_member`, `404 task_not_found`, `429 rate_limited`,
+  `501 not_configured`, `502 provider_error | write_failed`, `503 workspace_check_failed`.
+- The deliverable panel says where the text came from — `Deliverable · Live: gemini` or
+  `Scripted`. The no-backend demo shows a template built from the brief and says in its first
+  line that no model was called.
+
+**What this is not:** it is synchronous and single-shot. There is no queue, no cron, no retry, no
+background work, and no scheduling — one press produces one deliverable while the person waits.
+Autonomous multi-step work belongs on top of this function (a queue plus a worker calling it), not
+inside it, and nothing in the app claims otherwise.
+
 ### Billing (Stripe)
 
 Billing is a *workspace* property, and Stripe is the only writer. Four edge functions, all inert

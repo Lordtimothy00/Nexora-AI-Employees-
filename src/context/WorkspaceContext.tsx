@@ -97,6 +97,11 @@ interface WorkspaceContextValue extends WorkspaceState {
   deleteActiveWorkspace: () => Promise<void>;
   /** Leaves the active workspace. Ownership passes on if the caller owned it. */
   leaveActiveWorkspace: () => Promise<void>;
+  /**
+   * Re-reads the workspace from Postgres. Used after something server-side changed rows the
+   * browser did not write itself — running a task writes a message, an activity and a status.
+   */
+  refreshWorkspace: () => Promise<void>;
 }
 
 const STORAGE_KEY = 'nexora.workspace.v2';
@@ -596,8 +601,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       renameActiveWorkspace,
       deleteActiveWorkspace,
       leaveActiveWorkspace,
+      refreshWorkspace: refresh,
     }),
-    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace, renameActiveWorkspace, deleteActiveWorkspace, leaveActiveWorkspace],
+    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace, renameActiveWorkspace, deleteActiveWorkspace, leaveActiveWorkspace, refresh],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
