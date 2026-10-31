@@ -163,8 +163,10 @@ A workspace is a first-class thing now, not just one person's row.
   picking one calls `switch_workspace(id)`, which validates membership, stores the choice on
   `profiles.active_workspace_id` and refetches the workspace. Half of this already existed and
   was unreachable from the UI — you could be in two workspaces and only ever see one.
-- A user can only gain a second workspace by redeeming someone else's invite; there is no
-  "create another workspace" action yet. That is the next natural piece.
+- **Creating workspaces.** `create_workspace(name)` inserts the workspace, makes the caller its
+  `owner` and sets it active. The menu's *New workspace* row takes a name inline; the function
+  trims it, rejects empty or 60+ character names, and caps an account at 10 workspaces. The
+  sidebar menu therefore appears for every backend account, not only multi-workspace ones.
 
 ### Demo access
 

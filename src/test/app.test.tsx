@@ -253,11 +253,11 @@ describe('empty workspace', () => {
     expect(screen.getByText('Scripted')).toBeInTheDocument();
   });
 
-  it('hides the workspace switcher when there is nowhere else to go', async () => {
+  it('keeps the workspace label static in the local demo', async () => {
     seedSession();
     renderAt('/dashboard');
 
-    // A single-workspace account (and the local demo) must not offer a menu of one.
+    // No backend, so there are no memberships to list or create: a plain label, no menu.
     expect((await screen.findAllByText('Northwind Labs')).length).toBeGreaterThan(0);
     expect(screen.queryByRole('button', { name: /switch workspace/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();

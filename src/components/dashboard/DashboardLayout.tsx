@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   MessageSquare,
+  Plus,
   Settings,
   Sparkles,
   Users,
@@ -51,7 +52,7 @@ const pageTitles: Record<string, string> = {
 
 export function DashboardLayout() {
   const { user, logout } = useAuth();
-  const { hires, activities, workspaces, activeWorkspace, switching, switchWorkspace } =
+  const { hires, activities, workspaces, activeWorkspace, switching, switchWorkspace, createWorkspace } =
     useWorkspace();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showWorkspaces, setShowWorkspaces] = useState(false);
@@ -65,14 +66,20 @@ export function DashboardLayout() {
     setShowNotifications(false);
     setShowProfile(false);
     setShowWorkspaces(false);
+    setCreating(false);
+    setCreateError(null);
   }, [location.pathname]);
 
   const title = pageTitles[location.pathname] ?? 'Workspace';
   const seatsUsed = hires.length;
   const seatsTotal = 5;
 
-  // The switcher only earns its chevron when there is somewhere else to go.
-  const canSwitch = workspaces.length > 1;
+  // The menu is reachable for any account the backend knows about: it lists memberships and
+  // offers creating one. The local demo has none, so it keeps the plain label.
+  const canSwitch = workspaces.length > 0;
+  const [creating, setCreating] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [createError, setCreateError] = useState<string | null>(null);
   const workspaceName = activeWorkspace?.name ?? user?.company ?? 'Workspace';
   const planLabel = `${activeWorkspace?.plan ?? user?.plan ?? 'growth'} plan`;
 
@@ -170,6 +177,78 @@ export function DashboardLayout() {
                   </button>
                 );
               })}
+
+              <div className="my-1 h-px bg-white/10" />
+
+              {creating ? (
+                <form
+                  className="px-1.5 pb-1"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const name = newName.trim();
+                    if (!name) {
+                      setCreateError('Give the workspace a name.');
+                      return;
+                    }
+                    setCreateError(null);
+                    void createWorkspace(name)
+                      .then(() => {
+                        setCreating(false);
+                        setNewName('');
+                        setShowWorkspaces(false);
+                      })
+                      .catch((error: Error) => setCreateError(error.message));
+                  }}
+                >
+                  <input
+                    autoFocus
+                    value={newName}
+                    onChange={(event) => setNewName(event.target.value)}
+                    maxLength={60}
+                    placeholder="Workspace name"
+                    aria-label="New workspace name"
+                    className="w-full rounded-lg border border-white/12 bg-white/[0.04] px-2 py-1.5 text-[11.5px] text-white placeholder:text-[#7d909a] focus:border-[#0bd39a]/50 focus:outline-none"
+                  />
+                  {createError && (
+                    <p className="mt-1 px-0.5 text-[10px] text-[#e8a1a1]">{createError}</p>
+                  )}
+                  <div className="mt-1.5 flex gap-1.5">
+                    <button
+                      type="submit"
+                      disabled={switching}
+                      className="flex-1 rounded-lg bg-[#08b884] py-1.5 text-[11px] font-medium text-white transition hover:brightness-110 disabled:opacity-50"
+                    >
+                      {switching ? 'Creating…' : 'Create'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCreating(false);
+                        setNewName('');
+                        setCreateError(null);
+                      }}
+                      className="rounded-lg border border-white/12 px-2.5 py-1.5 text-[11px] text-[#b9c9cf] transition hover:text-white"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setCreating(true);
+                    setCreateError(null);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[11.5px] text-[#b9c9cf] transition hover:bg-white/[0.05] hover:text-white"
+                >
+                  <span className="grid size-6 shrink-0 place-items-center rounded-md border border-dashed border-white/20">
+                    <Plus className="size-3" />
+                  </span>
+                  New workspace
+                </button>
+              )}
             </div>
           </>
         )}

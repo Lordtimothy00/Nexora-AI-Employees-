@@ -276,6 +276,18 @@ export async function fetchWorkspaces(): Promise<WorkspaceSummary[]> {
 }
 
 /**
+ * Creates a workspace and makes it the active one. Names are trimmed and validated server-side
+ * (non-empty, under 60 characters, at most 10 workspaces per account).
+ */
+export async function createWorkspace(name: string): Promise<string> {
+  const db = await client();
+  const { data, error } = await db.rpc('create_workspace', { p_name: name });
+  if (error) throw new Error(error.message);
+  resetWorkspaceCache();
+  return data as string;
+}
+
+/**
  * Moves the signed-in person to another workspace. The id is persisted on their profile, so the
  * choice survives a reload, and the cached id is dropped so the next fetch reads the new one.
  */

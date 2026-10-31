@@ -11,6 +11,7 @@ import { employees, getEmployeeById } from '@/data/employees';
 import { useAuth } from '@/context/AuthContext';
 import {
   createHire as createRemoteHire,
+  createWorkspace as createRemoteWorkspace,
   createMessage as createRemoteMessage,
   createTask as createRemoteTask,
   deleteHire as deleteRemoteHire,
@@ -86,6 +87,7 @@ interface WorkspaceContextValue extends WorkspaceState {
   activeWorkspace: WorkspaceSummary | null;
   switching: boolean;
   switchWorkspace: (workspaceId: string) => Promise<void>;
+  createWorkspace: (name: string) => Promise<void>;
 }
 
 const STORAGE_KEY = 'nexora.workspace.v2';
@@ -479,6 +481,21 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     [remote, activeId, refresh],
   );
 
+  const createWorkspace = useCallback(
+    async (name: string) => {
+      if (!remote) return;
+      setSwitching(true);
+      try {
+        await createRemoteWorkspace(name);
+        await loadWorkspaces();
+        await refresh();
+      } finally {
+        setSwitching(false);
+      }
+    },
+    [remote, loadWorkspaces, refresh],
+  );
+
   const completedThisMonth = useMemo(
     () => state.hires.reduce((sum, hire) => sum + Math.round(hire.tasksCompleted * 0.22), 0) + state.tasks.filter((t) => t.status === 'done').length,
     [state.hires, state.tasks],
@@ -524,8 +541,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       activeWorkspace: workspaces.find((workspace) => workspace.id === activeId) ?? null,
       switching,
       switchWorkspace,
+      createWorkspace,
     }),
-    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace],
+    [state, hire, release, togglePause, addTask, moveTask, appendMessage, completedThisMonth, hoursSaved, utilization, monthlySpend, workspaces, activeId, switching, switchWorkspace, createWorkspace],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
