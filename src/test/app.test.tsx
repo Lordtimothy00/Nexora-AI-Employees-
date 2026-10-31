@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '@/App';
 import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
+import { explainBillingError } from '@/lib/billing';
 import { explainReplyFailure } from '@/lib/replies';
 
 beforeEach(() => {
@@ -263,13 +264,18 @@ describe('empty workspace', () => {
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
 
-  it('shows no receipts for a brand-new account', async () => {
+  it('shows no receipts and no card for the demo workspace', async () => {
     renderAt('/dashboard/billing');
     expect(await screen.findByText(/No invoices yet/i)).toBeInTheDocument();
-    expect(screen.queryByText('INV-2041')).not.toBeInTheDocument();
+    expect(screen.queryByText(/INV-\d{6}/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Stripe is not connected/i)).toBeInTheDocument();
+    // The old page printed a fake Visa ending 4242 and claimed an Active plan.
+    expect(screen.queryByText(/4242/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Active$/)).not.toBeInTheDocument();
+    expect(screen.getByText(/No plan yet/i)).toBeInTheDocument();
   });
 
-  it('shows receipts once the account has billing history', async () => {
+  it('does not invent receipts for an old account either', async () => {
     localStorage.setItem(
       'nexora.auth.v1',
       JSON.stringify({
@@ -286,10 +292,9 @@ describe('empty workspace', () => {
     );
 
     renderAt('/dashboard/billing');
-    // Receipts are derived from the account age, one per month on the current plan.
-    const receipts = await screen.findAllByText(/INV-\d{6}/);
-    expect(receipts.length).toBeGreaterThan(0);
-    expect(screen.queryByText(/No invoices yet/i)).not.toBeInTheDocument();
+    // Age once implied a paid invoice every month. Nothing was ever charged, so nothing is listed.
+    expect(await screen.findByText(/No invoices yet/i)).toBeInTheDocument();
+    expect(screen.queryByText(/INV-\d{6}/)).not.toBeInTheDocument();
     expect(screen.getByText(/Stripe is not connected/i)).toBeInTheDocument();
   });
 
@@ -312,6 +317,17 @@ describe('empty workspace', () => {
 
     expect(errorSpy).not.toHaveBeenCalled();
     errorSpy.mockRestore();
+  });
+});
+
+describe('billing failure copy', () => {
+  it('names the missing secret instead of a generic failure', () => {
+    expect(explainBillingError({ code: 'not_configured', missing: ['STRIPE_SECRET_KEY'] })).toMatch(/STRIPE_SECRET_KEY/);
+    expect(explainBillingError({ code: 'price_not_configured', missing: ['STRIPE_PRICE_SCALE_YEAR'] })).toMatch(
+      /STRIPE_PRICE_SCALE_YEAR/,
+    );
+    expect(explainBillingError({ code: 'already_subscribed' })).toMatch(/already has a subscription/i);
+    expect(explainBillingError({ code: 'stripe_error' })).toMatch(/nothing was charged/i);
   });
 });
 

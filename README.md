@@ -127,19 +127,48 @@ deployed with JWT verification on.
 
 ### Billing (Stripe)
 
-Two edge functions, both deployed and inert until keys exist:
+Billing is a *workspace* property, and Stripe is the only writer. Four edge functions, all inert
+until the project has keys:
 
-- `create-checkout-session` — takes `{ plan }`, reads the caller's id from the JWT, and creates a
-  Stripe Checkout session with the plan stashed in `metadata` (and on the subscription). Needs
-  `STRIPE_SECRET_KEY` plus `STRIPE_PRICE_LAUNCH` / `STRIPE_PRICE_GROWTH` / `STRIPE_PRICE_SCALE`.
-- `stripe-webhook` — verifies the `stripe-signature` header with HMAC-SHA256 (no SDK), then sets
-  `profiles.plan` on `checkout.session.completed` and drops back to `launch` on
-  `customer.subscription.deleted`. Needs `STRIPE_WEBHOOK_SECRET`, and deploys with JWT verification
-  **off** — the signature is the authentication.
+- `billing-status` — returns booleans only: which of the secrets below exist. The Billing page uses
+  it to say exactly what is missing (`STRIPE_PRICE_SCALE_YEAR`, …) instead of a generic failure.
+- `create-checkout-session` — takes `{ plan, interval }`, reads the caller from the JWT, and
+  resolves their **active workspace** server-side. Requires `owner`/`admin` on it, refuses a
+  workspace that is already subscribed (that person belongs in the portal), creates a Stripe
+  customer once per workspace, and opens Checkout with the workspace id in `client_reference_id`,
+  session and subscription metadata. Returns `{ url }` or a coded error.
+- `billing-portal` — a Stripe-hosted portal session for the workspace's customer: cards, invoices,
+  plan changes, cancellation. Card data never reaches this app or its database.
+- `stripe-webhook` — verifies `stripe-signature` with HMAC-SHA256 and a five-minute tolerance
+  (multiple `v1` signatures supported), records each event id in `stripe_events` so a retry is a
+  no-op, then applies `checkout.session.completed`, `customer.subscription.created|updated|deleted`
+  and `invoice.payment_failed`. Deploys with JWT verification **off** — the signature is the
+  authentication.
 
-The Billing page calls `startCheckout(plan)` and redirects to the returned URL; with no keys the
-function answers 501 and the page shows "checkout is not available yet" instead of failing silently.
-Returning from Stripe lands on `/dashboard/billing?checkout=success|cancelled`, which shows a toast.
+Secrets (Project → Edge Functions → Secrets):
+
+```
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+STRIPE_PRICE_LAUNCH_MONTH  STRIPE_PRICE_LAUNCH_YEAR
+STRIPE_PRICE_GROWTH_MONTH  STRIPE_PRICE_GROWTH_YEAR
+STRIPE_PRICE_SCALE_MONTH   STRIPE_PRICE_SCALE_YEAR
+```
+
+`STRIPE_PRICE_LAUNCH` / `_GROWTH` / `_SCALE` are also accepted as the monthly names. Point a Stripe
+webhook at `https://<project>.supabase.co/functions/v1/stripe-webhook` with the five events above.
+
+Data model: `workspaces` gained `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`,
+`billing_interval`, `current_period_end` and `cancel_at_period_end`. `plan` no longer has a default —
+a plan is something Stripe said, not something assumed on insert, and `workspace_billing()` reads it
+back for the current workspace. Clients can no longer write those columns: the table grant is
+`update (name)` only, so an admin can rename a workspace but nobody can self-assign Scale.
+
+The Billing page shows only confirmed state: no plan means *no plan*, with no renewal date and no
+invoices. While the keys are missing it names them. Returning from Checkout lands on
+`/dashboard/billing?checkout=success`, which polls `workspace_billing()` for ~15s because the
+webhook usually lands a moment after the redirect — if Stripe has not confirmed by then it says so
+rather than pretending.
 
 ### Team seats
 

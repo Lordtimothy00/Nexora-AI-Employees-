@@ -257,6 +257,49 @@ export interface WorkspaceSummary {
   members: number;
 }
 
+export interface WorkspaceBilling {
+  plan: 'launch' | 'growth' | 'scale' | null;
+  status: string | null;
+  interval: 'month' | 'year' | null;
+  periodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  hasCustomer: boolean;
+  subscriptionId: string | null;
+}
+
+/**
+ * What Stripe has actually said about the workspace the person is looking at. Everything is null or
+ * false until a subscription exists — no plan is assumed on creation.
+ */
+export async function fetchWorkspaceBilling(): Promise<WorkspaceBilling | null> {
+  const db = await client();
+  const { data, error } = await db.rpc('workspace_billing');
+  if (error) throw new Error(error.message);
+
+  type Row = {
+    plan: string | null;
+    status: string | null;
+    billing_interval: string | null;
+    current_period_end: string | null;
+    cancel_at_period_end: boolean | null;
+    has_customer: boolean | null;
+    subscription_id: string | null;
+  };
+
+  const row = ((data ?? []) as Row[])[0];
+  if (!row) return null;
+
+  return {
+    plan: (row.plan as WorkspaceBilling['plan']) ?? null,
+    status: row.status ?? null,
+    interval: (row.billing_interval as 'month' | 'year' | null) ?? null,
+    periodEnd: row.current_period_end ?? null,
+    cancelAtPeriodEnd: Boolean(row.cancel_at_period_end),
+    hasCustomer: Boolean(row.has_customer),
+    subscriptionId: row.subscription_id ?? null,
+  };
+}
+
 /** Every workspace this person belongs to, newest last. Empty for the local demo account. */
 export async function fetchWorkspaces(): Promise<WorkspaceSummary[]> {
   const db = await client();
