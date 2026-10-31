@@ -184,15 +184,27 @@ Deno.serve(async (request) => {
   const origin = safeOrigin(body.origin);
   const metadata = { workspace_id: workspaceId, user_id: userId, plan, interval };
 
+  // Every plan is recurring, so this is a subscription session. The two mode-specific parameters
+  // further down follow this value instead of being hard-coded.
+  const mode: 'payment' | 'subscription' = 'subscription';
+
   const form = new URLSearchParams({
-    mode: 'subscription',
+    mode,
+    // Hosted Checkout settings, as configured in Checkout Studio.
+    ui_mode: 'hosted_page',
+    billing_address_collection: 'auto',
+    'phone_number_collection[enabled]': 'true',
+    'automatic_tax[enabled]': 'false',
+    allow_promotion_codes: 'false',
+    integration_identifier: 'hosted_mobile_app_0001',
+    origin_context: 'mobile_app',
+    // Wiring this app cannot work without: which customer, which workspace, which plan.
     customer: customerId,
     'line_items[0][price]': price,
     'line_items[0][quantity]': '1',
     client_reference_id: workspaceId,
     success_url: `${origin}/dashboard/billing?checkout=success`,
     cancel_url: `${origin}/dashboard/billing?checkout=cancelled`,
-    allow_promotion_codes: 'true',
     'subscription_data[metadata][workspace_id]': workspaceId,
     'subscription_data[metadata][user_id]': userId,
     'subscription_data[metadata][plan]': plan,
@@ -202,6 +214,11 @@ Deno.serve(async (request) => {
     'metadata[plan]': plan,
     'metadata[interval]': interval,
   });
+
+  if (mode === 'subscription') form.set('payment_method_collection', 'always');
+  // Stripe refuses submit_type on any session that is not a one-time payment, so it is only sent
+  // where it applies — the configured value survives if this flow ever sells a one-time product.
+  if (mode === 'payment') form.set('submit_type', 'auto');
 
   const session = await stripe('/checkout/sessions', secret, form);
   const url = (session.payload as { url?: string } | null)?.url;
