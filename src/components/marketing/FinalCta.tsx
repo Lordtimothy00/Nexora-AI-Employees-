@@ -49,7 +49,7 @@ export function FinalCta() {
               </div>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] text-[#a7b7be]">
-                {['No credit card', 'Cancel in one click', 'Keep every deliverable'].map((item) => (
+                {['Card required, charged after 3 days', 'Cancel in one click', 'Keep every deliverable'].map((item) => (
                   <span key={item} className="inline-flex items-center gap-1.5">
                     <Check className="size-3 text-mint" />
                     {item}

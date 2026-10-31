@@ -187,7 +187,7 @@ export function Signup() {
         </Button>
 
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-1 text-[10.5px] text-[#9aaab3]">
-          {['No credit card', 'Cancel anytime', 'Keep your deliverables'].map((item) => (
+          {['Card required, charged after 3 days', 'Cancel anytime', 'Keep your deliverables'].map((item) => (
             <span key={item} className="inline-flex items-center gap-1">
               <Check className="size-3 text-mint" /> {item}
             </span>
