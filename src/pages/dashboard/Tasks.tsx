@@ -439,8 +439,9 @@ export function Tasks() {
                   {deliverable.text}
                 </p>
                 <p className="mt-2 text-[10px] text-[#8d9ea7]">
-                  Also posted to the conversation and the activity feed. Approve it there when you are
-                  happy — nothing leaves the workspace without you.
+                  {deliverable.provider
+                    ? 'Also posted to the conversation and the activity feed. Approve it there when you are happy — nothing leaves the workspace without you.'
+                    : 'Posted to the conversation in this demo build only. Nothing leaves the workspace without you.'}
                 </p>
               </div>
             )}
