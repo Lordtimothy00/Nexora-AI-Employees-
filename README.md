@@ -155,8 +155,22 @@ STRIPE_PRICE_GROWTH_MONTH  STRIPE_PRICE_GROWTH_YEAR
 STRIPE_PRICE_SCALE_MONTH   STRIPE_PRICE_SCALE_YEAR
 ```
 
-`STRIPE_PRICE_LAUNCH` / `_GROWTH` / `_SCALE` are also accepted as the monthly names. Point a Stripe
-webhook at `https://<project>.supabase.co/functions/v1/stripe-webhook` with the five events above.
+`STRIPE_PRICE_LAUNCH` / `_GROWTH` / `_SCALE` are also accepted as the monthly names.
+
+Setting it up in test mode, in order:
+
+1. Stripe → Products: one product per plan with **two recurring prices** — Launch $12/mo and
+   $10/mo billed yearly, Growth $55 and $44, Scale $199 and $159. Copy the six `price_…` ids.
+2. Supabase → Project Settings → Edge Functions → Secrets: add `STRIPE_SECRET_KEY` (the
+   `sk_test_…` key from Stripe → Developers → API keys) and the six price ids above.
+3. Stripe → Developers → Webhooks → Add endpoint:
+   `https://<project>.supabase.co/functions/v1/stripe-webhook`, events
+   `checkout.session.completed`, `customer.subscription.created`, `.updated`, `.deleted`,
+   `invoice.payment_failed`. Copy the `whsec_…` signing secret in as `STRIPE_WEBHOOK_SECRET`.
+4. Reload `/dashboard/billing`. While anything is missing the page lists it under
+   *Finish Stripe setup* (owner only) and checkout refuses before it reaches Stripe; once the
+   secrets exist the same page shows *Stripe is connected* state and the buttons work.
+5. `billing-status` answers the same question over HTTP if the page is not handy.
 
 Data model: `workspaces` gained `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`,
 `billing_interval`, `current_period_end` and `cancel_at_period_end`. `plan` no longer has a default —

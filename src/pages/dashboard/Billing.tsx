@@ -43,7 +43,7 @@ function statusBadge(billing: WorkspaceBilling) {
 
 export function Billing() {
   const { user } = useAuth();
-  const { hires, completedThisMonth } = useWorkspace();
+  const { hires, completedThisMonth, activeWorkspace } = useWorkspace();
 
   // The local demo account has no workspaces table behind it, so nothing here can be billed.
   const remote = backendConfigured && !!user && !user.id.startsWith('usr_');
@@ -149,6 +149,10 @@ export function Billing() {
     : 0;
   const priceReady = (planId: CheckoutPlanId) => status?.prices?.[planId]?.[interval] ?? false;
   const checkoutEnabled = remote && Boolean(status?.configured);
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  const webhookUrl = supabaseUrl ? `${supabaseUrl}/functions/v1/stripe-webhook` : null;
+  const setupIncomplete = remote && Boolean(status?.missing.length);
+  const isOwner = activeWorkspace?.role === 'owner';
 
   const usage = limits
     ? [
@@ -196,6 +200,44 @@ export function Billing() {
             </p>
           </div>
         </div>
+      )}
+
+      {setupIncomplete && isOwner && (
+        <Panel title="Finish Stripe setup" subtitle="Owner only — disappears once every secret exists">
+          <p className="text-[11px] leading-relaxed text-[#aabbc2]">
+            Add these as Edge Function secrets (Supabase → Project Settings → Edge Functions → Secrets).
+            They live on the server only; nothing here reaches the browser.
+          </p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {status?.missing.map((name) => (
+              <span
+                key={name}
+                className="rounded-md border border-white/12 bg-white/[0.05] px-2 py-1 font-mono text-[10px] text-[#d8e4e4]"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+
+          {!status?.webhook && webhookUrl && (
+            <div className="mt-3 rounded-lg border border-white/12 bg-white/[0.03] p-3">
+              <p className="text-[11px] font-medium text-white">Webhook endpoint</p>
+              <p className="mt-1 break-all font-mono text-[10.5px] text-[#9df7c2]">{webhookUrl}</p>
+              <p className="mt-1.5 text-[10.5px] leading-relaxed text-[#9aaab3]">
+                In Stripe → Developers → Webhooks, add that URL and send{' '}
+                <span className="font-mono">checkout.session.completed</span>,{' '}
+                <span className="font-mono">customer.subscription.created</span>,{' '}
+                <span className="font-mono">.updated</span>, <span className="font-mono">.deleted</span> and{' '}
+                <span className="font-mono">invoice.payment_failed</span>. Copy the signing secret it shows
+                into <span className="font-mono">STRIPE_WEBHOOK_SECRET</span>.
+              </p>
+            </div>
+          )}
+
+          <p className="mt-2.5 text-[10px] leading-relaxed text-[#8d9ea7]">
+            Nothing is charged while any of these are missing: checkout refuses before it reaches Stripe.
+          </p>
+        </Panel>
       )}
 
       <div className="grid gap-3 lg:grid-cols-[1.4fr_1fr]">
