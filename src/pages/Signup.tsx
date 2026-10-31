@@ -66,8 +66,9 @@ export function Signup() {
       title="Build your team."
       subtitle={
         <>
-          Create a workspace, hire your first AI employee, and get 14 days of Growth — no card
-          required. Already have an account?{' '}
+          Create a workspace, hire your first AI employee, and get 3 days free. A card is
+          required to start, because the plan continues without a gap once the trial ends. Already
+          have an account?{' '}
           <Link to="/login" className="font-medium text-[#9df7c2] hover:text-white">
             Sign in
           </Link>
@@ -92,7 +93,7 @@ export function Signup() {
         <div>
           <p className="text-[10px] uppercase tracking-[0.12em] text-[#9aaab3]">Selected plan</p>
           <p className="mt-0.5 text-[13px] font-medium text-white">
-            {plan.name} · 14-day free trial
+            {plan.name} · 3-day free trial
           </p>
         </div>
         <Link to="/pricing" className="text-[11.5px] text-[#9df7c2] hover:text-white">

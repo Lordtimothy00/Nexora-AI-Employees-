@@ -32,6 +32,17 @@ const PLANS: Plan[] = ['launch', 'growth', 'scale'];
 const INTERVALS: Interval[] = ['month', 'year'];
 const ACTIVE_STATUSES = ['active', 'trialing', 'past_due'];
 
+/**
+ * A new workspace is free for three days and no longer — Stripe is sent this exact number in
+ * whole days, so nothing downstream can stretch it. The card is collected up front
+ * (payment_method_collection=always), which is both what Stripe requires for a trial and what
+ * makes the first charge land on day four instead of failing silently.
+ *
+ * Granted once per workspace: the subscription id survives a cancellation, so a workspace that
+ * has ever subscribed is charged from its first invoice rather than farming trials.
+ */
+const TRIAL_DAYS = 3;
+
 function userIdFrom(authorization: string | null): string | null {
   const token = authorization?.replace(/^Bearer\s+/i, '');
   const payload = token?.split('.')[1];
@@ -160,6 +171,8 @@ Deno.serve(async (request) => {
     return json({ error: 'already_subscribed' }, 409);
   }
 
+  const trialAvailable = !workspace.stripe_subscription_id;
+
   // One Stripe customer per workspace, created lazily and remembered on the row.
   let customerId = workspace.stripe_customer_id;
   if (!customerId) {
@@ -216,6 +229,10 @@ Deno.serve(async (request) => {
   });
 
   if (mode === 'subscription') form.set('payment_method_collection', 'always');
+  // Three days, or nothing at all — never more than TRIAL_DAYS.
+  if (mode === 'subscription' && trialAvailable) {
+    form.set('subscription_data[trial_period_days]', String(TRIAL_DAYS));
+  }
   // Stripe refuses submit_type on any session that is not a one-time payment, so it is only sent
   // where it applies — the configured value survives if this flow ever sells a one-time product.
   if (mode === 'payment') form.set('submit_type', 'auto');
@@ -229,5 +246,5 @@ Deno.serve(async (request) => {
     );
   }
 
-  return json({ url, metadata });
+  return json({ url, metadata, trialDays: trialAvailable && mode === 'subscription' ? TRIAL_DAYS : 0 });
 });

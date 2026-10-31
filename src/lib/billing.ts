@@ -1,6 +1,13 @@
 import type { Plan } from '@/data/site';
 import { getSupabase } from './supabase';
 
+/**
+ * How long a new workspace is free. Stripe is told the same number by create-checkout-session, and
+ * a card is collected up front, so this is a trial rather than a free tier: the first charge lands
+ * when the three days are up.
+ */
+export const TRIAL_DAYS = 3;
+
 export type CheckoutPlanId = Plan['id'];
 export type BillingInterval = 'month' | 'year';
 

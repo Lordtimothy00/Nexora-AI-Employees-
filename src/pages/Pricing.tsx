@@ -52,7 +52,8 @@ export function Pricing() {
             <Reveal delay={130}>
               <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#b8c8cd] md:text-base">
                 Flat monthly pricing. Every plan includes playbooks, integrations, approvals, and
-                unlimited human seats. Start with 14 days free — no card required.
+                unlimited human seats. Start with 3 days free — a card is required, and it is charged
+                when the trial ends.
               </p>
             </Reveal>
 
@@ -260,7 +261,7 @@ export function Pricing() {
                 All prices in USD. Taxes calculated at checkout. Annual plans renew at the same rate.
               </p>
               <ButtonLink to="/signup" size="sm" variant="secondary" iconRight={<ArrowRight className="size-3.5" />}>
-                Start free trial
+                Start 3-day free trial
               </ButtonLink>
             </div>
           </Reveal>

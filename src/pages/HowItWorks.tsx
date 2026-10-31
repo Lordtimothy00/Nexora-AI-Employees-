@@ -291,7 +291,7 @@ export function HowItWorks() {
             <Reveal delay={180}>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <ButtonLink to="/signup" size="lg" iconRight={<ArrowRight className="size-4" />}>
-                  Start free for 14 days
+                  Start your 3-day free trial
                 </ButtonLink>
                 <ButtonLink to="/employees" variant="secondary" size="lg">
                   Browse the roster

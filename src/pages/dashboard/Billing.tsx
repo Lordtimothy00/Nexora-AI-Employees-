@@ -11,6 +11,7 @@ import {
   fetchBillingStatus,
   openBillingPortal,
   startCheckout,
+  TRIAL_DAYS,
   type BillingInterval,
   type BillingStatus,
   type CheckoutPlanId,
@@ -149,6 +150,10 @@ export function Billing() {
     : 0;
   const priceReady = (planId: CheckoutPlanId) => status?.prices?.[planId]?.[interval] ?? false;
   const checkoutEnabled = remote && Boolean(status?.configured);
+  // Exactly the rule create-checkout-session applies: a workspace that has never held a
+  // subscription still gets its three days, one that has ever subscribed does not.
+  const trialAvailable = remote && !billing?.subscriptionId;
+  const trialing = billing?.status === 'trialing';
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
   const webhookUrl = supabaseUrl ? `${supabaseUrl}/functions/v1/stripe-webhook` : null;
   const setupIncomplete = remote && Boolean(status?.missing.length);
@@ -247,9 +252,11 @@ export function Billing() {
             currentPlan
               ? billing?.cancelAtPeriodEnd && periodEnd
                 ? `Ends ${periodEnd}`
-                : periodEnd
-                  ? `Renews ${periodEnd}`
-                  : 'Managed by Stripe'
+                : trialing && periodEnd
+                  ? `Free trial ends ${periodEnd}`
+                  : periodEnd
+                    ? `Renews ${periodEnd}`
+                    : 'Managed by Stripe'
               : 'No subscription yet'
           }
         >
@@ -281,6 +288,12 @@ export function Billing() {
                     Cancels at the end of the period. You keep access until {periodEnd ?? 'then'}.
                   </p>
                 )}
+                {trialing && (
+                  <p className="mt-2 text-[10.5px] text-[#9df7c2]">
+                    Free for {TRIAL_DAYS} days. The card on file is charged {periodEnd ?? 'when the trial ends'} unless
+                    you cancel first.
+                  </p>
+                )}
                 {billing.status === 'past_due' && (
                   <p className="mt-2 text-[10.5px] text-[#f0b4b4]">
                     Stripe could not charge the card. Update it in the billing portal to keep the plan.
@@ -301,7 +314,8 @@ export function Billing() {
               <p className="text-[13px] font-medium text-white">No plan yet</p>
               <p className="mt-1 max-w-[420px] text-[11.5px] leading-relaxed text-[#aabbc2]">
                 This workspace has never been through checkout, so there is no plan, no renewal date and no
-                invoice to show. Pick one below when you are ready.
+                invoice to show. New workspaces get {TRIAL_DAYS} days free on any plan — a card is required to
+                start, and the first charge lands when the trial ends.
               </p>
               <Button
                 size="sm"
@@ -458,6 +472,11 @@ export function Billing() {
                     <p className="mt-0.5 text-[10px] text-[#8d9ea7]">{currency(price * 12)} billed yearly</p>
                   )}
                   <p className="mt-1 text-[10px] text-[#a7b7be]">{plan.employeeLimit}</p>
+                  {!isCurrent && !billing?.plan && trialAvailable && (
+                    <p className="mt-1 text-[10px] text-[#9df7c2]">
+                      {TRIAL_DAYS} days free, then {currency(price)}/mo
+                    </p>
+                  )}
 
                   {isCurrent ? (
                     <Button variant="ghost" size="sm" className="mt-3 w-full" disabled>
@@ -483,7 +502,11 @@ export function Billing() {
                       loading={checkingOut === plan.id}
                       onClick={() => beginCheckout(plan.id)}
                     >
-                      {ready || !status ? `Choose ${plan.name}` : 'Price not configured'}
+                      {ready || !status
+                        ? trialAvailable
+                          ? `Start ${TRIAL_DAYS}-day free trial`
+                          : `Choose ${plan.name}`
+                        : 'Price not configured'}
                     </Button>
                   )}
                 </div>
@@ -495,7 +518,7 @@ export function Billing() {
             <ReceiptText className="size-3.5 shrink-0 text-[#a7b7be]" />
             <p className="text-[10px] text-[#9aaab3]">
               {status?.configured
-                ? 'Payments run through Stripe in test mode until live keys are set. This page only shows what Stripe has confirmed.'
+                ? `Payments run through Stripe${trialAvailable ? ` — the 3-day trial asks for a card now and charges it when the ${TRIAL_DAYS} days end` : ''}. This page only shows what Stripe has confirmed.`
                 : 'Checkout is disabled until the Stripe keys and price IDs are set on this project.'}
             </p>
           </div>

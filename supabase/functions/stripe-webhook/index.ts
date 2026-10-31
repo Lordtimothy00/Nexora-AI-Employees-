@@ -28,7 +28,12 @@ type Subscription = {
   current_period_end?: number;
   cancel_at_period_end?: boolean;
   metadata?: Record<string, string | undefined>;
-  items?: { data?: { price?: { id?: string; recurring?: { interval?: string } } }[] };
+  items?: {
+    data?: {
+      current_period_end?: number;
+      price?: { id?: string; recurring?: { interval?: string } };
+    }[];
+  };
 };
 
 function hex(buffer: ArrayBuffer) {
@@ -112,14 +117,20 @@ async function applySubscription(subscription: Subscription, serviceKey: string)
     ? (planFromMetadata as Plan)
     : planForPrice(price?.id);
 
+  // Newer Stripe API versions moved the period end onto the subscription item; older ones still
+  // carry it at the top level. Without the fallback a trialing workspace would have no date to
+  // show for the end of its three days.
+  const periodEndSeconds =
+    subscription.current_period_end ?? subscription.items?.data?.[0]?.current_period_end;
+
   const patch: Record<string, unknown> = {
     stripe_subscription_id: subscription.id ?? null,
     stripe_customer_id: subscription.customer ?? null,
     subscription_status: subscription.status ?? null,
     cancel_at_period_end: Boolean(subscription.cancel_at_period_end),
     billing_interval: price?.recurring?.interval ?? subscription.metadata?.interval ?? null,
-    current_period_end: subscription.current_period_end
-      ? new Date(subscription.current_period_end * 1000).toISOString()
+    current_period_end: periodEndSeconds
+      ? new Date(periodEndSeconds * 1000).toISOString()
       : null,
   };
 

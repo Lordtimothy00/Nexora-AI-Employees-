@@ -64,7 +64,7 @@ export function AuthShell({
             {[
               'Hire and onboard in four minutes',
               'Keep every deliverable, even if you cancel',
-              'No credit card for the 14-day trial',
+              '3 days free — card required, charged on day 4',
             ].map((item) => (
               <div key={item} className="flex items-center gap-2.5 text-[12.5px] text-[#cfdcde]">
                 <span className="grid size-5 place-items-center rounded-full bg-mint/12 ring-1 ring-inset ring-mint/25">

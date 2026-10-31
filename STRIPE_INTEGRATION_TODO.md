@@ -29,6 +29,7 @@ price IDs live in Supabase secrets and are currently absent, which is why the Bi
 | `STRIPE_PRICE_GROWTH_YEAR` (secret) | not set | Price ID for Growth, annual ($528/yr). |
 | `STRIPE_PRICE_SCALE_MONTH` (secret) | not set | Price ID for Scale, monthly ($199/mo). |
 | `STRIPE_PRICE_SCALE_YEAR` (secret) | not set | Price ID for Scale, annual ($1,908/yr). |
+| `subscription_data.trial_period_days` | `3` | Nothing to change — this is the 3-day trial, capped in code. See below if you want a shorter one. |
 | `mode` | `subscription` | Already correct — all six prices are recurring. Change to `payment` only if you start selling a one-time product. |
 | `success_url` | `${origin}/dashboard/billing?checkout=success` | Real value, kept as-is. `origin` is the caller's own origin, so it works on preview and production. |
 | `cancel_url` | `${origin}/dashboard/billing?checkout=cancelled` | Real value, kept as-is. |
@@ -56,6 +57,8 @@ These were configured in Checkout Studio and are now set on the session.
 | `submit_type` | `auto` — **only sent when `mode` is `payment`.** Stripe rejects `submit_type` on subscription and setup sessions, so with this app's recurring plans it is deliberately not on the wire. The value is kept in the function so it applies if a one-time product is ever sold. |
 | `integration_identifier` | `hosted_mobile_app_0001` |
 | `origin_context` | `mobile_app` |
+| `subscription_data.trial_period_days` | `3` — a new workspace is free for exactly three days |
+| `payment_method_collection` | `always` — required for a trial, and why a card is taken up front |
 
 **Preserved wiring (not Checkout Studio settings, but this app cannot run without them):**
 `customer`, `client_reference_id`, `metadata.*` and `subscription_data.metadata.*`. The
@@ -63,6 +66,18 @@ These were configured in Checkout Studio and are now set on the session.
 decide which workspace is upgraded to which plan; `customer` is the one Stripe customer kept per
 workspace (`workspaces.stripe_customer_id`) and is what the billing portal opens. Removing them
 would take the money and never change the plan.
+
+**The 3-day trial:** it is granted only when `workspaces.stripe_subscription_id` is empty, i.e. a
+workspace that has never held a subscription — once per workspace, not once per attempt. Stripe
+enforces the length because the number is sent on the session, not read from the dashboard. If you
+want a *shorter* trial, change `TRIAL_DAYS` in
+[supabase/functions/create-checkout-session/index.ts](supabase/functions/create-checkout-session/index.ts)
+and `TRIAL_DAYS` in [src/lib/billing.ts](src/lib/billing.ts) together and redeploy both the function
+and the site; do not go above 3 — the product and the marketing pages both promise three days, and
+`src/test/app.test.tsx` fails if the UI constant changes.
+
+If you configure a trial on the *price* in the Stripe dashboard it is ignored here, because the
+session parameter wins. Leave the price's own trial at zero so there is only one place that decides.
 
 **`ui_mode` version note:** `hosted_page` is what the current Stripe API versions accept (`hosted`
 was the older spelling, and `custom` was replaced by `elements`). This project talks to
@@ -140,6 +155,9 @@ no-op — that is what the event-id table is for.
 
 - Swap `sk_test_…` for `sk_live_…`, recreate the six prices in live mode, point the webhook at the
   live signing secret.
+- Check the trial after your first test payment: the Billing page should read *Free trial ends
+  <date>*, the badge should say *Trial*, and Stripe should show a `trialing` subscription whose
+  trial end is exactly 3 days out.
 - Turn `automatic_tax` on (and set a tax behaviour on the prices) if you need tax collected — today
   it is `false`, matching the studio configuration.
 - Promotion codes are off (`allow_promotion_codes: false`). Flip it to `true` if you want them.

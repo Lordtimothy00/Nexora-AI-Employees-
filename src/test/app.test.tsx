@@ -4,7 +4,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '@/App';
 import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
-import { explainBillingError } from '@/lib/billing';
+import { explainBillingError, TRIAL_DAYS } from '@/lib/billing';
+import { faqs } from '@/data/site';
 import { describeInviteOutcome, explainInviteFailure } from '@/lib/invites';
 import { explainRunFailure, scriptedDeliverable } from '@/lib/tasks';
 import { DEFAULT_PREFS, normalisePrefs, prefsEqual } from '@/lib/prefs';
@@ -353,8 +354,10 @@ describe('running a task', () => {
     expect(await screen.findByText(/Scripted deliverable for/i)).toBeInTheDocument();
     expect(screen.getByText('Scripted')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Run again/i })).toBeInTheDocument();
-    // It also lands in the conversation, so the thread and the board agree.
-    expect(screen.getByText(/Also posted to the conversation/i)).toBeInTheDocument();
+    // It lands in the conversation, and the panel says the demo stops there — the live path is the
+    // one that also writes the activity feed, so this copy must not promise a feed entry.
+    expect(screen.getByText(/Posted to the conversation in this demo build only/i)).toBeInTheDocument();
+    expect(screen.queryByText(/activity feed/i)).not.toBeInTheDocument();
   });
 
   it('names the reason a run produced nothing', () => {
@@ -508,5 +511,27 @@ describe('reply failure messages', () => {
     expect(explainReplyFailure('not_configured')).toMatch(/no model key is set/i);
     expect(explainReplyFailure('no_workspace')).toMatch(/does not belong to a workspace/i);
     expect(explainReplyFailure('rate_limited')).toMatch(/hourly reply limit/i);
+  });
+});
+
+describe('free trial', () => {
+  it('offers three days and asks for a card wherever it mentions a trial', async () => {
+    renderAt('/pricing');
+
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/department/i);
+    const intro = screen.getByText(/Start with 3 days free/i);
+    expect(intro).toHaveTextContent(/card is required/i);
+    expect(intro).toHaveTextContent(/charged\s*when the trial ends/i);
+    // Nothing anywhere on the page may still promise the old two-week trial.
+    expect(screen.queryByText(/14 days/i)).not.toBeInTheDocument();
+  });
+
+  it('keeps the trial at three days, expressed once and reused', () => {
+    expect(TRIAL_DAYS).toBe(3);
+
+    const trial = faqs.find((entry) => /trial/i.test(entry.q));
+    expect(trial?.a).toMatch(/3 days/);
+    expect(trial?.a).toMatch(/card is required/i);
+    expect(trial?.a).not.toMatch(/14 days|no card required/i);
   });
 });

@@ -271,7 +271,7 @@ export function Home() {
                     </div>
                   </div>
                   <span className="hidden h-8 w-px bg-white/10 sm:block" />
-                  <p className="text-[12px] text-[#8d9ea7]">14-day free trial · No credit card</p>
+                  <p className="text-[12px] text-[#8d9ea7]">3-day free trial · Card required</p>
                 </div>
               </Reveal>
             </div>
@@ -784,10 +784,10 @@ export function Home() {
                     Compare plans
                   </ButtonLink>
                   <ButtonLink to="/signup" variant="secondary" size="lg" iconLeft={<Sparkles className="size-4" />}>
-                    Start free for 14 days
+                    Start your 3-day free trial
                   </ButtonLink>
                   <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1.5 text-[11.5px] text-[#a7b7be]">
-                    <span className="inline-flex items-center gap-1"><Check className="size-3 text-mint" /> No card required</span>
+                    <span className="inline-flex items-center gap-1"><Check className="size-3 text-mint" /> Card required, charged after 3 days</span>
                     <span className="inline-flex items-center gap-1"><CalendarCheck className="size-3 text-mint" /> Cancel anytime</span>
                   </div>
                 </div>

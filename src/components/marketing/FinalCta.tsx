@@ -41,7 +41,7 @@ export function FinalCta() {
                   size="lg"
                   iconRight={<ArrowRight className="size-4" />}
                 >
-                  {user ? 'Open your workspace' : 'Start your 14-day trial'}
+                  {user ? 'Open your workspace' : 'Start your 3-day free trial'}
                 </ButtonLink>
                 <ButtonLink to="/employees" variant="secondary" size="lg">
                   Meet the team

@@ -264,7 +264,7 @@ export function EmployeeDetail() {
                         {user ? `Hire ${employee.name}` : 'Start free and hire'}
                       </Button>
                       <p className="mt-3 text-center text-[11px] text-[#9aaab3]">
-                        14-day trial · No card required · Cancel anytime
+                        3-day free trial · Card required · Cancel anytime
                       </p>
                     </>
                   )}
