@@ -154,7 +154,7 @@ function ChatScreen() {
           </div>
         </Bubble>
         <div className="flex items-end gap-1.5">
-          <Avatar name="Ava" src="/team/ava.jpg" initials="AV" accent="violet" size="xs" className="size-5" />
+          <Avatar name="Ava" src="/team/ava.jpg" initials="AV" accent="violet" size="xs" />
           <div className="flex items-center gap-0.5 rounded-xl rounded-bl-sm border border-white/12 bg-white/[0.045] px-2 py-1.5">
             {[0, 1, 2].map((dot) => (
               <span

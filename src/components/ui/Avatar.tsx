@@ -7,13 +7,14 @@ interface AvatarProps {
   src?: string;
   initials: string;
   accent?: Accent;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'hero';
+  size?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'hero';
   className?: string;
   status?: 'online' | 'paused' | 'offline';
   glow?: boolean;
 }
 
 const sizes = {
+  xxs: 'size-4 rounded-full text-[8px]',
   xs: 'size-7 rounded-[9px] text-[10px]',
   sm: 'size-9 rounded-[11px] text-[11px]',
   md: 'size-12 rounded-[14px] text-[13px]',
@@ -42,8 +43,13 @@ export function Avatar({
   const tone = accentClasses[accent];
   const showImage = src && !failed;
 
+  // The wrapper carries the same footprint as the box it holds. Without this a caller's
+  // `size-*` in className would shrink the wrapper while the preset size stayed on the box,
+  // and the image would spill over whatever sits next to it instead of being clipped.
+  const [footprint] = sizes[size].split(' ');
+
   return (
-    <div className={cn('relative shrink-0', className)}>
+    <div className={cn('relative shrink-0', footprint, className)}>
       {glow && (
         <div
           aria-hidden="true"

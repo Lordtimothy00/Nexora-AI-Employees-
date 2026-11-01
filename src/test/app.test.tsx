@@ -2,6 +2,7 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '@/App';
+import { Avatar } from '@/components/ui/Avatar';
 import { employees } from '@/data/employees';
 import { resetBackStack } from '@/lib/backStack';
 import { explainBillingError, LOCKED_STATUSES, lockExplanation, TRIAL_DAYS } from '@/lib/billing';
@@ -233,6 +234,33 @@ describe('authentication and dashboard', () => {
     await user.type(screen.getByLabelText('Create password'), 'supersecret1');
     await user.click(screen.getByRole('button', { name: /Create workspace/i }));
     expect(screen.getByText(/Please accept the terms/i)).toBeInTheDocument();
+  });
+});
+
+describe('avatar sizing', () => {
+  // The wrapper used to be free to disagree with the box inside it, so a caller that sized an
+  // avatar through className got a 16px slot holding a 28px photo: the image spilled out and
+  // covered the label beside it on the task filter chips.
+  it('keeps the wrapper the same size as the photo box', () => {
+    const { container } = render(
+      <Avatar name="Ava" src="/team/ava.jpg" initials="AV" accent="violet" size="xxs" />,
+    );
+    const wrapper = container.firstElementChild as HTMLElement;
+    const box = wrapper.firstElementChild as HTMLElement;
+
+    expect(wrapper).toHaveClass('size-4');
+    expect(box).toHaveClass('size-4');
+  });
+
+  it('never lets a className shrink the wrapper below its photo box', () => {
+    const { container } = render(
+      <Avatar name="Ava" src="/team/ava.jpg" initials="AV" size="xs" className="size-4" />,
+    );
+    const wrapper = container.firstElementChild as HTMLElement;
+    const box = wrapper.firstElementChild as HTMLElement;
+
+    expect(wrapper).toHaveClass('size-7');
+    expect(box).toHaveClass('size-7');
   });
 });
 

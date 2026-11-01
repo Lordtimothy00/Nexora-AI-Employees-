@@ -173,8 +173,7 @@ export function Tasks() {
                   src={person.avatar}
                   initials={person.initials}
                   accent={person.accent}
-                  size="xs"
-                  className="size-4 rounded-full text-[8px]"
+                  size="xxs"
                 />
                 {person.name}
                 <span className="font-mono text-[9px] text-[#9aaab3]">{count}</span>
