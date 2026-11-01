@@ -285,11 +285,13 @@ Deno.serve(async (request) => {
   }
   if (!task) return json({ error: 'task_not_found' }, 404);
 
-  // 4. One workspace cannot run tasks in a loop all day.
+  // 4. One workspace cannot run tasks in a loop all day. The count lives in `usage_events`, which
+  // only the service role can write: counting rows the workspace owns meant deleting them reset
+  // the budget, and the model spend that went with it.
   try {
     const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const response = await rest(
-      `/activities?workspace_id=eq.${workspaceId}&kind=eq.delivery&created_at=gte.${since}` +
+      `/usage_events?workspace_id=eq.${workspaceId}&kind=eq.run&created_at=gte.${since}` +
         `&select=id&limit=${RUN_LIMIT_PER_HOUR + 1}`,
     );
     if (response.ok) {
@@ -301,6 +303,14 @@ Deno.serve(async (request) => {
   } catch {
     /* the count is a courtesy; step 1 is the gate */
   }
+
+  // Recorded before the model is called, so a run that fails half way still counts against the
+  // ceiling. Best effort: an unwritable ledger must not block real work.
+  await rest('/usage_events', {
+    method: 'POST',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ workspace_id: workspaceId, user_id: userId, kind: 'run' }),
+  }).catch(() => undefined);
 
   const system = systemPrompt(employee);
   const prompt = taskPrompt(task);

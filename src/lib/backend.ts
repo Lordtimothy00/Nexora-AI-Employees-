@@ -225,12 +225,16 @@ export async function createMessage(employeeId: string, body: string, from: 'hum
   if (error) throw new Error(error.message);
 }
 
+/**
+ * Only the columns a person actually owns. The settings form also carries an email, and a plan
+ * arrives from the billing webhook — passing either straight through made PostgREST reject the
+ * whole row (`email` is not a profile column) or let the browser assert a plan it never bought.
+ */
 export async function updateProfile(
   patch: Partial<{
     name: string;
     company: string;
     role: string;
-    plan: string;
     prefs: NotificationPrefs;
   }>,
 ) {
@@ -238,7 +242,13 @@ export async function updateProfile(
   const { data: session } = await db.auth.getUser();
   if (!session.user) return;
 
-  const { error } = await db.from('profiles').upsert({ id: session.user.id, ...patch });
+  const row: Record<string, unknown> = { id: session.user.id };
+  if (typeof patch.name === 'string') row.name = patch.name;
+  if (typeof patch.company === 'string') row.company = patch.company;
+  if (typeof patch.role === 'string') row.role = patch.role;
+  if (patch.prefs) row.prefs = patch.prefs;
+
+  const { error } = await db.from('profiles').upsert(row);
   if (error) throw new Error(error.message);
 }
 

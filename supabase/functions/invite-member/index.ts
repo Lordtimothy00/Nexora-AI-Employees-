@@ -123,13 +123,14 @@ Deno.serve(async (request) => {
   const callerRole = String(membership[0]?.role ?? '');
   if (!['owner', 'admin'].includes(callerRole)) return json({ error: 'not_admin' }, 403);
 
-  // 2. A workspace cannot be used as an outbound mail relay.
+  // 2. A workspace cannot be used as an outbound mail relay. Counted from `usage_events`, which
+  // only the service role can write — invites are admin-deletable, so counting them let an admin
+  // reset the ceiling by removing the row.
   try {
     const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const response = await rest(
-      `/workspace_invites?workspace_id=eq.${workspaceId}&created_at=gte.${since}` +
+      `/usage_events?workspace_id=eq.${workspaceId}&kind=eq.invite&created_at=gte.${since}` +
         `&select=id&limit=${INVITE_LIMIT_PER_HOUR + 1}`,
-      { headers: { Prefer: 'count=exact' } },
     );
     if (response.ok) {
       const recent = (await response.json()) as Row[];
@@ -140,6 +141,13 @@ Deno.serve(async (request) => {
   } catch {
     /* the count is a courtesy, not a security control — the membership check above is */
   }
+
+  // Recorded before the send, so a failed delivery still counts against the ceiling.
+  await rest('/usage_events', {
+    method: 'POST',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({ workspace_id: workspaceId, user_id: userId, kind: 'invite' }),
+  }).catch(() => undefined);
 
   // 3. Reuse a pending invite for the same address so repeated clicks do not pile up rows.
   let token: string | null = null;

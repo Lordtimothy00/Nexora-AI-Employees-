@@ -389,6 +389,26 @@ Use **Settings → Reset demo workspace** to restore the seeded team.
 
 ---
 
+### Security and isolation
+
+Every table is behind row level security keyed on workspace membership (`is_workspace_member`), and
+no client role holds a grant on a billing column: `plan`, `status`, the Stripe ids and the period
+end are written only by `stripe-webhook` through the service role, and a trigger
+(`guard_workspace_billing`) rejects an insert or update that carries them from a browser. The trial
+flag lives on `profiles.trial_started_at`, which is not in the client's insert or update grants.
+
+The hourly ceilings — 20 runs, 60 replies, 20 invites per workspace — are counted from
+`usage_events`, a table with row level security and no policies: the service role writes it and no
+client can read, write or trim it. Counting them from `activities`, `messages` or
+`workspace_invites` meant deleting a row reset the budget.
+
+The roster moves through `set_member_role`, `remove_member`, `accept_invite` and `leave_workspace`
+(security definer, each with its own owner-only rules). `authenticated` holds no insert or update
+grant on `workspace_members`, so those rules cannot be sidestepped with a direct table write.
+
+`supabase/migrations/20261101000000_audit_hardening.sql` is the state of those grants and that
+ledger as applied.
+
 ## Deploying
 
 Live on Vercel as `nexora-ai-employees` → **https://nexora-ai-employees.vercel.app**.

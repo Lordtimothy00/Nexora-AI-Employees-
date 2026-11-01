@@ -101,9 +101,12 @@ async function authorize(userId: string, serviceKey: string, requested?: string)
     target = profiles?.[0]?.active_workspace_id ?? ids[0];
   }
 
+  // Counted per workspace from `usage_events`, which only the service role can write. It used to
+  // be counted from employee messages — rows the workspace can delete — and across every workspace
+  // the caller belongs to, so one busy team could exhaust another team's ceiling.
   const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   const recent = await adminGet(
-    `/messages?workspace_id=in.(${ids.join(',')})&sender=eq.employee&created_at=gte.${since}` +
+    `/usage_events?workspace_id=eq.${target}&kind=eq.reply&created_at=gte.${since}` +
       `&select=id&limit=${REPLY_LIMIT_PER_HOUR + 1}`,
     serviceKey,
   ) as { id: string }[] | null;
@@ -141,7 +144,7 @@ async function authorize(userId: string, serviceKey: string, requested?: string)
     };
   }
 
-  return { ok: true as const };
+  return { ok: true as const, workspaceId: target };
 }
 
 type Turn = { from: 'human' | 'employee'; text: string };
@@ -304,6 +307,22 @@ Deno.serve(async (request) => {
 
   const permission = await authorize(userId, serviceKey, body.workspaceId);
   if (!permission.ok) return json(permission.body, permission.status);
+
+  // One row per reply attempt, written with the service role before the model is called.
+  await fetch(`${Deno.env.get('SUPABASE_URL')}/rest/v1/usage_events`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({
+      workspace_id: permission.workspaceId,
+      user_id: userId,
+      kind: 'reply',
+    }),
+  }).catch(() => undefined);
 
   // Try every configured provider, not just the first one. An account with no credits
   // left is a billing problem, not a code problem, and the other provider may be fine.
