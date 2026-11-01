@@ -3,7 +3,7 @@ import { ArrowRight, Sparkles, X } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { getEmployeeById } from '@/data/employees';
-import { useWorkspace, type Priority } from '@/context/WorkspaceContext';
+import { useWorkspace, type AssignedTask, type Priority } from '@/context/WorkspaceContext';
 import { cn } from '@/lib/utils';
 
 const priorities: Priority[] = ['Low', 'Medium', 'High'];
@@ -16,7 +16,8 @@ export function AssignTaskDialog({
 }: {
   open: boolean;
   onClose: () => void;
-  onCreated?: (title: string) => void;
+  /** Fired with the assignment, including the run the employee started on it. */
+  onCreated?: (assigned: AssignedTask) => void;
   defaultEmployeeId?: string;
 }) {
   const { hires, addTask } = useWorkspace();
@@ -25,6 +26,7 @@ export function AssignTaskDialog({
   const [employeeId, setEmployeeId] = useState(defaultEmployeeId ?? hires[0]?.employeeId ?? '');
   const [priority, setPriority] = useState<Priority>('Medium');
   const [due, setDue] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -33,6 +35,7 @@ export function AssignTaskDialog({
     setDetail('');
     setPriority('Medium');
     setDue('');
+    setSaving(false);
   }, [open, defaultEmployeeId, hires]);
 
   useEffect(() => {
@@ -50,19 +53,28 @@ export function AssignTaskDialog({
 
   if (!open) return null;
 
-  const submit = () => {
-    if (!title.trim() || !employeeId) return;
-    addTask({
-      title: title.trim(),
-      employeeId,
-      priority,
-      detail: detail.trim() || undefined,
-      due: due
-        ? new Date(due).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-        : undefined,
-    });
-    onCreated?.(title.trim());
-    onClose();
+  /**
+   * Assign and let go. The employee starts on the task here — the caller is handed the run so it can
+   * report the outcome, but the dialog closes as soon as the task exists rather than waiting on it.
+   */
+  const submit = async () => {
+    if (!title.trim() || !employeeId || saving) return;
+    setSaving(true);
+    try {
+      const assigned = await addTask({
+        title: title.trim(),
+        employeeId,
+        priority,
+        detail: detail.trim() || undefined,
+        due: due
+          ? new Date(due).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          : undefined,
+      });
+      onCreated?.(assigned);
+      onClose();
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -209,9 +221,17 @@ export function AssignTaskDialog({
             </div>
 
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-white/12 bg-white/[0.015] px-5 py-3.5">
-              <p className="text-[10.5px] text-[#8d9ea7]">Added to your backlog. Your employee confirms scope first.</p>
-              <Button size="sm" onClick={submit} disabled={!title.trim()} iconRight={<ArrowRight className="size-3.5" />}>
-                Assign task
+              <p className="text-[10.5px] text-[#8d9ea7]">
+                Starts the moment you assign it — no second click. You review the work when it lands.
+              </p>
+              <Button
+                size="sm"
+                onClick={() => void submit()}
+                loading={saving}
+                disabled={!title.trim() || saving}
+                iconRight={<ArrowRight className="size-3.5" />}
+              >
+                Assign &amp; start
               </Button>
             </div>
           </>

@@ -4,10 +4,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
 import { employees, getEmployeeById } from '@/data/employees';
+import { runTask, scriptedDeliverable, type TaskRunResult } from '@/lib/tasks';
 import { useAuth } from '@/context/AuthContext';
 import {
   createHire as createRemoteHire,
@@ -52,6 +54,30 @@ export interface Task {
   detail: string;
 }
 
+export interface AssignTaskInput {
+  title: string;
+  employeeId: string;
+  priority: Priority;
+  due?: string;
+  detail?: string;
+}
+
+export interface AssignedTask {
+  task: Task;
+  /**
+   * The run that started with the assignment. Awaited by the caller for its toast, never by the
+   * dialog — closing the sheet should not wait on a model call. Null when nobody may work yet.
+   */
+  start: Promise<TaskRunResult> | null;
+  /** Why `start` is null, so the UI can say something specific instead of nothing. */
+  blocked?: 'locked' | 'paused' | 'not_saved';
+}
+
+export interface Deliverable {
+  text: string;
+  provider: string | null;
+}
+
 export interface ChatMessage {
   id: string;
   employeeId: string;
@@ -79,7 +105,17 @@ interface WorkspaceContextValue extends WorkspaceState {
   hire: (employeeId: string) => void;
   release: (employeeId: string) => void;
   togglePause: (employeeId: string) => void;
-  addTask: (input: { title: string; employeeId: string; priority: Priority; due?: string; detail?: string }) => void;
+  /**
+   * Adds a task and immediately starts the employee on it — the point of delegating is that nobody
+   * has to press Run afterwards. Resolves once the task exists, not once the work is done.
+   */
+  addTask: (input: AssignTaskInput) => Promise<AssignedTask>;
+  /** Runs one task. Used by the Run button, and by `addTask` for the automatic first pass. */
+  startTask: (task: Task) => Promise<TaskRunResult>;
+  /** Tasks with a run in flight, for spinners and disabled buttons. */
+  runningTaskIds: string[];
+  /** The deliverable produced for a task in this session, or null if none has landed. */
+  deliverableFor: (taskId: string) => Deliverable | null;
   moveTask: (taskId: string, status: TaskStatus) => void;
   appendMessage: (employeeId: string, text: string, from?: 'human' | 'employee') => void;
   completedThisMonth: number;
@@ -128,6 +164,12 @@ const dueIn = (days: number) =>
     month: 'short',
     day: 'numeric',
   });
+
+/**
+ * Context for a task assigned without a brief. The employee starts from the title alone — saying
+ * they will "confirm scope before starting" was the opposite of what now happens.
+ */
+export const NO_BRIEF_DETAIL = 'No brief attached — your employee is working from the title alone.';
 
 const historySeed: Activity[] = (() => {
   const lines: { employeeId: string; text: string; kind: Activity['kind'] }[] = [
@@ -331,6 +373,14 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   const [billing, setBilling] = useState<WorkspaceBilling | null>(null);
 
+  // Runs in flight and the last deliverable per task live here rather than in a page, because an
+  // assignment now starts work by itself: the task sheet, the board and the overview all need to
+  // see the same run, and navigating between them must not lose it.
+  const [runningTaskIds, setRunningTaskIds] = useState<string[]>([]);
+  const [deliverables, setDeliverables] = useState<Record<string, Deliverable>>({});
+  // Keyed by task id so a double click cannot start the same task twice.
+  const inflight = useRef(new Map<string, Promise<TaskRunResult>>());
+
   const refreshBilling = useCallback(async () => {
     if (!remote) return;
     try {
@@ -462,25 +512,6 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     }));
   }, [remote, state.hires, refresh]);
 
-  const addTask = useCallback<WorkspaceContextValue['addTask']>((input) => {
-    if (remote) void createRemoteTask(input).then(refresh).catch(() => null);
-    setState((current) => ({
-      ...current,
-      tasks: [
-        {
-          id: `tsk_${Date.now()}`,
-          title: input.title,
-          employeeId: input.employeeId,
-          status: 'backlog',
-          priority: input.priority,
-          due: input.due ?? dueIn(3),
-          detail: input.detail ?? 'Newly assigned. Your employee will confirm scope before starting.',
-        },
-        ...current.tasks,
-      ],
-    }));
-  }, [remote, refresh]);
-
   const moveTask = useCallback((taskId: string, status: TaskStatus) => {
     // Optimistic ids are not database ids; only sync rows that came from Postgres.
     if (remote && /^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(taskId)) {
@@ -510,6 +541,124 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       }));
     },
     [remote, refresh],
+  );
+
+  const deliverableFor = useCallback<WorkspaceContextValue['deliverableFor']>(
+    (taskId) => deliverables[taskId] ?? null,
+    [deliverables],
+  );
+
+  /** Why this employee cannot work right now, or null when they can. */
+  const blockReason = useCallback(
+    (employeeId: string): 'locked' | 'paused' | null => {
+      if (billing?.aiLocked) return 'locked';
+      if (state.hires.find((hire) => hire.employeeId === employeeId)?.status === 'paused') {
+        return 'paused';
+      }
+      return null;
+    },
+    [billing?.aiLocked, state.hires],
+  );
+
+  /**
+   * Runs one task end to end: in progress, deliverable, then review. The same function backs the
+   * Run button and the automatic first pass after an assignment, so the two cannot drift apart.
+   *
+   * A failure hands the task back to the backlog instead of leaving a card spinning in In progress
+   * — the next Run is a retry, not a second run of something that never finished.
+   */
+  const startTask = useCallback<WorkspaceContextValue['startTask']>(
+    (task) => {
+      const existing = inflight.current.get(task.id);
+      if (existing) return existing;
+
+      const person = getEmployeeById(task.employeeId);
+      if (!person) {
+        return Promise.resolve({ ok: false, reason: 'unreachable' } as TaskRunResult);
+      }
+
+      const blocked = blockReason(task.employeeId);
+      if (blocked) return Promise.resolve({ ok: false, reason: blocked } as TaskRunResult);
+
+      const run = (async (): Promise<TaskRunResult> => {
+        setRunningTaskIds((ids) => (ids.includes(task.id) ? ids : [...ids, task.id]));
+        moveTask(task.id, 'in_progress');
+        try {
+          const outcome = await runTask(task, person);
+
+          if (outcome.ok) {
+            setDeliverables((current) => ({
+              ...current,
+              [task.id]: { text: outcome.deliverable, provider: outcome.provider },
+            }));
+            moveTask(task.id, 'review');
+            await refresh();
+            return { ok: true, text: outcome.deliverable, provider: outcome.provider };
+          }
+
+          // No backend means the local demo: the same template the sheet has always shown, posted
+          // to the thread so the workspace behaves like the real one.
+          if (outcome.reason === 'no_backend') {
+            const text = scriptedDeliverable(task, person);
+            setDeliverables((current) => ({ ...current, [task.id]: { text, provider: null } }));
+            appendMessage(task.employeeId, text, 'employee');
+            moveTask(task.id, 'review');
+            return { ok: true, text, provider: null };
+          }
+
+          moveTask(task.id, 'backlog');
+          return { ok: false, reason: outcome.reason, detail: outcome.detail };
+        } catch {
+          moveTask(task.id, 'backlog');
+          return { ok: false, reason: 'unreachable' };
+        } finally {
+          inflight.current.delete(task.id);
+          setRunningTaskIds((ids) => ids.filter((id) => id !== task.id));
+        }
+      })();
+
+      inflight.current.set(task.id, run);
+      return run;
+    },
+    [appendMessage, blockReason, moveTask, refresh],
+  );
+
+  const addTask = useCallback<WorkspaceContextValue['addTask']>(
+    async (input) => {
+      const localId = `tsk_${Date.now()}`;
+      const draft: Task = {
+        id: localId,
+        title: input.title,
+        employeeId: input.employeeId,
+        status: 'backlog',
+        priority: input.priority,
+        due: input.due ?? dueIn(3),
+        detail: input.detail?.trim() || NO_BRIEF_DETAIL,
+      };
+      setState((current) => ({ ...current, tasks: [draft, ...current.tasks] }));
+
+      let task = draft;
+      if (remote) {
+        try {
+          const id = await createRemoteTask({ ...input, detail: draft.detail });
+          task = { ...draft, id };
+          setState((current) => ({
+            ...current,
+            tasks: current.tasks.map((entry) => (entry.id === localId ? task : entry)),
+          }));
+        } catch {
+          // The row never landed, so a run would have nothing to read. Say so instead of firing a
+          // request that can only come back as task_not_found.
+          return { task: draft, start: null, blocked: 'not_saved' };
+        }
+      }
+
+      const blocked = blockReason(task.employeeId);
+      if (blocked) return { task, start: null, blocked };
+
+      return { task, start: startTask(task) };
+    },
+    [blockReason, remote, startTask],
   );
 
   const switchWorkspace = useCallback(
@@ -619,6 +768,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       release,
       togglePause,
       addTask,
+      startTask,
+      runningTaskIds,
+      deliverableFor,
       moveTask,
       appendMessage,
       completedThisMonth,

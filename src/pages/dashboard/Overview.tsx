@@ -21,6 +21,7 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
+import { describeAssignment, describeRunResult } from '@/lib/tasks';
 import { activitySeries, changeDirection, changeLabel } from '@/lib/metrics';
 import { cn, greeting } from '@/lib/utils';
 
@@ -372,9 +373,16 @@ export function Overview() {
       <AssignTaskDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        onCreated={(title) => {
-          setToast(`“${title}” assigned. Your employee will confirm scope shortly.`);
-          setTimeout(() => setToast(null), 4200);
+        onCreated={({ task, start }) => {
+          const name = getEmployeeById(task.employeeId)?.name ?? 'Your employee';
+          const say = (message: string) => {
+            setToast(message);
+            setTimeout(() => setToast(null), 4200);
+          };
+
+          // The employee has already picked the task up; report what came of it a beat later.
+          say(describeAssignment({ task, start }, name));
+          void start?.then((result) => say(describeRunResult(result, name, task.title)));
         }}
       />
 

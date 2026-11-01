@@ -188,16 +188,23 @@ export async function createTask(input: {
 }) {
   const db = await client();
   const ws = await getWorkspaceId();
-  const { error } = await db.from('tasks').insert({
-    workspace_id: ws,
-    title: input.title,
-    employee_id: input.employeeId,
-    priority: input.priority,
-    due: input.due ?? '',
-    detail: input.detail ?? '',
-    status: 'backlog',
-  });
+  // Returning the row matters now: the employee starts on the task the moment it is assigned, and
+  // the runner needs the database id to do that. The optimistic id only exists in the browser.
+  const { data, error } = await db
+    .from('tasks')
+    .insert({
+      workspace_id: ws,
+      title: input.title,
+      employee_id: input.employeeId,
+      priority: input.priority,
+      due: input.due ?? '',
+      detail: input.detail ?? '',
+      status: 'backlog',
+    })
+    .select('id')
+    .single();
   if (error) throw new Error(error.message);
+  return data.id as string;
 }
 
 export async function setTaskStatus(taskId: string, status: TaskStatus) {

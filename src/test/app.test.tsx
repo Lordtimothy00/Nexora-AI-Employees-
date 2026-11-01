@@ -7,7 +7,13 @@ import { resetBackStack } from '@/lib/backStack';
 import { explainBillingError, LOCKED_STATUSES, lockExplanation, TRIAL_DAYS } from '@/lib/billing';
 import { faqs } from '@/data/site';
 import { describeInviteOutcome, explainInviteFailure } from '@/lib/invites';
-import { explainRunFailure, scriptedDeliverable } from '@/lib/tasks';
+import {
+  describeAssignment,
+  describeRunResult,
+  explainRunFailure,
+  scriptedDeliverable,
+  type TaskRunResult,
+} from '@/lib/tasks';
 import { DEFAULT_PREFS, normalisePrefs, prefsEqual } from '@/lib/prefs';
 import { explainReplyFailure } from '@/lib/replies';
 import { ogImageFor, publicRoutes, routeFor, routeMeta } from '@/data/routes.ts';
@@ -435,6 +441,86 @@ describe('task detail sheet', () => {
     expect(document.body.style.overflow).toBe('');
 
     unmount();
+  });
+});
+
+describe('work starts on assignment', () => {
+  it('has the employee working the task without a second click', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    renderAt('/dashboard/tasks');
+
+    const counter = await screen.findByText(/awaiting your approval/i);
+    const before = Number(counter.textContent?.match(/(\d+)/)?.[1] ?? '0');
+
+    await user.click(await screen.findByRole('button', { name: /^Assign task$/i }));
+    await user.type(
+      await screen.findByLabelText(/What needs to get done\?/i),
+      'Draft the Q4 partner brief',
+    );
+    await user.click(screen.getByRole('button', { name: /Assign & start/i }));
+
+    // Nobody pressed Run: the assignment ran the task, and the report comes back on its own.
+    expect(await screen.findByText(/Scripted — this build has no backend/i)).toBeInTheDocument();
+    await waitFor(() => {
+      const after = Number(
+        screen.getByText(/awaiting your approval/i).textContent?.match(/(\d+)/)?.[1] ?? '0',
+      );
+      expect(after).toBe(before + 1);
+    });
+  });
+
+  it('keeps the work when the sheet is opened afterwards', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    renderAt('/dashboard/tasks');
+
+    await user.click(await screen.findByRole('button', { name: /^Assign task$/i }));
+    await user.type(await screen.findByLabelText(/What needs to get done\?/i), 'Refresh the pricing FAQ');
+    await user.click(screen.getByRole('button', { name: /Assign & start/i }));
+    await screen.findByText(/Scripted — this build has no backend/i);
+
+    const [card] = await screen.findAllByRole('button', { name: /^Refresh the pricing FAQ/i });
+    await user.click(card);
+
+    // A delivered run means the task is in review and the sheet offers a re-run, not a first run.
+    expect(await screen.findByRole('button', { name: /Run again/i })).toBeInTheDocument();
+    expect(screen.getByText(/Scripted deliverable for “Refresh the pricing FAQ”/i)).toBeInTheDocument();
+  });
+
+  it('explains the one case where nobody may start', () => {
+    const task = {
+      id: 't1',
+      title: 'Clear the queue',
+      employeeId: 'emp_kai',
+      status: 'backlog' as const,
+      priority: 'High' as const,
+      due: 'Fri',
+      detail: '',
+    };
+
+    expect(describeAssignment({ task, start: null, blocked: 'locked' }, 'Kai')).toMatch(
+      /paused.*billing is settled/i,
+    );
+    expect(describeAssignment({ task, start: null, blocked: 'paused' }, 'Kai')).toMatch(
+      /Kai is paused.*resume them/i,
+    );
+    expect(describeAssignment({ task, start: null, blocked: 'not_saved' }, 'Kai')).toMatch(
+      /did not save/i,
+    );
+    expect(describeAssignment({ task, start: null }, 'Kai')).toMatch(/Kai is on “Clear the queue”/);
+  });
+
+  it('does not dress a failed run up as a delivery', () => {
+    const failed: TaskRunResult = { ok: false, reason: 'rate_limited' };
+    expect(describeRunResult(failed, 'Kai', 'Clear the queue')).toMatch(/hourly run limit/i);
+    expect(describeRunResult(failed, 'Kai', 'Clear the queue')).not.toMatch(/delivered/i);
+
+    const scripted: TaskRunResult = { ok: true, text: 'template', provider: null };
+    expect(describeRunResult(scripted, 'Kai', 'Clear the queue')).toMatch(/scripted/i);
+
+    const live: TaskRunResult = { ok: true, text: 'work', provider: 'gemini' };
+    expect(describeRunResult(live, 'Kai', 'Clear the queue')).toMatch(/delivered “Clear the queue”/);
   });
 });
 

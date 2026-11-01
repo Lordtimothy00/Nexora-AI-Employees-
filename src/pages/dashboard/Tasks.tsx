@@ -20,8 +20,8 @@ import { Avatar } from '@/components/ui/Avatar';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { useWorkspace, type Task, type TaskStatus } from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
-import { explainRunFailure, runTask, scriptedDeliverable } from '@/lib/tasks';
-import { lockExplanation } from '@/lib/billing';
+import { describeAssignment, describeRunResult } from '@/lib/tasks';
+import type { AssignedTask } from '@/context/WorkspaceContext';
 import { cn } from '@/lib/utils';
 
 const columns: {
@@ -46,17 +46,31 @@ const priorityStyles: Record<Task['priority'], string> = {
 const order: TaskStatus[] = ['backlog', 'in_progress', 'review', 'done'];
 
 export function Tasks() {
-  const { tasks, hires, moveTask, appendMessage, refreshWorkspace, aiLocked, billingStatus } = useWorkspace();
+  const {
+    tasks,
+    hires,
+    startTask,
+    runningTaskIds,
+    deliverableFor,
+    moveTask,
+    aiLocked,
+  } = useWorkspace();
   const [filter, setFilter] = useState<string>('all');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selected, setSelected] = useState<Task | null>(null);
+  // The id, not a copy: the sheet must always show the task as it is now, because a run moves it
+  // to In progress and then to In review while the sheet is open.
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = useMemo(
+    () => tasks.find((task) => task.id === selectedId) ?? null,
+    [tasks, selectedId],
+  );
 
   // Same contract as the other dialog: Escape closes, and the page behind does not scroll away
   // under the sheet (which on a short screen is what made the bottom of it feel stuck).
   useEffect(() => {
-    if (!selected) return;
+    if (!selectedId) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setSelected(null);
+      if (event.key === 'Escape') setSelectedId(null);
     };
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
@@ -64,16 +78,12 @@ export function Tasks() {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [selected]);
+  }, [selectedId]);
   const [toast, setToast] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
-  const [runningId, setRunningId] = useState<string | null>(null);
-  // What came back from the last run, kept against the task so the sheet can show it.
-  const [deliverable, setDeliverable] = useState<{
-    taskId: string;
-    text: string;
-    provider: string | null;
-  } | null>(null);
+  // The run and its deliverable live in the workspace context now, because assigning a task starts
+  // one without anyone asking: the board has to show work that is already happening.
+  const deliverable = selected ? deliverableFor(selected.id) : null;
 
   const filtered = useMemo(
     () => (filter === 'all' ? tasks : tasks.filter((task) => task.employeeId === filter)),
@@ -85,44 +95,21 @@ export function Tasks() {
     setTimeout(() => setToast(null), 3800);
   };
 
+  /** Runs one task now — the manual retry. Assignment already does this on its own. */
+  const run = (task: Task) => {
+    const name = getEmployeeById(task.employeeId)?.name ?? 'Your employee';
+    setSelectedId(task.id);
+    void startTask(task).then((result) => showToast(describeRunResult(result, name, task.title)));
+  };
+
   /**
-   * Runs one task. With no backend (the local demo) the employee produces a template that says so;
-   * with a backend the edge function does the work and writes it into the thread, the feed and the
-   * board. A real failure never fabricates a deliverable — it reports why and leaves the task alone.
+   * An assignment comes back with the run already in flight, so the toast here is about what the
+   * employee did with it, not about adding a row to a list.
    */
-  const run = async (task: Task) => {
-    const person = getEmployeeById(task.employeeId);
-    if (!person || runningId) return;
-
-    // A paused workspace cannot spend model tokens. Say why, point at Billing, write nothing.
-    if (aiLocked) {
-      showToast(`${lockExplanation(billingStatus).title} — update payment in Billing to unlock the team.`);
-      return;
-    }
-
-    setRunningId(task.id);
-    setDeliverable(null);
-    try {
-      const outcome = await runTask(task, person);
-
-      if (outcome.ok) {
-        setDeliverable({ taskId: task.id, text: outcome.deliverable, provider: outcome.provider });
-        setSelected({ ...task, status: 'review' });
-        await refreshWorkspace();
-        showToast(`${person.name} delivered “${task.title}” — now in review.`);
-      } else if (outcome.reason === 'no_backend') {
-        const text = scriptedDeliverable(task, person);
-        appendMessage(task.employeeId, text, 'employee');
-        moveTask(task.id, 'review');
-        setDeliverable({ taskId: task.id, text, provider: null });
-        setSelected({ ...task, status: 'review' });
-        showToast(explainRunFailure(outcome.reason));
-      } else {
-        showToast(explainRunFailure(outcome.reason, outcome.detail));
-      }
-    } finally {
-      setRunningId(null);
-    }
+  const handleAssigned = ({ task, start }: AssignedTask) => {
+    const name = getEmployeeById(task.employeeId)?.name ?? 'Your employee';
+    showToast(describeAssignment({ task, start }, name));
+    void start?.then((result) => showToast(describeRunResult(result, name, task.title)));
   };
 
   const advance = (task: Task, direction: 1 | -1) => {
@@ -131,7 +118,6 @@ export function Tasks() {
     if (next === task.status) return;
     moveTask(task.id, next);
     showToast(`“${task.title}” moved to ${columns.find((column) => column.id === next)?.label}.`);
-    setSelected((current) => (current ? { ...current, status: next } : current));
   };
 
   return (
@@ -251,7 +237,7 @@ export function Tasks() {
                         <div className="flex items-start justify-between gap-2">
                           <button
                             type="button"
-                            onClick={() => setSelected(task)}
+                            onClick={() => setSelectedId(task.id)}
                             className="flex-1 text-left"
                           >
                             <p className="text-[11.5px] font-medium leading-snug text-white">{task.title}</p>
@@ -284,12 +270,21 @@ export function Tasks() {
                           <span className="font-mono text-[8.5px] text-[#8d9ea7]">{task.due}</span>
                         </div>
                         <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-1.5">
-                          <span className="text-[8.5px] text-[#8d9ea7]">{person?.name ?? 'Unassigned'}</span>
+                          {runningTaskIds.includes(task.id) ? (
+                            <span className="inline-flex items-center gap-1 text-[8.5px] text-[#9df7c2]">
+                              <span className="size-1.5 animate-spin rounded-full border border-current border-t-transparent" />
+                              {person?.name ?? 'Your employee'} is working…
+                            </span>
+                          ) : (
+                            <span className="text-[8.5px] text-[#8d9ea7]">
+                              {person?.name ?? 'Unassigned'}
+                            </span>
+                          )}
                           <div className="flex items-center gap-0.5 opacity-0 transition group-hover:opacity-100">
                             <button
                               type="button"
                               onClick={() => void run(task)}
-                              disabled={runningId === task.id || aiLocked}
+                              disabled={runningTaskIds.includes(task.id) || aiLocked}
                               aria-label={`Run ${task.title}`}
                               title={
                                 aiLocked
@@ -298,7 +293,7 @@ export function Tasks() {
                               }
                               className="grid size-5 place-items-center rounded text-[#9df7c2] hover:bg-white/8 hover:text-white disabled:opacity-40"
                             >
-                              {runningId === task.id ? (
+                              {runningTaskIds.includes(task.id) ? (
                                 <span className="size-2.5 animate-spin rounded-full border border-current border-t-transparent" />
                               ) : (
                                 <Play className="size-2.5" />
@@ -357,13 +352,13 @@ export function Tasks() {
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         defaultEmployeeId={filter === 'all' ? undefined : filter}
-        onCreated={(title) => showToast(`“${title}” added to the backlog.`)}
+        onCreated={handleAssigned}
       />
 
       {/* task detail */}
       {selected && (
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSelected(null)} />
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSelectedId(null)} />
           {/* Capped to the viewport and split header / scrolling body / footer. Without the cap the
               panel grew past the screen, and since the overlay does not scroll either, the actions
               at the bottom became unreachable. */}
@@ -382,7 +377,7 @@ export function Tasks() {
               </div>
               <button
                 type="button"
-                onClick={() => setSelected(null)}
+                onClick={() => setSelectedId(null)}
                 aria-label="Close"
                 className="grid size-7 place-items-center rounded-lg text-[#9aaab3] hover:bg-white/8 hover:text-white"
               >
@@ -445,7 +440,6 @@ export function Tasks() {
                         onClick={() => {
                           if (column.id === selected.status) return;
                           moveTask(selected.id, column.id);
-                          setSelected({ ...selected, status: column.id });
                           showToast(`“${selected.title}” moved to ${column.label}.`);
                         }}
                         className={cn(
@@ -461,7 +455,7 @@ export function Tasks() {
                   </div>
                 </div>
               </div>
-              {deliverable?.taskId === selected.id && (
+              {deliverable && (
                 <div className="border-t border-white/12 bg-[#0bd39a]/[0.04] px-5 py-4">
                   <div className="flex items-center justify-between gap-2">
                     <p className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9df7c2]">
@@ -501,13 +495,16 @@ export function Tasks() {
                 <Button
                   size="sm"
                   onClick={() => void run(selected)}
-                  loading={runningId === selected.id}
-                  disabled={aiLocked || (Boolean(runningId) && runningId !== selected.id)}
+                  loading={runningTaskIds.includes(selected.id)}
+                  disabled={
+                    aiLocked ||
+                    (runningTaskIds.length > 0 && !runningTaskIds.includes(selected.id))
+                  }
                   iconLeft={<Play className="size-3.5" />}
                 >
-                  {deliverable?.taskId === selected.id ? 'Run again' : 'Run task'}
+                  {deliverable ? 'Run again' : 'Run task'}
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => setSelected(null)}>
+                <Button size="sm" variant="secondary" onClick={() => setSelectedId(null)}>
                   Close
                 </Button>
               </div>

@@ -57,7 +57,7 @@ const phases = [
   {
     number: '04',
     title: 'Delegate from anywhere',
-    body: 'Assign work in the dashboard or just message your employee in Slack. They confirm the brief, ask only the questions that matter, and get moving — updates arrive without you chasing.',
+    body: 'Assign work in the dashboard or just message your employee in Slack. They start the moment it lands, ask only the questions that matter, and hand back finished work — updates arrive without you chasing.',
     points: ['Slack and email delegation', 'Progress without meetings', 'Decisions surfaced, not buried'],
     icon: Workflow,
     visual: 'delegate',

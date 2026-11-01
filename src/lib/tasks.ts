@@ -1,5 +1,5 @@
 import type { Employee } from '@/data/employees';
-import type { Task } from '@/context/WorkspaceContext';
+import type { AssignedTask, Task } from '@/context/WorkspaceContext';
 import { getWorkspaceId } from './backend';
 import { getSupabase } from './supabase';
 
@@ -32,6 +32,52 @@ export type RunFailureReason =
 export type RunOutcome =
   | { ok: true; deliverable: string; provider: string }
   | { ok: false; reason: RunFailureReason; detail?: string };
+
+/**
+ * What the workspace reports back after a run. `locked` and `paused` never reach the network: a
+ * workspace that is not paying, or an employee who has been paused, is stopped before a token is
+ * spent. `provider: null` means the demo produced a template rather than a model.
+ */
+export type TaskRunResult =
+  | { ok: true; text: string; provider: string | null }
+  | { ok: false; reason: RunFailureReason | 'locked' | 'paused'; detail?: string };
+
+/**
+ * One sentence for the toast that follows an assignment. The employee is already working, so the
+ * message reports that — or the one reason nobody could start.
+ */
+export function describeAssignment(assigned: AssignedTask, employeeName: string): string {
+  if (assigned.blocked === 'not_saved') {
+    return 'That task did not save — check your connection and assign it again.';
+  }
+  if (assigned.blocked === 'locked') {
+    return 'AI employees are paused — the task is on the board and starts the moment billing is settled.';
+  }
+  if (assigned.blocked === 'paused') {
+    return `${employeeName} is paused — resume them from Team and this task starts on its own.`;
+  }
+  return `${employeeName} is on “${assigned.task.title}”.`;
+}
+
+/** One sentence for the toast after a run, whichever way it went. */
+export function describeRunResult(
+  result: TaskRunResult,
+  employeeName: string,
+  title: string,
+): string {
+  if (result.ok) {
+    return result.provider
+      ? `${employeeName} delivered “${title}” — now in review.`
+      : explainRunFailure('no_backend');
+  }
+  if (result.reason === 'locked') {
+    return 'AI employees are paused until billing is settled — the task is waiting on the board.';
+  }
+  if (result.reason === 'paused') {
+    return `${employeeName} is paused — resume them from Team and this task starts on its own.`;
+  }
+  return explainRunFailure(result.reason, result.detail);
+}
 
 const trimDetail = (value: unknown, limit = 140) => {
   const text = typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : '';

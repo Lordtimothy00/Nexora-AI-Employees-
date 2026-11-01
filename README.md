@@ -171,9 +171,23 @@ deployed with JWT verification on.
 
 ### Running a task
 
-The one piece of real execution: the Play button on a task card (or **Run task** in the detail
-sheet) calls the `run-task` edge function (`supabase/functions/run-task`, JWT verification on) and
-the employee hands back finished work.
+The one piece of real execution. Assigning a task **starts it**: `addTask` inserts the row, then
+calls the same runner the Play button uses, so the employee picks the work up without anyone
+pressing Run. The card moves to *In progress* while the call is out and to *In review* when the
+deliverable lands; the toast reports what came back. The Play button (or **Run task** in the detail
+sheet) is now the retry, and it opens the sheet so the result has somewhere to appear.
+
+Three cases start nothing, and each says which one it is:
+
+- the workspace is paused for billing (`workspace_ai_locked`), so no tokens are spent;
+- the employee is paused on the Team page;
+- the task row never reached Postgres, so there would be nothing for the runner to read.
+
+A run that fails (rate limit, provider error) hands the task back to *Backlog* rather than leaving a
+card spinning in *In progress* — the next Run is a retry of something that never finished, not a
+second delivery.
+
+The runner itself (`supabase/functions/run-task`, JWT verification on) hands back finished work.
 
 - The browser sends `{ workspaceId, taskId, employee }` only. The brief is read from `tasks` with
   the id **and** the workspace id, so a caller cannot have an employee deliver something that was
