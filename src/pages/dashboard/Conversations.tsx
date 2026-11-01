@@ -127,14 +127,14 @@ export function Conversations() {
           action={<ButtonLink to="/employees">Browse employees</ButtonLink>}
         />
       ) : (
-        <div className="grid h-[calc(100vh-240px)] min-h-[520px] overflow-hidden glass rounded-[22px] lg:grid-cols-[280px_1fr]">
+        <div className="grid h-[calc(100dvh-240px)] min-h-[520px] overflow-hidden glass rounded-[22px] lg:grid-cols-[280px_1fr]">
           {/* list */}
           <aside className={cn('flex-col border-r border-white/12', mobileChat ? 'hidden lg:flex' : 'flex')}>
             <div className="flex items-center justify-between border-b border-white/12 px-3.5 py-3">
               <p className="text-[12px] font-medium text-white">Team</p>
               <span className="font-mono text-[9px] text-[#8d9ea7]">{hires.length} channels</span>
             </div>
-            <div className="scroll-thin flex-1 overflow-y-auto">
+            <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
               {hires.map((hire) => {
                 const employee = getEmployeeById(hire.employeeId);
                 if (!employee) return null;
@@ -263,7 +263,7 @@ export function Conversations() {
                   </Link>
                 </div>
 
-                <div ref={scrollRef} className="scroll-thin flex-1 space-y-3 overflow-y-auto bg-[#081e22]/45 px-4 py-4">
+                <div ref={scrollRef} className="scroll-thin min-h-0 flex-1 space-y-3 overflow-y-auto bg-[#081e22]/45 px-4 py-4">
                   <div className="mx-auto mb-4 flex max-w-sm flex-col items-center rounded-xl border border-white/10 bg-white/[0.045] backdrop-blur-xl px-4 py-3 text-center">
                     <Avatar
                       name={person.name}

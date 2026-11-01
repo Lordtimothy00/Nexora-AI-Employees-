@@ -72,9 +72,9 @@ export function AssignTaskDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="assign-task-title"
-        className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#0a2329]/85 backdrop-blur-2xl shadow-[0_40px_120px_-40px_rgba(0,0,0,1)] sm:rounded-[22px]"
+        className="relative flex max-h-[92dvh] w-full max-w-lg animate-rise flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-[#0a2329]/85 backdrop-blur-2xl shadow-[0_40px_120px_-40px_rgba(0,0,0,1)] sm:max-h-[calc(100dvh-3rem)] sm:rounded-[22px]"
       >
-        <div className="flex items-start justify-between border-b border-white/12 px-5 py-4">
+        <div className="flex shrink-0 items-start justify-between border-b border-white/12 px-5 py-4">
           <div>
             <h2 id="assign-task-title" className="font-display text-[15px] font-semibold text-white">
               Assign a task
@@ -94,7 +94,7 @@ export function AssignTaskDialog({
         </div>
 
         {hires.length === 0 ? (
-          <div className="p-6 text-center">
+          <div className="scroll-thin min-h-0 flex-1 overflow-y-auto p-6 text-center">
             <div className="mx-auto grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04]">
               <Sparkles className="size-5 text-[#2fe3b0]" />
             </div>
@@ -108,7 +108,7 @@ export function AssignTaskDialog({
           </div>
         ) : (
           <>
-            <div className="max-h-[60vh] space-y-4 overflow-y-auto p-5">
+            <div className="scroll-thin min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
               <div>
                 <label htmlFor="task-title" className="text-[11.5px] font-medium text-[#c4d3d8]">
                   What needs to get done?
@@ -208,7 +208,7 @@ export function AssignTaskDialog({
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-3 border-t border-white/12 bg-white/[0.015] px-5 py-3.5">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-t border-white/12 bg-white/[0.015] px-5 py-3.5">
               <p className="text-[10.5px] text-[#8d9ea7]">Added to your backlog. Your employee confirms scope first.</p>
               <Button size="sm" onClick={submit} disabled={!title.trim()} iconRight={<ArrowRight className="size-3.5" />}>
                 Assign task

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -50,6 +50,21 @@ export function Tasks() {
   const [filter, setFilter] = useState<string>('all');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selected, setSelected] = useState<Task | null>(null);
+
+  // Same contract as the other dialog: Escape closes, and the page behind does not scroll away
+  // under the sheet (which on a short screen is what made the bottom of it feel stuck).
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelected(null);
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [selected]);
   const [toast, setToast] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [runningId, setRunningId] = useState<string | null>(null);
@@ -349,11 +364,19 @@ export function Tasks() {
       {selected && (
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSelected(null)} />
-          <div className="relative w-full max-w-lg animate-rise overflow-hidden rounded-t-2xl border border-white/10 bg-[#0a2227] sm:rounded-[22px]">
-            <div className="flex items-start justify-between gap-3 border-b border-white/12 px-5 py-4">
+          {/* Capped to the viewport and split header / scrolling body / footer. Without the cap the
+              panel grew past the screen, and since the overlay does not scroll either, the actions
+              at the bottom became unreachable. */}
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="task-detail-title"
+            className="relative flex max-h-[92dvh] w-full max-w-lg animate-rise flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-[#0a2227] sm:max-h-[calc(100dvh-3rem)] sm:rounded-[22px]"
+          >
+            <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/12 px-5 py-4">
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#9aaab3]">Task brief</p>
-                <h2 className="mt-1 font-display text-[15px] font-semibold leading-snug text-white">
+                <h2 id="task-detail-title" className="mt-1 font-display text-[15px] font-semibold leading-snug text-white">
                   {selected.title}
                 </h2>
               </div>
@@ -366,99 +389,101 @@ export function Tasks() {
                 <X className="size-3.5" />
               </button>
             </div>
-            <div className="space-y-4 p-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className={cn(
-                    'rounded-full px-2 py-0.5 text-[10px] ring-1 ring-inset',
-                    priorityStyles[selected.priority],
-                  )}
-                >
-                  {selected.priority} priority
-                </span>
-                <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#b9c9cf]">
-                  Due {selected.due}
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#b9c9cf]">
-                  <span className="size-1.5 rounded-full bg-mint" />
-                  {columns.find((column) => column.id === selected.status)?.label}
-                </span>
-              </div>
-
-              {(() => {
-                const person = getEmployeeById(selected.employeeId);
-                if (!person) return null;
-                return (
-                  <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-2.5">
-                    <Avatar
-                      name={person.name}
-                      src={person.avatar}
-                      initials={person.initials}
-                      accent={person.accent}
-                      size="sm"
-                      status="online"
-                    />
-                    <div>
-                      <p className="text-[12px] font-medium text-white">{person.name}</p>
-                      <p className="text-[10.5px] text-[#9aaab3]">{person.role}</p>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              <div>
-                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#9aaab3]">Context</p>
-                <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#cfdcde]">{selected.detail}</p>
-              </div>
-
-              <div>
-                <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#9aaab3]">Move to</p>
-                <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-                  {columns.map((column) => (
-                    <button
-                      key={column.id}
-                      type="button"
-                      onClick={() => {
-                        if (column.id === selected.status) return;
-                        moveTask(selected.id, column.id);
-                        setSelected({ ...selected, status: column.id });
-                        showToast(`“${selected.title}” moved to ${column.label}.`);
-                      }}
-                      className={cn(
-                        'rounded-lg border px-2.5 py-1.5 text-[11px] transition',
-                        selected.status === column.id
-                          ? 'border-[#0bd39a]/40 bg-[#0bd39a]/12 text-white'
-                          : 'border-white/12 bg-white/[0.045] backdrop-blur-xl text-[#aabbc2] hover:border-white/16 hover:text-white',
-                      )}
-                    >
-                      {column.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {deliverable?.taskId === selected.id && (
-              <div className="border-t border-white/12 bg-[#0bd39a]/[0.04] px-5 py-4">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9df7c2]">
-                    <Sparkles className="size-3" /> Deliverable
-                  </p>
-                  <span className="font-mono text-[9px] text-[#8d9ea7]">
-                    {deliverable.provider ? `Live · ${deliverable.provider}` : 'Scripted'}
+            <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
+              <div className="space-y-4 p-5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={cn(
+                      'rounded-full px-2 py-0.5 text-[10px] ring-1 ring-inset',
+                      priorityStyles[selected.priority],
+                    )}
+                  >
+                    {selected.priority} priority
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#b9c9cf]">
+                    Due {selected.due}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] text-[#b9c9cf]">
+                    <span className="size-1.5 rounded-full bg-mint" />
+                    {columns.find((column) => column.id === selected.status)?.label}
                   </span>
                 </div>
-                <p className="scroll-thin mt-2 max-h-56 overflow-y-auto whitespace-pre-wrap text-[12px] leading-relaxed text-[#dbe7e8]">
-                  {deliverable.text}
-                </p>
-                <p className="mt-2 text-[10px] text-[#8d9ea7]">
-                  {deliverable.provider
-                    ? 'Also posted to the conversation and the activity feed. Approve it there when you are happy — nothing leaves the workspace without you.'
-                    : 'Posted to the conversation in this demo build only. Nothing leaves the workspace without you.'}
-                </p>
-              </div>
-            )}
 
-            <div className="flex items-center justify-between gap-3 border-t border-white/12 bg-white/[0.015] px-5 py-3">
+                {(() => {
+                  const person = getEmployeeById(selected.employeeId);
+                  if (!person) return null;
+                  return (
+                    <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-2.5">
+                      <Avatar
+                        name={person.name}
+                        src={person.avatar}
+                        initials={person.initials}
+                        accent={person.accent}
+                        size="sm"
+                        status="online"
+                      />
+                      <div>
+                        <p className="text-[12px] font-medium text-white">{person.name}</p>
+                        <p className="text-[10.5px] text-[#9aaab3]">{person.role}</p>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                <div>
+                  <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#9aaab3]">Context</p>
+                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#cfdcde]">{selected.detail}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10.5px] uppercase tracking-[0.1em] text-[#9aaab3]">Move to</p>
+                  <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                    {columns.map((column) => (
+                      <button
+                        key={column.id}
+                        type="button"
+                        onClick={() => {
+                          if (column.id === selected.status) return;
+                          moveTask(selected.id, column.id);
+                          setSelected({ ...selected, status: column.id });
+                          showToast(`“${selected.title}” moved to ${column.label}.`);
+                        }}
+                        className={cn(
+                          'rounded-lg border px-2.5 py-1.5 text-[11px] transition',
+                          selected.status === column.id
+                            ? 'border-[#0bd39a]/40 bg-[#0bd39a]/12 text-white'
+                            : 'border-white/12 bg-white/[0.045] backdrop-blur-xl text-[#aabbc2] hover:border-white/16 hover:text-white',
+                        )}
+                      >
+                        {column.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {deliverable?.taskId === selected.id && (
+                <div className="border-t border-white/12 bg-[#0bd39a]/[0.04] px-5 py-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#9df7c2]">
+                      <Sparkles className="size-3" /> Deliverable
+                    </p>
+                    <span className="font-mono text-[9px] text-[#8d9ea7]">
+                      {deliverable.provider ? `Live · ${deliverable.provider}` : 'Scripted'}
+                    </span>
+                  </div>
+                  <p className="mt-2 whitespace-pre-wrap text-[12px] leading-relaxed text-[#dbe7e8]">
+                    {deliverable.text}
+                  </p>
+                  <p className="mt-2 text-[10px] text-[#8d9ea7]">
+                    {deliverable.provider
+                      ? 'Also posted to the conversation and the activity feed. Approve it there when you are happy — nothing leaves the workspace without you.'
+                      : 'Posted to the conversation in this demo build only. Nothing leaves the workspace without you.'}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-white/12 bg-white/[0.015] px-5 py-3">
               <p className="text-[10px] text-[#8d9ea7]">
                 {aiLocked ? (
                   <span className="text-amber-200/90">

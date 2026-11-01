@@ -389,6 +389,55 @@ describe('running a task', () => {
   });
 });
 
+describe('task detail sheet', () => {
+  // The sheet used to grow past the viewport with no scroll container anywhere, so on a short
+  // screen the footer buttons sat off-screen and nothing could bring them back. jsdom cannot
+  // measure heights, so this pins the structure that makes it impossible: one capped column, one
+  // scrolling middle, footer outside that scroller.
+  it('is height-capped with a single scroll region and a pinned footer', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    renderAt('/dashboard/tasks');
+
+    // Anchored at the start so it picks the card, not the "Run <title>" button beside it.
+    const [card] = await screen.findAllByRole('button', { name: /^Clear northeast carrier delay tickets/i });
+    await user.click(card);
+
+    const dialog = await screen.findByRole('dialog');
+    expect(dialog.className).toMatch(/max-h-\[92dvh\]/);
+    expect(dialog.className).toMatch(/sm:max-h-\[calc\(100dvh-3rem\)\]/);
+    expect(dialog.className).toMatch(/flex-col/);
+    expect(dialog.className).not.toMatch(/(^|\s)(h|min-h)-/);
+
+    const scrollers = [...dialog.querySelectorAll('.overflow-y-auto')];
+    expect(scrollers).toHaveLength(1);
+    expect(scrollers[0].className).toMatch(/min-h-0/);
+    expect(scrollers[0].className).toMatch(/flex-1/);
+
+    // Actions stay reachable: they are siblings of the scroller, not something inside it.
+    const run = within(dialog).getByRole('button', { name: 'Run task' });
+    expect(scrollers[0].contains(run)).toBe(false);
+    expect(dialog.contains(run)).toBe(true);
+  });
+
+  it('closes on Escape without leaving the page locked', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    const { unmount } = renderAt('/dashboard/tasks');
+
+    const [card] = await screen.findAllByRole('button', { name: /^Revenue churn readout for October/i });
+    await user.click(card);
+    expect(await screen.findByRole('dialog')).toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    await user.keyboard('{Escape}');
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(document.body.style.overflow).toBe('');
+
+    unmount();
+  });
+});
+
 describe('empty workspace', () => {
   beforeEach(() => {
     seedSession();

@@ -264,7 +264,7 @@ export function DashboardLayout() {
         </ButtonLink>
       </div>
 
-      <nav className="scroll-thin mt-5 flex-1 overflow-y-auto px-2 pb-4" aria-label="Workspace">
+      <nav className="scroll-thin mt-5 min-h-0 flex-1 overflow-y-auto px-2 pb-4" aria-label="Workspace">
         <p className="px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9ea7]">
           Workspace
         </p>
