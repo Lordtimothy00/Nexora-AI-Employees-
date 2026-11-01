@@ -11,6 +11,7 @@ import {
   ListChecks,
   Play,
   Plus,
+  ShieldCheck,
   Sparkles,
   X,
 } from 'lucide-react';
@@ -18,7 +19,12 @@ import { EmptyState, PageHeader, Toast } from '@/components/dashboard/ui';
 import { AssignTaskDialog } from '@/components/dashboard/AssignTaskDialog';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button, ButtonLink } from '@/components/ui/Button';
-import { useWorkspace, type Task, type TaskStatus } from '@/context/WorkspaceContext';
+import {
+  useWorkspace,
+  type Task,
+  type TaskStatus,
+  type TaskVerification,
+} from '@/context/WorkspaceContext';
 import { getEmployeeById } from '@/data/employees';
 import { describeAssignment, describeRunResult } from '@/lib/tasks';
 import type { AssignedTask } from '@/context/WorkspaceContext';
@@ -36,6 +42,90 @@ const columns: {
   { id: 'review', label: 'In review', icon: Eye, accent: 'text-[#e6efec]', dot: 'bg-[#dbe7e8]' },
   { id: 'done', label: 'Done', icon: CheckCircle2, accent: 'text-[#9df7c2]', dot: 'bg-mint' },
 ];
+
+const verificationTone: Record<
+  TaskVerification['status'],
+  { label: string; className: string; dot: string }
+> = {
+  passes: { label: 'Matches the brief', className: 'border-mint/35 bg-mint/12 text-[#b8f7d0]', dot: 'bg-mint' },
+  needs_review: {
+    label: 'Needs a human look',
+    className: 'border-amber-300/30 bg-amber-300/10 text-amber-100',
+    dot: 'bg-amber-300',
+  },
+  unverified: {
+    label: 'Not verified',
+    className: 'border-white/15 bg-white/[0.06] text-[#c2d0d4]',
+    dot: 'bg-[#8d9ea7]',
+  },
+};
+
+/**
+ * What was actually checked about the draft, named. A pass is only ever shown when the rules passed
+ * *and* an independent reader agreed — the function will not send anything else back as `passes`.
+ */
+function BriefCheckReport({ verification }: { verification: TaskVerification | null }) {
+  if (!verification) return null;
+
+  const tone = verificationTone[verification.status];
+  const failed = verification.checks.filter((check) => !check.pass);
+  const gaps = verification.model?.missing ?? [];
+
+  return (
+    <div className="mt-3 rounded-xl border border-white/12 bg-white/[0.03] px-3 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#a7b7be]">
+          <ShieldCheck className="size-3" /> Brief check
+        </p>
+        <span
+          className={cn(
+            'inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[9px]',
+            tone.className,
+          )}
+        >
+          <span className={cn('size-1.5 rounded-full', tone.dot)} />
+          {tone.label}
+        </span>
+      </div>
+
+      {failed.length > 0 && (
+        <ul className="mt-2 space-y-1">
+          {failed.map((check) => (
+            <li key={check.id} className="flex items-start gap-1.5 text-[11px] leading-relaxed text-amber-100/85">
+              <X className="mt-0.5 size-3 shrink-0" />
+              <span>
+                {check.label}
+                {check.note ? <span className="text-amber-100/65"> — {check.note}</span> : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {gaps.length > 0 && (
+        <ul className="mt-1.5 space-y-1">
+          {gaps.map((gap) => (
+            <li key={gap} className="flex items-start gap-1.5 text-[11px] leading-relaxed text-amber-100/85">
+              <X className="mt-0.5 size-3 shrink-0" />
+              <span>{gap}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p className="mt-1.5 text-[10px] leading-relaxed text-[#8d9ea7]">
+        {verification.status === 'passes' &&
+          `${verification.checks.length} checks passed, and an independent reader agreed it answers the task.`}
+        {verification.status === 'needs_review' &&
+          `${failed.length} of ${verification.checks.length} checks did not pass. Read it before you approve it.`}
+        {verification.status === 'unverified' &&
+          'The rules passed, but no independent reader was reachable, so this has not been confirmed against the brief.'}
+        {verification.repaired ? ' Sent back once and rewritten.' : ''}
+        {verification.model?.reason ? ` Reviewer: ${verification.model.reason}` : ''}
+      </p>
+    </div>
+  );
+}
 
 const priorityStyles: Record<Task['priority'], string> = {
   High: 'bg-rose-400/10 text-[#deeaea] ring-rose-400/20',
@@ -84,6 +174,9 @@ export function Tasks() {
   // The run and its deliverable live in the workspace context now, because assigning a task starts
   // one without anyone asking: the board has to show work that is already happening.
   const deliverable = selected ? deliverableFor(selected.id) : null;
+  // The check travelled back with the run; after a reload it comes from the task row instead.
+  const verification: TaskVerification | null =
+    deliverable?.verification ?? selected?.verification ?? null;
 
   const filtered = useMemo(
     () => (filter === 'all' ? tasks : tasks.filter((task) => task.employeeId === filter)),
@@ -467,6 +560,7 @@ export function Tasks() {
                   <p className="mt-2 whitespace-pre-wrap text-[12px] leading-relaxed text-[#dbe7e8]">
                     {deliverable.text}
                   </p>
+                  <BriefCheckReport verification={verification} />
                   <p className="mt-2 text-[10px] text-[#8d9ea7]">
                     {deliverable.provider
                       ? 'Also posted to the conversation and the activity feed. Approve it there when you are happy — nothing leaves the workspace without you.'

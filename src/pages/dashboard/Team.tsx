@@ -55,6 +55,7 @@ export function Team() {
     activeWorkspace,
     workspaces,
     leaveActiveWorkspace,
+    billing,
   } = useWorkspace();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -182,6 +183,16 @@ export function Team() {
   const myRole = activeWorkspace?.role;
   const canManagePeople = myRole === 'owner' || myRole === 'admin';
   const active = hires.filter((hire) => hire.status === 'active').length;
+  // The plan's real allowance, from Postgres. No hardcoded "of 5 seats" anywhere: the number on
+  // screen has to be the number the hires trigger enforces.
+  const seatLimit = billing?.seatLimit ?? null;
+  const seatHint = !billing
+    ? 'ai employees'
+    : seatLimit === null
+      ? billing.plan
+        ? `unlimited on ${billing.plan}`
+        : 'no plan yet'
+      : `of ${seatLimit} on ${billing.plan ?? 'your plan'}`;
   const totalTasks = hires.reduce((sum, hire) => sum + hire.tasksCompleted, 0);
 
   return (
@@ -211,7 +222,12 @@ export function Team() {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <StatCard label="Team size" value={`${hires.length}`} hint="of 5 seats" icon={<Users className="size-4" />} />
+            <StatCard
+              label="Team size"
+              value={`${hires.length}`}
+              hint={seatHint}
+              icon={<Users className="size-4" />}
+            />
             <StatCard label="Active now" value={`${active}`} hint="online" tone="mint" icon={<Sparkles className="size-4" />} />
             <StatCard label="Tasks delivered" value={totalTasks.toLocaleString()} hint="lifetime" tone="sky" icon={<Clock className="size-4" />} />
             <StatCard label="Avg utilisation" value={`${utilization}%`} hint="this week" tone="amber" />

@@ -1,6 +1,15 @@
-import type { Activity, ChatMessage, Hire, Priority, Task, TaskStatus } from '@/context/WorkspaceContext';
+import type {
+  Activity,
+  ChatMessage,
+  Hire,
+  Priority,
+  Task,
+  TaskStatus,
+  TaskVerification,
+} from '@/context/WorkspaceContext';
 import { getSupabase } from './supabase';
 import { explainInviteFailure, type InviteOutcome } from './invites';
+import { readVerification } from './verification';
 import type { NotificationPrefs } from './prefs';
 
 export interface WorkspaceSnapshot {
@@ -42,6 +51,8 @@ type TaskRow = {
   priority: Priority;
   due: string;
   detail: string;
+  verification: TaskVerification | null;
+  verification_status: TaskVerification['status'] | null;
 };
 
 type MessageRow = {
@@ -102,7 +113,11 @@ export async function fetchWorkspace(): Promise<WorkspaceSnapshot> {
 
   const [hires, tasks, messages, activities] = await Promise.all([
     db.from('hires').select('employee_id, hired_at, status, tasks_completed, utilization').eq('workspace_id', ws).order('hired_at', { ascending: true }),
-    db.from('tasks').select('id, employee_id, title, status, priority, due, detail').eq('workspace_id', ws).order('created_at', { ascending: true }),
+    db
+      .from('tasks')
+      .select('id, employee_id, title, status, priority, due, detail, verification, verification_status')
+      .eq('workspace_id', ws)
+      .order('created_at', { ascending: true }),
     db.from('messages').select('id, employee_id, sender, body, created_at').eq('workspace_id', ws).order('created_at', { ascending: true }),
     db.from('activities').select('id, employee_id, body, kind, created_at').eq('workspace_id', ws).order('created_at', { ascending: false }).limit(120),
   ]);
@@ -126,6 +141,8 @@ export async function fetchWorkspace(): Promise<WorkspaceSnapshot> {
       priority: row.priority,
       due: row.due,
       detail: row.detail,
+      // The verdict is written by run-task; the browser only ever reads it.
+      verification: readVerification(row.verification, row.verification_status),
     })),
     messages: (messages.data as MessageRow[]).map((row) => ({
       id: row.id,
@@ -154,6 +171,8 @@ export async function createHire(employeeId: string, activityText: string) {
       { workspace_id: ws, employee_id: employeeId },
       { onConflict: 'workspace_id,employee_id', ignoreDuplicates: true },
     );
+  // The seat trigger raises `seat_limit_reached`; the caller turns that into a sentence and a plan
+  // link rather than a stack trace.
   if (error) throw new Error(error.message);
 
   await db.from('activities').insert({ workspace_id: ws, employee_id: employeeId, body: activityText, kind: 'hire' });
@@ -298,6 +317,13 @@ export interface WorkspaceBilling {
    * employees are paused. Derived on the server (`workspace_ai_locked`), never stored.
    */
   aiLocked: boolean;
+  /**
+   * How many AI employees this plan includes, from `plan_seat_limit()` in Postgres. Null means the
+   * plan is unlimited (Scale) or there is no plan yet; `seatsUsed` says which.
+   */
+  seatLimit: number | null;
+  /** AI employees on the roster right now. Counted by the database, not by the browser. */
+  seatsUsed: number;
 }
 
 /**
@@ -319,6 +345,8 @@ export async function fetchWorkspaceBilling(): Promise<WorkspaceBilling | null> 
     subscription_id: string | null;
     trial_started_at: string | null;
     ai_locked: boolean | null;
+    seat_limit: number | null;
+    seats_used: number | null;
   };
 
   const row = ((data ?? []) as Row[])[0];
@@ -334,6 +362,8 @@ export async function fetchWorkspaceBilling(): Promise<WorkspaceBilling | null> 
     subscriptionId: row.subscription_id ?? null,
     trialStartedAt: row.trial_started_at ?? null,
     aiLocked: Boolean(row.ai_locked),
+    seatLimit: typeof row.seat_limit === 'number' ? row.seat_limit : null,
+    seatsUsed: typeof row.seats_used === 'number' ? row.seats_used : 0,
   };
 }
 

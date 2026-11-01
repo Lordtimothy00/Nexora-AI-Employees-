@@ -1,7 +1,8 @@
 import type { Employee } from '@/data/employees';
-import type { AssignedTask, Task } from '@/context/WorkspaceContext';
+import type { AssignedTask, Task, TaskVerification } from '@/context/WorkspaceContext';
 import { getWorkspaceId } from './backend';
 import { getSupabase } from './supabase';
+import { readVerification } from './verification';
 
 /**
  * Runs one task through the `run-task` edge function: the employee produces the deliverable, which
@@ -30,7 +31,7 @@ export type RunFailureReason =
   | 'unreachable';
 
 export type RunOutcome =
-  | { ok: true; deliverable: string; provider: string }
+  | { ok: true; deliverable: string; provider: string; verification: TaskVerification | null }
   | { ok: false; reason: RunFailureReason; detail?: string };
 
 /**
@@ -39,7 +40,7 @@ export type RunOutcome =
  * spent. `provider: null` means the demo produced a template rather than a model.
  */
 export type TaskRunResult =
-  | { ok: true; text: string; provider: string | null }
+  | { ok: true; text: string; provider: string | null; verification?: TaskVerification | null }
   | { ok: false; reason: RunFailureReason | 'locked' | 'paused'; detail?: string };
 
 /**
@@ -143,7 +144,11 @@ export async function runTask(task: RunSeed, employee: RunEmployee): Promise<Run
       return { ok: false, reason: 'unreachable', detail };
     }
 
-    const payload = data as { deliverable?: unknown; provider?: unknown } | null;
+    const payload = data as {
+      deliverable?: unknown;
+      provider?: unknown;
+      verification?: unknown;
+    } | null;
     const deliverable = typeof payload?.deliverable === 'string' ? payload.deliverable.trim() : '';
     if (!deliverable) return { ok: false, reason: 'provider_error', detail: 'empty deliverable' };
 
@@ -151,6 +156,7 @@ export async function runTask(task: RunSeed, employee: RunEmployee): Promise<Run
       ok: true,
       deliverable,
       provider: typeof payload?.provider === 'string' ? payload.provider : 'model',
+      verification: readVerification(payload?.verification),
     };
   } catch (error) {
     return {

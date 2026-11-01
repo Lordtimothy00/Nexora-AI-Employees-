@@ -409,6 +409,34 @@ grant on `workspace_members`, so those rules cannot be sidestepped with a direct
 `supabase/migrations/20261101000000_audit_hardening.sql` is the state of those grants and that
 ledger as applied.
 
+### Seats, and what a plan actually buys
+
+The pricing page says one AI employee on Launch, five on Growth, unlimited on Scale. That is now a
+database rule, not a suggestion in the UI: a trigger on `hires` (`enforce_seat_limit`) reads the
+plan and refuses the row past the allowance with `42501 seat_limit_reached`. The mapping lives in
+`plan_seat_limit()`, a workspace with no plan yet is uncapped (there is no tier to enforce — the
+hourly run ceiling still bounds its spend), and any plan string the app does not recognise fails
+closed at one rather than falling through to unlimited. `workspace_billing()` returns the allowance
+and the count, so nothing in the app hardcodes a number the database would not enforce.
+
+`supabase/migrations/20261101010000_seat_limits_and_brief_verification.sql` is that cap.
+
+### Checking the work against the brief
+
+`run-task` does not accept a deliverable on faith. Before writing it back it applies rules to the
+text — empty or placeholder drafts, a figure the brief never supplied, quoted wording that was
+dropped, a list that was asked for and not written, a word ceiling that was blown — and then asks a
+second model, preferring a different provider from the one that wrote the draft, whether the draft
+actually does what the task asked. A draft only passes when both agree; when the reader cannot be
+reached the verdict is `unverified`, never `passes`. If the first draft fails, one repair pass is
+made with the failures named in the prompt and the better of the two drafts is kept.
+
+The verdict is stored on the task (`verification`, `verification_status`, `verified_at`) and shown
+in the task sheet as **Brief check**. Members can read those columns and cannot write them: only the
+service role records a check, so a browser cannot mark its own work as passing. The rules are pure
+functions in `supabase/functions/run-task/index.ts`, imported directly by
+`src/test/briefCheck.test.ts`.
+
 ## Deploying
 
 Live on Vercel as `nexora-ai-employees` → **https://nexora-ai-employees.vercel.app**.

@@ -46,12 +46,16 @@ export function EmployeeDetail() {
   const { hires, hire, release, aiLocked } = useWorkspace();
   const [tab, setTab] = useState<TabId>('overview');
   const [justHired, setJustHired] = useState(false);
+  // A hire can be refused for a reason the person can act on — no seats left on the plan, or an
+  // unpaid subscription. Say which, instead of showing a hire that silently disappears on refresh.
+  const [hireNotice, setHireNotice] = useState<{ message: string; billing: boolean } | null>(null);
 
   const isHired = Boolean(user) && employee ? hires.some((entry) => entry.employeeId === employee.id) : false;
 
   useEffect(() => {
     setTab('overview');
     setJustHired(false);
+    setHireNotice(null);
   }, [slug]);
 
   useEffect(() => {
@@ -105,8 +109,14 @@ export function EmployeeDetail() {
       navigate('/signup?intent=hire');
       return;
     }
-    hire(employee.id);
-    setJustHired(true);
+    setHireNotice(null);
+    void hire(employee.id).then((outcome) => {
+      if (outcome.ok) {
+        setJustHired(true);
+        return;
+      }
+      setHireNotice({ message: outcome.message, billing: outcome.reason !== 'failed' });
+    });
   };
 
   return (
@@ -269,9 +279,23 @@ export function EmployeeDetail() {
                       >
                         {user ? `Hire ${employee.name}` : 'Start free and hire'}
                       </Button>
-                      <p className="mt-3 text-center text-[11px] text-[#9aaab3]">
-                        3-day free trial · Card required · Cancel anytime
-                      </p>
+                      {hireNotice ? (
+                        <div className="mt-3 rounded-xl border border-amber-300/25 bg-amber-300/[0.07] px-3.5 py-3 text-left">
+                          <p className="text-[11.5px] leading-relaxed text-amber-100/90">{hireNotice.message}</p>
+                          {hireNotice.billing && (
+                            <Link
+                              to="/dashboard/billing"
+                              className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] font-medium text-[#9df7c2] hover:text-white"
+                            >
+                              Open billing <ArrowRight className="size-3" />
+                            </Link>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="mt-3 text-center text-[11px] text-[#9aaab3]">
+                          3-day free trial · Card required · Cancel anytime
+                        </p>
+                      )}
                     </>
                   )}
 

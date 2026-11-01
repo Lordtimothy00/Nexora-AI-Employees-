@@ -44,6 +44,35 @@ export interface Hire {
   utilization: number;
 }
 
+export interface BriefCheck {
+  id: string;
+  label: string;
+  pass: boolean;
+  note?: string;
+}
+
+export interface ModelVerdict {
+  addressesTask: boolean;
+  missing: string[];
+  reason: string;
+}
+
+export type VerificationStatus = 'passes' | 'needs_review' | 'unverified';
+
+/**
+ * What `run-task` checked about a deliverable before accepting it: the rules that were applied to
+ * the text, the verdict of an independent reader, and whether a repair pass ran. Written by the
+ * function, read by the app — the browser cannot set it.
+ */
+export interface TaskVerification {
+  status: VerificationStatus;
+  checks: BriefCheck[];
+  model: ModelVerdict | null;
+  attempts: number;
+  repaired: boolean;
+  checkedAt: string;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -52,6 +81,8 @@ export interface Task {
   priority: Priority;
   due: string;
   detail: string;
+  /** The last brief check run against this task, or null if it has never been run. */
+  verification?: TaskVerification | null;
 }
 
 export interface AssignTaskInput {
@@ -73,9 +104,14 @@ export interface AssignedTask {
   blocked?: 'locked' | 'paused' | 'not_saved';
 }
 
+export type HireOutcome =
+  | { ok: true }
+  | { ok: false; reason: 'locked' | 'seats' | 'failed'; message: string };
+
 export interface Deliverable {
   text: string;
   provider: string | null;
+  verification?: TaskVerification | null;
 }
 
 export interface ChatMessage {
@@ -102,7 +138,8 @@ interface WorkspaceState {
 }
 
 interface WorkspaceContextValue extends WorkspaceState {
-  hire: (employeeId: string) => void;
+  /** Hires one employee. Resolves with why it could not happen, so the page can say so. */
+  hire: (employeeId: string) => Promise<HireOutcome>;
   release: (employeeId: string) => void;
   togglePause: (employeeId: string) => void;
   /**
@@ -454,16 +491,53 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     }
   }, [state, hydrated, remote, authReady]);
 
-  const hire = useCallback((employeeId: string) => {
+  /**
+   * Hires one employee. The seat ceiling is checked here for the message and again in Postgres for
+   * the rule: the trigger on `hires` is what actually stops a Launch workspace from having five.
+   */
+  const hire = useCallback(async (employeeId: string): Promise<HireOutcome> => {
     const person = getEmployeeById(employeeId);
-    if (!person) return;
+    if (!person) return { ok: false, reason: 'failed', message: 'That employee is not on the roster.' };
+
     // A paused workspace cannot add employees; the hires trigger would reject the row anyway.
-    if (billing?.aiLocked) return;
-    if (remote) {
-      void createRemoteHire(employeeId, `${person.name} joined your workspace as ${person.role}`)
-        .then(refresh)
-        .catch(() => null);
+    if (billing?.aiLocked) {
+      return {
+        ok: false,
+        reason: 'locked',
+        message: 'AI employees are paused until billing is settled. The team unlocks the moment it is.',
+      };
     }
+
+    const seatLimit = billing?.seatLimit ?? null;
+    const seatsUsed = billing?.seatsUsed ?? 0;
+    if (seatLimit !== null && seatsUsed >= seatLimit) {
+      return {
+        ok: false,
+        reason: 'seats',
+        message:
+          `Your plan includes ${seatLimit} AI ${seatLimit === 1 ? 'employee' : 'employees'} and this ` +
+          `workspace has ${seatsUsed}. Release one from Team, or upgrade in Billing.`,
+      };
+    }
+
+    if (remote) {
+      try {
+        await createRemoteHire(employeeId, `${person.name} joined your workspace as ${person.role}`);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : '';
+        if (message.includes('seat_limit_reached')) {
+          return {
+            ok: false,
+            reason: 'seats',
+            message: 'That is every AI employee your plan includes. Release one from Team, or upgrade in Billing.',
+          };
+        }
+        return { ok: false, reason: 'failed', message: 'That hire did not save — check your connection and try again.' };
+      }
+      // The roster and the seat count both moved.
+      await refresh();
+    }
+
     setState((current) => {
       if (current.hires.some((h) => h.employeeId === employeeId)) return current;
       return {
@@ -484,7 +558,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         ],
       };
     });
-  }, [remote, refresh, billing?.aiLocked]);
+
+    return { ok: true };
+  }, [remote, refresh, billing?.aiLocked, billing?.seatLimit, billing?.seatsUsed]);
 
   const release = useCallback((employeeId: string) => {
     if (remote) void deleteRemoteHire(employeeId).then(refresh).catch(() => null);
@@ -589,21 +665,33 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
           if (outcome.ok) {
             setDeliverables((current) => ({
               ...current,
-              [task.id]: { text: outcome.deliverable, provider: outcome.provider },
+              [task.id]: {
+                text: outcome.deliverable,
+                provider: outcome.provider,
+                verification: outcome.verification,
+              },
             }));
             moveTask(task.id, 'review');
             await refresh();
-            return { ok: true, text: outcome.deliverable, provider: outcome.provider };
+            return {
+              ok: true,
+              text: outcome.deliverable,
+              provider: outcome.provider,
+              verification: outcome.verification,
+            };
           }
 
           // No backend means the local demo: the same template the sheet has always shown, posted
           // to the thread so the workspace behaves like the real one.
           if (outcome.reason === 'no_backend') {
             const text = scriptedDeliverable(task, person);
-            setDeliverables((current) => ({ ...current, [task.id]: { text, provider: null } }));
+            setDeliverables((current) => ({
+              ...current,
+              [task.id]: { text, provider: null, verification: null },
+            }));
             appendMessage(task.employeeId, text, 'employee');
             moveTask(task.id, 'review');
-            return { ok: true, text, provider: null };
+            return { ok: true, text, provider: null, verification: null };
           }
 
           moveTask(task.id, 'backlog');
