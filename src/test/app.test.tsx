@@ -222,6 +222,23 @@ describe('authentication and dashboard', () => {
     expect(await screen.findByText('Tasks this month')).toBeInTheDocument();
   });
 
+  it('opens the mobile menu as a dialog and closes it on Escape', async () => {
+    const user = userEvent.setup();
+    seedSession();
+    renderAt('/dashboard/tasks');
+
+    await user.click(await screen.findByRole('button', { name: /Open menu/i }));
+
+    // The drawer is an overlay, so the page behind it must not scroll under the finger.
+    expect(screen.getByRole('dialog', { name: /^Menu$/ })).toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog', { name: /^Menu$/ })).not.toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('');
+  });
+
   it('validates the signup form before creating a workspace', async () => {
     const user = userEvent.setup();
     renderAt('/signup');

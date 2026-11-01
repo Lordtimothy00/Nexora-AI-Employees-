@@ -71,6 +71,22 @@ export function DashboardLayout() {
     setCreateError(null);
   }, [location.pathname]);
 
+  // The drawer is fixed, so a swipe meant for the menu must not move the dashboard underneath it.
+  // Escape closes it like any other overlay, and the lock comes off again on close.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previous;
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [mobileOpen]);
+
   const title = pageTitles[location.pathname] ?? 'Workspace';
   const seatsUsed = hires.length;
   const seatsTotal = 5;
@@ -87,8 +103,8 @@ export function DashboardLayout() {
   const memberCount = activeWorkspace?.members ?? 0;
 
   const sidebar = (
-    <div className="flex h-full flex-col border-r border-white/12 bg-[#071b1e]/55 backdrop-blur-2xl">
-      <div className="flex h-16 items-center justify-between px-4">
+    <div className="flex h-full min-h-0 flex-col border-r border-white/12 bg-[#071b1e]/55 backdrop-blur-2xl">
+      <div className="flex h-16 shrink-0 items-center justify-between px-4">
         <Logo />
         <button
           type="button"
@@ -100,7 +116,7 @@ export function DashboardLayout() {
         </button>
       </div>
 
-      <div className="relative px-3">
+      <div className="relative shrink-0 px-3">
         <button
           type="button"
           onClick={() => canSwitch && setShowWorkspaces((open) => !open)}
@@ -258,13 +274,16 @@ export function DashboardLayout() {
         )}
       </div>
 
-      <div className="px-3 pt-2.5">
+      <div className="shrink-0 px-3 pt-2.5">
         <ButtonLink to="/employees" size="sm" className="w-full" iconLeft={<Sparkles className="size-3.5" />}>
           Hire an employee
         </ButtonLink>
       </div>
 
-      <nav className="scroll-thin mt-5 min-h-0 flex-1 overflow-y-auto px-2 pb-4" aria-label="Workspace">
+      <nav
+        className="scroll-thin mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pb-4"
+        aria-label="Workspace"
+      >
         <p className="px-3 pb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-[#8d9ea7]">
           Workspace
         </p>
@@ -323,7 +342,7 @@ export function DashboardLayout() {
         ))}
       </nav>
 
-      <div className="border-t border-white/10 p-3">
+      <div className="shrink-0 border-t border-white/10 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="rounded-xl border border-white/12 bg-white/[0.045] backdrop-blur-xl p-3">
           <div className="flex items-center justify-between text-[10.5px]">
             <span className="text-[#aabbc2]">Employee seats</span>
@@ -375,12 +394,19 @@ export function DashboardLayout() {
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
-      <div className="fixed inset-y-0 left-0 z-30 hidden w-[248px] lg:block">{sidebar}</div>
+      <div className="h-viewport fixed inset-y-0 left-0 z-30 hidden w-[248px] lg:block">{sidebar}</div>
 
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-[276px] animate-rise">{sidebar}</div>
+          <div
+            className="h-viewport absolute inset-y-0 left-0 w-[276px] animate-rise"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+          >
+            {sidebar}
+          </div>
         </div>
       )}
 

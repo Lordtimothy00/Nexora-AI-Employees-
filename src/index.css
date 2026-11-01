@@ -607,6 +607,17 @@
     border: 1px solid rgba(11,211,154, 0.5);
     animation: pulse-ring 3s ease-out infinite;
   }
+
+  /*
+   * The visible viewport, not the layout one. A phone's address bar is part of the layout
+   * viewport but not of the glass, so `inset-0` on a fixed overlay measures taller than what the
+   * user can see and anything pinned to its bottom lands off-screen. `vh` is the fallback for
+   * browsers without `dvh`.
+   */
+  .h-viewport {
+    height: 100vh;
+    height: 100dvh;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
