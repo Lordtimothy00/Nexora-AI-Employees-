@@ -157,19 +157,34 @@ const eyebrow = (y, text) =>
   `<text x="${PAD}" y="${y}" font-family="Inter" font-weight="400" font-size="17" ` +
   `fill="${MUTED}" letter-spacing="3.2">${escapeXml(text.toUpperCase())}</text>`;
 
+/** Height of the ink in a text block, measured from the first line's cap to the last baseline. */
+const inkHeight = (lines, size, leading) => (lines - 1) * size * leading + size * 0.82;
+
+/** The area a card's copy may occupy: clear of the wordmark above and the rule below. */
+const REGION = { top: 150, bottom: 570 };
+
+/** Slack to put above a block of `height`, so the composition sits in the middle of REGION. */
+const centredTop = (height) => REGION.top + Math.max(0, (REGION.bottom - REGION.top - height) / 2);
+
 function defaultCard(entry) {
-  const title = fit(entry.title, { maxWidth: W - PAD * 2, maxLines: 3, size: 78, minSize: 46, family: 'Sora' });
-  // Space from the *last baseline*, not from the top of the block: a two-line title sits lower than
-  // a one-line title, and the paragraph should follow the ink either way.
-  const lastTitleBaseline = 196 + (title.lines.length - 1) * title.size * 1.16;
-  const bodyY = lastTitleBaseline + 78;
+  const title = fit(entry.title, { maxWidth: W - PAD * 2, maxLines: 3, size: 84, minSize: 46, family: 'Sora' });
   const body = fit(entry.description, { maxWidth: W - PAD * 2 - 60, maxLines: 2, size: 27, minSize: 22 });
+
+  // The wordmark sits at the top and the rule at the bottom, so the text block is centred in what
+  // is left. Top-aligning it left a third of the card empty underneath, which read as a mistake.
+  const titleHeight = inkHeight(title.lines.length, title.size, 1.16);
+  const bodyHeight = inkHeight(body.lines.length, body.size, 1.5);
+  const gap = 44;
+  const blockTop = centredTop(titleHeight + gap + bodyHeight);
+
+  const titleY = Math.round(blockTop + title.size * 0.82);
+  const bodyY = Math.round(titleY + (title.lines.length - 1) * title.size * 1.16 + gap + body.size * 0.82);
 
   return `${backdrop()}
   ${wordmark(104)}
   ${textRow(title.lines, {
     x: PAD,
-    y: 196,
+    y: titleY,
     size: title.size,
     lineHeight: title.size * 1.16,
     fill: WHITE,
@@ -216,16 +231,23 @@ function employeeCard(entry, employee) {
 
 function guideCard(entry, guide) {
   const title = fit(entry.title, { maxWidth: W - PAD * 2, maxLines: 3, size: 62, minSize: 38, family: 'Sora' });
-  const lastTitleBaseline = 214 + (title.lines.length - 1) * title.size * 1.16;
-  const summaryY = lastTitleBaseline + 66;
   const summary = fit(entry.description, { maxWidth: W - PAD * 2 - 80, maxLines: 2, size: 26, minSize: 20 });
+
+  // The category/read-time line belongs to the title, so the block starts at the eyebrow.
+  const eyebrowGap = 64;
+  const titleHeight = inkHeight(title.lines.length, title.size, 1.16);
+  const summaryHeight = inkHeight(summary.lines.length, summary.size, 1.5);
+  const gap = 40;
+  const eyebrowY = Math.round(centredTop(eyebrowGap + titleHeight + gap + summaryHeight));
+  const titleY = eyebrowY + eyebrowGap;
+  const summaryY = Math.round(titleY + (title.lines.length - 1) * title.size * 1.16 + gap + summary.size * 0.82);
 
   return `${backdrop()}
   ${wordmark(104)}
-  ${eyebrow(150, `${guide.category} · ${guide.readTime}`)}
+  ${eyebrow(eyebrowY, `${guide.category} · ${guide.readTime}`)}
   ${textRow(title.lines, {
     x: PAD,
-    y: 214,
+    y: titleY,
     size: title.size,
     lineHeight: title.size * 1.16,
     fill: WHITE,
