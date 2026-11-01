@@ -9,6 +9,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { BackButton } from '@/components/ui/BackButton';
 import { RouteFallback } from '@/components/ui/RouteFallback';
 import { prefetchLikelyRoutes } from '@/lib/prefetch';
+import { routeFor } from '@/data/routes.ts';
 import { Home } from '@/pages/Home';
 
 const Employees = lazy(() => import('@/pages/Employees').then((m) => ({ default: m.Employees })));
@@ -36,76 +37,6 @@ const Conversations = lazy(() => import('@/pages/dashboard/Conversations').then(
 const Analytics = lazy(() => import('@/pages/dashboard/Analytics').then((m) => ({ default: m.Analytics })));
 const Billing = lazy(() => import('@/pages/dashboard/Billing').then((m) => ({ default: m.Billing })));
 const Settings = lazy(() => import('@/pages/dashboard/Settings').then((m) => ({ default: m.Settings })));
-
-const DEFAULT_DESCRIPTION =
-  'Intelligent AI employees that plug into your stack, learn your playbook, and deliver finished work — 24/7.';
-
-const routes: { match: RegExp; title: string; description: string }[] = [
-  { match: /^\/$/, title: 'Your AI employees, always working', description: DEFAULT_DESCRIPTION },
-  {
-    match: /^\/employees\/?$/,
-    title: 'AI Employees',
-    description:
-      'Eight specialised AI employees across sales, support, marketing, operations, finance and people. Compare deliverables, playbooks and pricing.',
-  },
-  {
-    match: /^\/employees\/[^/]+$/,
-    title: 'AI Employee',
-    description:
-      'See what this AI employee delivers, the tools they connect to, and how they work inside your team.',
-  },
-  {
-    match: /^\/how-it-works$/,
-    title: 'How it works',
-    description:
-      'How Nexora hires, trains and supervises AI employees — integrations, approvals, security and data handling.',
-  },
-  {
-    match: /^\/pricing$/,
-    title: 'Pricing',
-    description:
-      'Flat monthly pricing from $12. Every plan includes playbooks, integrations, approvals and unlimited human seats.',
-  },
-  {
-    match: /^\/resources$/,
-    title: 'Resources',
-    description:
-      'Playbooks and field notes on running AI employees: briefs, onboarding, and measuring return.',
-  },
-  {
-    match: /^\/resources\/[^/]+$/,
-    title: 'Resources',
-    description: 'A practical guide to running AI employees inside a real team.',
-  },
-  { match: /^\/login$/, title: 'Sign in', description: 'Sign in to your Nexora workspace.' },
-  {
-    match: /^\/invite\/[^/]+$/,
-    title: 'Join a workspace',
-    description: 'Accept an invite to a Nexora workspace.',
-  },
-  {
-    match: /^\/signup$/,
-    title: 'Create your workspace',
-    description: 'Create a Nexora workspace and hire your first AI employee in minutes.',
-  },
-  {
-    match: /^\/forgot-password$/,
-    title: 'Reset your password',
-    description: 'Get a single-use link to choose a new Nexora password.',
-  },
-  {
-    match: /^\/reset-password$/,
-    title: 'Choose a new password',
-    description: 'Finish resetting your Nexora password.',
-  },
-  { match: /^\/dashboard\/?$/, title: 'Dashboard', description: 'Your AI workforce at a glance.' },
-  { match: /^\/dashboard\/team$/, title: 'My team', description: 'Your hired AI employees.' },
-  { match: /^\/dashboard\/tasks$/, title: 'Tasks', description: 'The work queue for your AI employees.' },
-  { match: /^\/dashboard\/conversations$/, title: 'Conversations', description: 'Talk to your AI employees.' },
-  { match: /^\/dashboard\/analytics$/, title: 'Analytics', description: 'What your AI workforce delivers.' },
-  { match: /^\/dashboard\/billing$/, title: 'Billing', description: 'Plan, seats and invoices.' },
-  { match: /^\/dashboard\/settings$/, title: 'Settings', description: 'Workspace settings.' },
-];
 
 function setMeta(attribute: 'name' | 'property', key: string, content: string) {
   let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
@@ -135,24 +66,23 @@ function RouteMeta() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const entry = routes.find((route) => route.match.test(pathname));
-    const title = entry ? `${entry.title} · Nexora` : 'Page not found · Nexora';
-    const description = entry?.description ?? DEFAULT_DESCRIPTION;
+    // One table drives the router, the build-time HTML and the card images: see src/data/routes.ts.
+    const entry = routeFor(pathname);
+    const title = `${entry.title} · Nexora`;
+    const description = entry.description;
     const origin = (import.meta.env.VITE_SITE_URL ?? window.location.origin).replace(/\/+$/, '');
     const url = `${origin}${pathname === '/' ? '/' : pathname.replace(/\/+$/, '')}`;
-    // Anything behind a session, plus the token-bearing utility pages, stays out of the index:
-    // there is nothing to rank, and a reset link is not a landing page.
-    const isPrivate =
-      pathname.startsWith('/dashboard') ||
-      pathname.startsWith('/invite') ||
-      pathname.startsWith('/forgot-password') ||
-      pathname.startsWith('/reset-password');
+    const image = `${origin}${entry.image}`;
+    // Behind a session, holding a token, or simply not a page: none of it belongs in an index.
+    const isPrivate = Boolean(entry.private);
 
     document.title = title;
     setMeta('name', 'description', description);
     setMeta('property', 'og:title', title);
     setMeta('property', 'og:description', description);
     setMeta('property', 'og:url', url);
+    setMeta('property', 'og:image', image);
+    setMeta('name', 'twitter:image', image);
     setMeta('name', 'twitter:title', title);
     setMeta('name', 'twitter:description', description);
     setMeta('name', 'robots', isPrivate ? 'noindex, nofollow' : 'index, follow');
